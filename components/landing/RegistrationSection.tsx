@@ -2,14 +2,20 @@ import {
   ADMIN_REQUIREMENTS,
   TICKET_PRICES,
   FACILITIES,
-  CONTACT_INFO,
 } from "@/constants/landing";
-import { FileText, Check, Gift, Landmark, CreditCard, Wallet } from "lucide-react";
+import {
+  FileText,
+  Check,
+  Gift,
+  Landmark,
+  CreditCard,
+  Wallet,
+} from "lucide-react";
 
 export default function RegistrationSection() {
   return (
-    <section 
-      id="daftar" 
+    <section
+      id="daftar"
       className="bg-[#f8fafc] px-6 py-20 sm:px-8"
       style={{
         backgroundImage: `
@@ -29,15 +35,18 @@ export default function RegistrationSection() {
             Syarat Pendaftaran &amp; Biaya
           </h2>
           <p className="mt-2 text-xs text-gray-400 font-medium">
-            Informasi kelengkapan berkas administrasi, biaya kontribusi, dan fasilitas peserta
+            Informasi kelengkapan berkas administrasi, biaya kontribusi, dan
+            fasilitas peserta
           </p>
         </div>
 
         {/* 3 Columns */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 items-stretch">
-          
           {/* Col 1: Berkas Administrasi */}
-          <div id="persyaratan" className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col">
+          <div
+            id="persyaratan"
+            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col"
+          >
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
               <FileText className="h-5 w-5" />
             </div>
@@ -71,14 +80,21 @@ export default function RegistrationSection() {
                 REGISTRATION PRICE
               </p>
               <h3 className="text-sm font-black text-white mb-6">
-                LATIN &amp; LATPEL TICKET
+                LATIN &amp; LATPEL HTM
               </h3>
 
               <div className="space-y-3.5">
                 {TICKET_PRICES.map((ticket, i) => (
-                  <div key={i} className="flex justify-between items-center text-xs">
-                    <p className="text-[11px] font-bold text-white/90">{ticket.label}</p>
-                    <p className="text-[11px] font-black text-white">{ticket.price}</p>
+                  <div
+                    key={i}
+                    className="flex justify-between items-center text-xs"
+                  >
+                    <p className="text-[11px] font-bold text-white/90">
+                      {ticket.label}
+                    </p>
+                    <p className="text-[11px] font-black text-white">
+                      {ticket.price}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -90,15 +106,25 @@ export default function RegistrationSection() {
               </p>
               <div className="space-y-3 text-[10px]">
                 <div className="flex items-center justify-between text-white/80">
-                  <span className="flex items-center gap-1.5 font-bold"><Landmark className="h-3.5 w-3.5 text-[#52b788]" /> BRI</span>
-                  <span className="font-mono font-bold">3641 0102 9315 530</span>
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Landmark className="h-3.5 w-3.5 text-[#52b788]" /> BRI
+                  </span>
+                  <span className="font-mono font-bold">
+                    3641 0102 9315 530
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-white/80">
-                  <span className="flex items-center gap-1.5 font-bold"><Wallet className="h-3.5 w-3.5 text-[#52b788]" /> Dana/OVO/GoPay</span>
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <Wallet className="h-3.5 w-3.5 text-[#52b788]" />{" "}
+                    Dana/OVO/GoPay
+                  </span>
                   <span className="font-mono font-bold">0857 9086 5350</span>
                 </div>
                 <div className="flex items-center justify-between text-white/80">
-                  <span className="flex items-center gap-1.5 font-bold"><CreditCard className="h-3.5 w-3.5 text-[#52b788]" /> ShopeePay</span>
+                  <span className="flex items-center gap-1.5 font-bold">
+                    <CreditCard className="h-3.5 w-3.5 text-[#52b788]" />{" "}
+                    ShopeePay
+                  </span>
                   <span className="font-mono font-bold">0857 0663 7146</span>
                 </div>
                 <p className="text-[9px] text-white/40 text-center mt-4 font-semibold italic">
@@ -109,7 +135,10 @@ export default function RegistrationSection() {
           </div>
 
           {/* Col 3: Fasilitas Peserta */}
-          <div id="fasilitas" className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col">
+          <div
+            id="fasilitas"
+            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col"
+          >
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
               <Gift className="h-5 w-5" />
             </div>
@@ -130,7 +159,6 @@ export default function RegistrationSection() {
               ))}
             </div>
           </div>
-
         </div>
       </div>
     </section>

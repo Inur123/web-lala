@@ -95,9 +95,9 @@ export default function RegisterPage() {
         <div className="mb-8 flex justify-between items-center">
           <button
             onClick={() => router.push("/")}
-            className="inline-flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-[#1a4d2e] cursor-pointer bg-transparent border-0"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gray-200/80 bg-white px-4.5 py-2 text-xs font-bold text-gray-600 shadow-sm transition-all hover:bg-gray-50 hover:text-[#1a4d2e] cursor-pointer"
           >
-            <ChevronLeft className="h-4 w-4" /> Kembali
+            <ChevronLeft className="h-4 w-4 text-gray-400" /> Kembali
           </button>
           <div className="flex items-center gap-2 text-xs font-bold text-gray-400">
             <ShieldCheck className="h-4 w-4 text-[#1a4d2e]" /> PORTAL REGISTRASI

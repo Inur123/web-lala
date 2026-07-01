@@ -3,13 +3,10 @@ import { CONTACT_INFO, NAV_LINKS } from "@/constants/landing";
 import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-[#0f2d1a] px-6 pt-16 pb-8 text-white sm:px-8">
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
-          
           {/* Kolom 1: Brand / Deskripsi */}
           <div>
             <div className="mb-4 flex flex-col leading-tight">
@@ -21,7 +18,9 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[11px] leading-relaxed text-white/60 mb-6 font-medium">
-              Program Latihan Instruktur dan Latihan Pelatih Departemen Kaderisasi PC IPNU IPPNU Kabupaten Magetan. Mencetak kader pelatih andalan yang militan dan berintegritas.
+              Program Latihan Instruktur dan Latihan Pelatih Departemen
+              Kaderisasi PC IPNU IPPNU Kabupaten Magetan. Mencetak kader pelatih
+              andalan yang militan dan berintegritas.
             </p>
             <div className="space-y-2 text-[10px] text-white/60">
               <div className="flex items-start gap-2">
@@ -30,7 +29,10 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-3.5 w-3.5 text-[#52b788] shrink-0" />
-                <a href={`mailto:${CONTACT_INFO.email}`} className="hover:text-white transition-colors">
+                <a
+                  href={`mailto:${CONTACT_INFO.email}`}
+                  className="hover:text-white transition-colors"
+                >
                   {CONTACT_INFO.email}
                 </a>
               </div>
@@ -83,7 +85,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  @pelajarnumagetan
+                  pelajarnumagetan
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
@@ -105,7 +107,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-white transition-colors"
                 >
-                  @pelajarnumagetan
+                  pelajarnumagetan
                 </a>
               </li>
             </ul>
@@ -126,22 +128,21 @@ export default function Footer() {
                     className="flex items-center gap-2 text-white/70 transition-colors hover:text-white"
                   >
                     <Phone className="h-3.5 w-3.5 text-[#52b788]" />
-                    <span>{cp.name} ({cp.number})</span>
+                    <span>
+                      {cp.name} ({cp.number})
+                    </span>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
-
         </div>
 
         <div className="my-10 h-px bg-white/10" aria-hidden="true" />
 
         {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row text-[9px] text-white/40 font-bold uppercase tracking-wider">
-          <p>
-            © 2026 PC IPNU IPPNU KABUPATEN MAGETAN. ALL RIGHTS RESERVED.
-          </p>
+          <p>© 2026 PC IPNU IPPNU KABUPATEN MAGETAN. ALL RIGHTS RESERVED.</p>
         </div>
       </div>
     </footer>
