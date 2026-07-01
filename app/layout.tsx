@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -35,7 +38,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={cn("font-sans", geist.variable)}>
-      <body>{children}</body>
+      <body>
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
+        <Toaster position="top-right" />
+      </body>
     </html>
   );
 }
