@@ -17,11 +17,14 @@ import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
-function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) {
+function LoginFormContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const hasFired = useRef(false);
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +36,7 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
     if (logoutStatus === "success" && !hasFired.current) {
       hasFired.current = true;
       toast.success("Berhasil keluar dari akun.");
-      
+
       // Clean query params from URL smoothly
       const newUrl = window.location.pathname;
       window.history.replaceState(null, "", newUrl);
@@ -42,6 +45,33 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // --- Validasi Client-Side Anti-Spam / Teks Aneh ---
+    const cleanedEmail = email.trim();
+    if (!cleanedEmail || cleanedEmail.length > 80) {
+      toast.dismiss();
+      toast.error(
+        "Alamat email tidak valid atau terlalu panjang (Maks. 80 karakter).",
+      );
+      return;
+    }
+
+    if (!password || password.length > 50) {
+      toast.dismiss();
+      toast.error(
+        "Kata sandi tidak valid atau terlalu panjang (Maks. 50 karakter).",
+      );
+      return;
+    }
+
+    // Pola format email dasar
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(cleanedEmail)) {
+      toast.dismiss();
+      toast.error("Format alamat email Anda tidak valid.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -62,14 +92,24 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
             router.push("/dashboard?login=success");
             router.refresh();
           },
-          onError: (ctx: { error: { message?: string } }) => {
-            toast.error(ctx.error.message || "Email atau kata sandi salah.");
+          onError: (ctx: { error: { message?: string }; response?: Response }) => {
+            toast.dismiss();
+            
+            // Tangani error status 429 (Rate Limit dari Backend)
+            if (ctx.response?.status === 429) {
+              const retryAfter = ctx.response.headers.get("X-Retry-After") || "10";
+              toast.error(`Terlalu banyak percobaan masuk. Silakan tunggu ${retryAfter} detik.`);
+            } else {
+              toast.error(ctx.error.message || "Email atau kata sandi salah.");
+            }
             setLoading(false);
-          }
-        }
+          },
+        },
       });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Terjadi kesalahan koneksi.";
+      const message =
+        err instanceof Error ? err.message : "Terjadi kesalahan koneksi.";
+      toast.dismiss();
       toast.error(message);
       setLoading(false);
     }
@@ -133,7 +173,7 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-full bg-[#1a4d2e] hover:bg-[#0f2d1a] text-white font-bold py-5 cursor-pointer border-0 shadow-md transition-all hover:shadow-lg flex items-center justify-center gap-2"
+                  className="w-full rounded-full bg-[#1a4d2e] hover:bg-[#0f2d1a] text-white font-bold py-5 cursor-pointer border-0 shadow-md transition-all hover:shadow-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
@@ -156,7 +196,11 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
 // Suspense wrapper for Next.js 15 compilation
 export function LoginForm(props: React.ComponentProps<"div">) {
   return (
-    <Suspense fallback={<div className="text-xs text-gray-400 text-center">Memuat Form...</div>}>
+    <Suspense
+      fallback={
+        <div className="text-xs text-gray-400 text-center">Memuat Form...</div>
+      }
+    >
       <LoginFormContent {...props} />
     </Suspense>
   );
