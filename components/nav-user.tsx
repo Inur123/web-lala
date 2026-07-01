@@ -20,7 +20,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
 import { ChevronsUpDownIcon, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon } from "lucide-react"
+
+import { authClient } from "@/lib/auth-client"
 
 export function NavUser({
   user,
@@ -32,9 +35,16 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
   const handleLogout = async () => {
-    await fetch("/api/auth/login/../logout", { method: "POST" }); // calling logout endpoint safely
-    window.location.href = "/login";
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/login?logout=success");
+          setTimeout(() => router.refresh(), 100);
+        }
+      }
+    });
   };
 
   // Get first 2 letters of user name
@@ -53,7 +63,7 @@ export function NavUser({
         <DropdownMenu>
           <DropdownMenuTrigger
             render={
-              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted" />
+              <SidebarMenuButton size="lg" className="aria-expanded:bg-muted cursor-pointer" />
             }
           >
             <Avatar>

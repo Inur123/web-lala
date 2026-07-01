@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,40 +15,61 @@ import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const hasFired = useRef(false);
+  
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Check if logout was successful
+  useEffect(() => {
+    const logoutStatus = searchParams.get("logout");
+    if (logoutStatus === "success" && !hasFired.current) {
+      hasFired.current = true;
+      toast.success("Berhasil keluar dari akun.");
+      
+      // Clean query params from URL smoothly
+      const newUrl = window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+      // Better Auth Sign In
+      await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/dashboard?login=success",
+        fetchOptions: {
+          onRequest: () => {
+            setLoading(true);
+          },
+          onResponse: () => {
+            setLoading(false);
+          },
+          onSuccess: () => {
+            router.push("/dashboard?login=success");
+            setTimeout(() => router.refresh(), 100);
+          },
+          onError: (ctx: { error: { message?: string } }) => {
+            toast.error(ctx.error.message || "Email atau kata sandi salah.");
+            setLoading(false);
+          }
+        }
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.error || "Gagal masuk.");
-      }
-
-      router.push("/dashboard");
-      router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Terjadi kesalahan koneksi.";
       toast.error(message);
-    } finally {
       setLoading(false);
     }
   };
@@ -65,7 +86,6 @@ export function LoginForm({
         <CardContent>
           <form onSubmit={handleSubmit}>
             <FieldGroup>
-
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <div className="relative flex items-center">
@@ -129,5 +149,14 @@ export function LoginForm({
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Suspense wrapper for Next.js 15 compilation
+export function LoginForm(props: React.ComponentProps<"div">) {
+  return (
+    <Suspense fallback={<div className="text-xs text-gray-400 text-center">Memuat Form...</div>}>
+      <LoginFormContent {...props} />
+    </Suspense>
   );
 }

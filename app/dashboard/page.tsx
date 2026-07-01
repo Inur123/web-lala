@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { cookies } from "next/headers";
-import * as jwt from "jsonwebtoken";
+import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import {
@@ -17,27 +17,19 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 
-const JWT_SECRET = process.env.JWT_SECRET || "default-secret-key-magetan-2026";
-
 async function getSessionUser() {
-  const cookieStore = await cookies();
-  const sessionToken = cookieStore.get("session")?.value;
-
-  if (!sessionToken) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+  
+  if (!session) {
     return null;
   }
-
-  try {
-    const decoded = jwt.verify(sessionToken, JWT_SECRET) as {
-      id: string;
-      email: string;
-      name?: string;
-    };
-    return decoded;
-  } catch (error) {
-    return null;
-  }
+  
+  return session.user;
 }
+
+import { DashboardToastHandler } from "@/components/dashboard-toast";
 
 export default async function Page() {
   const user = await getSessionUser();
@@ -48,6 +40,7 @@ export default async function Page() {
 
   return (
     <SidebarProvider>
+      <DashboardToastHandler />
       <AppSidebar userEmail={user.email} userName={user.name || "Super Admin"} />
       <div className="flex flex-1 flex-col overflow-hidden bg-white">
         {/* Original shadcn sidebar-02 fixed header */}
