@@ -60,13 +60,14 @@ export default function Navbar() {
           </span>
         </span>
 
-        {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex">
           {NAV_LINKS.map((link, i) => (
             <span
               key={`${link.href}-${i}`}
               onClick={() => {
-                if (window.location.pathname !== "/") {
+                if (link.href.startsWith("/")) {
+                  router.push(link.href);
+                } else if (window.location.pathname !== "/") {
                   router.push("/" + link.href);
                 } else {
                   handleScrollToSection(link.href);
@@ -112,7 +113,10 @@ export default function Navbar() {
               <li key={`${link.href}-${i}`}>
                 <span
                   onClick={() => {
-                    if (window.location.pathname !== "/") {
+                    setIsMobileMenuOpen(false);
+                    if (link.href.startsWith("/")) {
+                      router.push(link.href);
+                    } else if (window.location.pathname !== "/") {
                       router.push("/" + link.href);
                     } else {
                       handleScrollToSection(link.href);

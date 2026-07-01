@@ -41,7 +41,6 @@ export function NavUser({
       fetchOptions: {
         onSuccess: () => {
           router.push("/login?logout=success");
-          setTimeout(() => router.refresh(), 100);
         }
       }
     });

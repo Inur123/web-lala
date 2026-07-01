@@ -1,9 +1,9 @@
-// ─── Navigation ────────────────────────────────────────────────────────────────
 export const NAV_LINKS = [
   { label: "Tentang", href: "#tentang" },
   { label: "Timeline", href: "#alur" },
   { label: "Persyaratan", href: "#persyaratan" },
   { label: "Fasilitas", href: "#fasilitas" },
+  { label: "Pendaftar", href: "/pendaftar" },
 ] as const;
 
 // ─── Hero ───────────────────────────────────────────────────────────────────────

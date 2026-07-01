@@ -12,9 +12,9 @@ export const pool =
   new Pool({
     connectionString,
     ssl: false,
-    max: 10, // batasi maksimum koneksi agar instan
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
+    max: 30, // dinaikkan agar tidak kehabisan koneksi saat hot reload
+    idleTimeoutMillis: 60000, // naikkan waktu idle
+    connectionTimeoutMillis: 10000, // naikkan ke 10 detik agar tidak mudah timeout
   });
 
 if (process.env.NODE_ENV !== "production") {

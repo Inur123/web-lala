@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { ShieldCheck, LayoutDashboard, X } from "lucide-react";
+import { ShieldCheck, LayoutDashboard, X, ClipboardList, Settings } from "lucide-react";
 import { NavUser } from "@/components/nav-user";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,6 +32,8 @@ export function AppSidebar({ userEmail, userName, ...props }: AppSidebarProps) {
   };
 
   const isDashboardActive = pathname === "/dashboard";
+  const isRegistrasiActive = pathname.startsWith("/registrasi");
+  const isSettingsActive = pathname === "/settings";
 
   return (
     <Sidebar className="border-r border-gray-100" {...props}>
@@ -63,21 +65,59 @@ export function AppSidebar({ userEmail, userName, ...props }: AppSidebarProps) {
       </SidebarHeader>
 
       <SidebarContent className="p-3">
-        <SidebarMenu>
+        <SidebarMenu className="space-y-0.5">
+          {/* Dashboard */}
           <SidebarMenuItem>
             <SidebarMenuButton
-              className={`w-full justify-start gap-3 px-3 py-5 rounded-xl transition-all cursor-pointer ${
+              onClick={() => setOpenMobile(false)}
+              className={`w-full transition-all duration-200 ease-out cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
                 isDashboardActive
-                  ? "bg-[#1a4d2e]/10 text-[#1a4d2e] font-bold hover:bg-[#1a4d2e]/15 hover:text-[#1a4d2e]"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-[#1a4d2e]/10 text-[#1a4d2e] font-bold hover:bg-[#1a4d2e]/15 shadow-[inset_3px_0_0_0_#1a4d2e]"
+                  : "text-gray-600 hover:bg-gray-100/60 hover:text-gray-900"
               }`}
-              onClick={() => setOpenMobile(false)} // Auto-close sidebar on click (mobile)
-            >
-              <Link href="/dashboard" className="flex items-center gap-2 w-full">
-                <LayoutDashboard className={`size-4 ${isDashboardActive ? "text-[#1a4d2e]" : "text-gray-400"}`} />
-                <span className="text-xs uppercase tracking-wider font-semibold">Dashboard</span>
-              </Link>
-            </SidebarMenuButton>
+              render={
+                <Link href="/dashboard" className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                  <LayoutDashboard className={`size-4 transition-transform group-hover/button:scale-110 ${isDashboardActive ? "text-[#1a4d2e]" : "text-gray-400"}`} />
+                  <span className="text-xs font-semibold">Dashboard</span>
+                </Link>
+              }
+            />
+          </SidebarMenuItem>
+
+          {/* Registrasi & Seleksi */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setOpenMobile(false)}
+              className={`w-full transition-all duration-200 ease-out cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                isRegistrasiActive
+                  ? "bg-[#1a4d2e]/10 text-[#1a4d2e] font-bold hover:bg-[#1a4d2e]/15 shadow-[inset_3px_0_0_0_#1a4d2e]"
+                  : "text-gray-600 hover:bg-gray-100/60 hover:text-gray-900"
+              }`}
+              render={
+                <Link href="/registrasi" className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                  <ClipboardList className={`size-4 transition-transform group-hover/button:scale-110 ${isRegistrasiActive ? "text-[#1a4d2e]" : "text-gray-400"}`} />
+                  <span className="text-xs font-semibold">Registrasi</span>
+                </Link>
+              }
+            />
+          </SidebarMenuItem>
+
+          {/* Settings */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setOpenMobile(false)}
+              className={`w-full transition-all duration-200 ease-out cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                isSettingsActive
+                  ? "bg-[#1a4d2e]/10 text-[#1a4d2e] font-bold hover:bg-[#1a4d2e]/15 shadow-[inset_3px_0_0_0_#1a4d2e]"
+                  : "text-gray-600 hover:bg-gray-100/60 hover:text-gray-900"
+              }`}
+              render={
+                <Link href="/settings" className="flex items-center gap-2 px-3 py-2 rounded-lg">
+                  <Settings className={`size-4 transition-transform group-hover/button:scale-110 ${isSettingsActive ? "text-[#1a4d2e]" : "text-gray-400"}`} />
+                  <span className="text-xs font-semibold">Pengaturan</span>
+                </Link>
+              }
+            />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>

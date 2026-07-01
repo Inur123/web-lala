@@ -97,9 +97,63 @@ async function main() {
     [accountId, email, "credential", userId, hashedPassword]
   );
 
+  // 6. Create registrations table (with 2-stage selection support)
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS registrations (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      gender TEXT NOT NULL,
+      delegation TEXT NOT NULL,
+      reason TEXT NOT NULL,
+      shirt_size TEXT NOT NULL,
+      sleeve_type TEXT NOT NULL,
+      -- Tahap 1: Seleksi Administrasi
+      admin_status TEXT NOT NULL DEFAULT 'pending',
+      admin_note TEXT,
+      admin_reviewed_at TIMESTAMP WITH TIME ZONE,
+      -- Tahap 2: Seleksi Screening
+      screening_status TEXT NOT NULL DEFAULT 'pending',
+      screening_note TEXT,
+      screening_reviewed_at TIMESTAMP WITH TIME ZONE,
+      -- Timestamps
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Migrate existing table: add 2-stage columns if they don't exist yet
+  const alterColumns = [
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_status TEXT NOT NULL DEFAULT 'pending'`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_note TEXT`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_reviewed_at TIMESTAMP WITH TIME ZONE`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS screening_status TEXT NOT NULL DEFAULT 'pending'`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS screening_note TEXT`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS screening_reviewed_at TIMESTAMP WITH TIME ZONE`,
+  ];
+  for (const sql of alterColumns) {
+    await pool.query(sql);
+  }
+
+  // 7. Create registration_files table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS registration_files (
+      id TEXT PRIMARY KEY,
+      registration_id TEXT NOT NULL REFERENCES registrations(id) ON DELETE CASCADE,
+      field_key TEXT NOT NULL,
+      file_name TEXT NOT NULL,
+      r2_key TEXT NOT NULL,
+      r2_url TEXT,
+      file_size INTEGER,
+      mime_type TEXT,
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
   console.log(`✅ Database successfully seeded. Default admin created:`);
   console.log(`📧 Email   : ${email}`);
   console.log(`🔑 Password: password123`);
+  console.log(`✅ Tables 'registrations' & 'registration_files' verified/created.`);
+  console.log(`✅ 2-stage selection columns (admin + screening) verified.`);
 }
 
 main()

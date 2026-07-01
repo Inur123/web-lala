@@ -49,7 +49,7 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
       await authClient.signIn.email({
         email,
         password,
-        callbackURL: "/dashboard?login=success",
+        callbackURL: "", // dikosongkan agar Better Auth tidak melakukan reload window.location secara default
         fetchOptions: {
           onRequest: () => {
             setLoading(true);
@@ -58,8 +58,9 @@ function LoginFormContent({ className, ...props }: React.ComponentProps<"div">) 
             setLoading(false);
           },
           onSuccess: () => {
+            // Lakukan navigasi SPA murni client-side
             router.push("/dashboard?login=success");
-            setTimeout(() => router.refresh(), 100);
+            router.refresh();
           },
           onError: (ctx: { error: { message?: string } }) => {
             toast.error(ctx.error.message || "Email atau kata sandi salah.");
