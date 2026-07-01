@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { NAV_LINKS } from "@/constants/landing";
 import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
+  const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -41,7 +43,13 @@ export default function Navbar() {
       }`}>
         {/* Logo */}
         <span 
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} 
+          onClick={() => {
+            if (window.location.pathname !== "/") {
+              router.push("/");
+            } else {
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }} 
           className="flex flex-col leading-tight cursor-pointer select-none"
         >
           <span className="text-xs font-black tracking-wider text-[#1a4d2e]">
@@ -57,7 +65,13 @@ export default function Navbar() {
           {NAV_LINKS.map((link, i) => (
             <span
               key={`${link.href}-${i}`}
-              onClick={() => handleScrollToSection(link.href)}
+              onClick={() => {
+                if (window.location.pathname !== "/") {
+                  router.push("/" + link.href);
+                } else {
+                  handleScrollToSection(link.href);
+                }
+              }}
               className="text-[11px] font-bold text-gray-500 transition-colors duration-200 hover:text-[#1a4d2e] cursor-pointer select-none"
             >
               {link.label}
@@ -68,7 +82,7 @@ export default function Navbar() {
         {/* CTA */}
         <div className="flex items-center gap-3">
           <button
-            onClick={() => handleScrollToSection("#daftar")}
+            onClick={() => router.push("/register")}
             className="hidden rounded-full bg-[#1a4d2e] px-6 py-2 text-[11px] font-bold text-white transition-all duration-200 hover:bg-[#0f2d1a] hover:shadow-md md:inline-flex cursor-pointer border-0"
           >
             Daftar
@@ -90,16 +104,20 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <nav
-          className={`bg-white px-6 pb-6 pt-2 md:hidden transition-all duration-300 ${
-            isScrolled ? "rounded-none" : "rounded-3xl mt-2 shadow-lg"
-          }`}
+          className="bg-white px-6 pb-6 pt-2 md:hidden transition-all duration-300"
           aria-label="Mobile navigation"
         >
           <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link, i) => (
               <li key={`${link.href}-${i}`}>
                 <span
-                  onClick={() => handleScrollToSection(link.href)}
+                  onClick={() => {
+                    if (window.location.pathname !== "/") {
+                      router.push("/" + link.href);
+                    } else {
+                      handleScrollToSection(link.href);
+                    }
+                  }}
                   className="block rounded-lg px-3 py-2 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-[#1a4d2e] cursor-pointer select-none"
                 >
                   {link.label}
@@ -108,7 +126,7 @@ export default function Navbar() {
             ))}
             <li>
               <button
-                onClick={() => handleScrollToSection("#daftar")}
+                onClick={() => router.push("/register")}
                 className="mt-2 block w-full rounded-full bg-[#1a4d2e] px-4 py-2 text-center text-xs font-semibold text-white cursor-pointer border-0"
               >
                 Daftar

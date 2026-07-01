@@ -2,8 +2,11 @@
 
 import { HERO_BADGE, HERO_SUBTITLE } from "@/constants/landing";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function HeroSection() {
+  const router = useRouter();
+
   const handleScrollTo = (targetId: string) => {
     const element = document.getElementById(targetId);
     if (element) {
@@ -52,7 +55,7 @@ export default function HeroSection() {
         {/* CTAs - Set to flex-row directly with smaller padding on mobile */}
         <div className="flex flex-row items-center justify-center gap-2 sm:gap-3 mt-2 w-full max-w-md mx-auto">
           <button
-            onClick={() => handleScrollTo("daftar")}
+            onClick={() => router.push("/register")}
             className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-[#1a4d2e] py-3.5 px-3 sm:px-8 text-[10px] sm:text-xs font-bold text-white transition-all duration-200 hover:bg-[#0f2d1a] hover:-translate-y-0.5 cursor-pointer border-0"
           >
             Daftar <span className="hidden xs:inline">Sekarang</span> <ArrowRight className="h-3 w-3 shrink-0" />
