@@ -71,7 +71,7 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const [isOpenSetting, setIsOpenSetting] = useState<boolean>(true);
-  const [checkingSetting, setCheckingSetting] = useState<boolean>(true);
+  const [checkingSetting, setCheckingSetting] = useState<boolean>(false);
 
   useEffect(() => {
     async function checkRegStatus() {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,12 +17,11 @@ import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
-function LoginFormContent({
+export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const hasFired = useRef(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -30,18 +29,21 @@ function LoginFormContent({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Check if logout was successful
+  // Check if logout was successful using client-side vanilla window parsing
   useEffect(() => {
-    const logoutStatus = searchParams.get("logout");
-    if (logoutStatus === "success" && !hasFired.current) {
-      hasFired.current = true;
-      toast.success("Berhasil keluar dari akun.");
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const logoutStatus = params.get("logout");
+      if (logoutStatus === "success" && !hasFired.current) {
+        hasFired.current = true;
+        toast.success("Berhasil keluar dari akun.");
 
-      // Clean query params from URL smoothly
-      const newUrl = window.location.pathname;
-      window.history.replaceState(null, "", newUrl);
+        // Clean query params from URL smoothly
+        const newUrl = window.location.pathname;
+        window.history.replaceState(null, "", newUrl);
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -190,19 +192,5 @@ function LoginFormContent({
         </CardContent>
       </Card>
     </div>
-  );
-}
-
-export function LoginForm(props: React.ComponentProps<"div">) {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex items-center justify-center p-8">
-          <Loader2 className="h-6 w-6 animate-spin text-[#1a4d2e]" />
-        </div>
-      }
-    >
-      <LoginFormContent {...props} />
-    </Suspense>
   );
 }
