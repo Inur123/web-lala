@@ -197,9 +197,8 @@ export function LoginForm(props: React.ComponentProps<"div">) {
   return (
     <Suspense
       fallback={
-        <div className="flex flex-col items-center justify-center p-8 space-y-3">
+        <div className="flex items-center justify-center p-8">
           <Loader2 className="h-6 w-6 animate-spin text-[#1a4d2e]" />
-          <span className="text-xs text-gray-400 font-semibold">Memuat Form...</span>
         </div>
       }
     >
