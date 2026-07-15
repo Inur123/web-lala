@@ -155,6 +155,22 @@ async function main() {
     );
   `);
 
+  // 8. Create system_settings table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS system_settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );
+  `);
+
+  // Insert default setting: registration_open = true
+  await pool.query(`
+    INSERT INTO system_settings (key, value)
+    VALUES ('registration_open', 'true')
+    ON CONFLICT (key) DO NOTHING
+  `);
+
   console.log(`✅ Database successfully seeded. Default admin created:`);
   console.log(`📧 Email   : ${email}`);
   console.log(`🔑 Password: password123`);
