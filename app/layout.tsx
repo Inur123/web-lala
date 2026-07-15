@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "Latihan Pelatih",
     "IPNU",
     "IPPNU",
-    "Magelang",
+    "Magetan",
     "2026",
   ],
   openGraph: {
