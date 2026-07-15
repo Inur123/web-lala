@@ -193,12 +193,14 @@ function LoginFormContent({
   );
 }
 
-// Suspense wrapper for Next.js 15 compilation
 export function LoginForm(props: React.ComponentProps<"div">) {
   return (
     <Suspense
       fallback={
-        <div className="text-xs text-gray-400 text-center">Memuat Form...</div>
+        <div className="flex flex-col items-center justify-center p-8 space-y-3">
+          <Loader2 className="h-6 w-6 animate-spin text-[#1a4d2e]" />
+          <span className="text-xs text-gray-400 font-semibold">Memuat Form...</span>
+        </div>
       }
     >
       <LoginFormContent {...props} />
