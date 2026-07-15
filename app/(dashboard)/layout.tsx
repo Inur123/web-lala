@@ -27,15 +27,15 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="h-screen w-full overflow-hidden select-none touch-none overscroll-none">
       <DashboardToastHandler />
       <AppSidebar
         userEmail={user.email}
         userName={user.name || "Super Admin"}
       />
-      <div className="flex h-screen flex-1 flex-col overflow-hidden bg-white">
-        {/* Sticky top header with sidebar trigger */}
-        <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b border-gray-100 bg-white px-4">
+      <div className="flex h-screen flex-1 flex-col overflow-hidden bg-white min-w-0 relative overscroll-y-none">
+        {/* Fixed top header with sidebar trigger */}
+        <header className="h-16 border-b border-gray-100 bg-white px-4 flex items-center shrink-0 w-full select-none touch-none pointer-events-auto">
           <SidebarTrigger className="-ml-1 text-gray-500 md:hidden" />
           <Separator
             orientation="vertical"
@@ -44,7 +44,7 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y">
           {children}
         </div>
       </div>

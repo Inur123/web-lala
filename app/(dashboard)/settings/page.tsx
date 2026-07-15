@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Settings, Power, Loader2, Calendar } from "lucide-react";
 
+import { SettingsSkeleton } from "./skeleton";
+
 export default function SettingsPage() {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
@@ -52,12 +54,7 @@ export default function SettingsPage() {
   };
 
   if (loading) {
-    return (
-      <div className="p-6 space-y-4 max-w-xl animate-pulse">
-        <div className="h-5 w-1/3 bg-gray-200/60 rounded" />
-        <div className="h-32 w-full bg-gray-200/60 rounded-xl" />
-      </div>
-    );
+    return <SettingsSkeleton />;
   }
 
   return (

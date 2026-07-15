@@ -13,6 +13,17 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Periksa target scroll dari localStorage agar URL tetap bersih tanpa #
+    const savedTarget = localStorage.getItem("scrollTarget");
+    if (savedTarget && window.location.pathname === "/") {
+      localStorage.removeItem("scrollTarget");
+      setTimeout(() => {
+        // eslint-disable-next-line react-hooks/immutability
+        handleScrollToSection(savedTarget);
+      }, 300);
+    }
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -20,12 +31,12 @@ export default function Navbar() {
     setIsMobileMenuOpen(false);
     const targetId = href.replace("#", "");
     const element = document.getElementById(targetId);
-    
+
     if (element) {
       const offsetPosition = element.offsetTop - 70;
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
       });
     }
   };
@@ -38,18 +49,20 @@ export default function Navbar() {
           : "top-4 mx-auto max-w-6xl w-[90%] bg-white/80 shadow-md backdrop-blur-md rounded-[40px]"
       }`}
     >
-      <div className={`mx-auto flex items-center justify-between transition-all duration-500 ease-in-out ${
-        isScrolled ? "px-8 py-4" : "px-10 py-3.5"
-      }`}>
+      <div
+        className={`mx-auto flex items-center justify-between transition-all duration-500 ease-in-out ${
+          isScrolled ? "px-8 py-4" : "px-10 py-3.5"
+        }`}
+      >
         {/* Logo */}
-        <span 
+        <span
           onClick={() => {
             if (window.location.pathname !== "/") {
               router.push("/");
             } else {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }
-          }} 
+          }}
           className="flex flex-col leading-tight cursor-pointer select-none"
         >
           <span className="text-xs font-black tracking-wider text-[#1a4d2e]">
@@ -68,7 +81,10 @@ export default function Navbar() {
                 if (link.href.startsWith("/")) {
                   router.push(link.href);
                 } else if (window.location.pathname !== "/") {
-                  router.push("/" + link.href);
+                  // Simpan target tujuan ke localStorage untuk scroll nanti
+                  localStorage.setItem("scrollTarget", link.href);
+                  // Redirect ke URL bersih / tanpa ada tambahan hashtag
+                  router.push("/");
                 } else {
                   handleScrollToSection(link.href);
                 }
@@ -97,7 +113,11 @@ export default function Navbar() {
             className="text-gray-600 md:hidden hover:text-[#1a4d2e] cursor-pointer border-0 bg-transparent"
             type="button"
           >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
           </button>
         </div>
       </div>
@@ -117,7 +137,8 @@ export default function Navbar() {
                     if (link.href.startsWith("/")) {
                       router.push(link.href);
                     } else if (window.location.pathname !== "/") {
-                      router.push("/" + link.href);
+                      localStorage.setItem("scrollTarget", link.href);
+                      router.push("/");
                     } else {
                       handleScrollToSection(link.href);
                     }

@@ -3,6 +3,8 @@ import { query } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   // Protect: only authenticated admin
   const session = await auth.api.getSession({ headers: await headers() });

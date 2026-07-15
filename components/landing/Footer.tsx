@@ -1,8 +1,11 @@
-import Link from "next/link";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { CONTACT_INFO, NAV_LINKS } from "@/constants/landing";
 import { MapPin, Mail, Phone } from "lucide-react";
 
 export default function Footer() {
+  const router = useRouter();
   return (
     <footer className="bg-[#0f2d1a] px-6 pt-16 pb-8 text-white sm:px-8">
       <div className="mx-auto max-w-7xl">
@@ -45,16 +48,40 @@ export default function Footer() {
               NAVIGASI PORTAL
             </h3>
             <ul className="space-y-3 text-xs font-semibold">
-              {NAV_LINKS.map((link, i) => (
-                <li key={`${link.href}-${i}`}>
-                  <Link
-                    href={link.href}
-                    className="text-white/70 transition-colors hover:text-white"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
+              {NAV_LINKS.map((link, i) => {
+                const isExternal = link.href.startsWith("/");
+                return (
+                  <li key={`${link.href}-${i}`}>
+                    <span
+                      onClick={() => {
+                        const pathname = window.location.pathname;
+                        if (isExternal) {
+                          router.push(link.href);
+                        } else if (pathname !== "/") {
+                          // Simpan target ke localStorage
+                          localStorage.setItem("scrollTarget", link.href);
+                          // Arahkan ke URL bersih menggunakan Next router
+                          router.push("/");
+                        } else {
+                          // Jika sudah di home, scroll langsung
+                          const targetId = link.href.replace("#", "");
+                          const element = document.getElementById(targetId);
+                          if (element) {
+                            const offsetPosition = element.offsetTop - 70;
+                            window.scrollTo({
+                              top: offsetPosition,
+                              behavior: "smooth"
+                            });
+                          }
+                        }
+                      }}
+                      className="text-white/70 transition-colors hover:text-white cursor-pointer select-none"
+                    >
+                      {link.label}
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

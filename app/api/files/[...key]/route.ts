@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+
+export const dynamic = "force-dynamic";
 
 const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID!;
 const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID!;

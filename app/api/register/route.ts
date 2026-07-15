@@ -3,6 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { query } from "@/lib/db";
 import { uploadToR2, getR2PublicUrl } from "@/lib/r2";
 
+export const dynamic = "force-dynamic";
+
 // File fields yang wajib diupload
 const REQUIRED_FILE_FIELDS = [
   "sertifikatMakesta",

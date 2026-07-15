@@ -1,8 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent } from "@/components/ui/card";
 
 export function RegistrasiListSkeleton() {
   return (
-    <div className="p-6 space-y-6 animate-pulse">
+    <div className="p-6 space-y-6 w-full animate-pulse">
       {/* Page Header Skeleton */}
       <div className="flex items-start justify-between">
         <div className="space-y-2">
@@ -12,13 +13,15 @@ export function RegistrasiListSkeleton() {
         <Skeleton className="h-8 w-[80px] rounded-lg" />
       </div>
 
-      {/* Stats Cards Skeleton */}
+      {/* Stats Cards Skeleton (6 Cards Grid matching layout exactly) */}
       <div className="grid grid-cols-3 gap-3 md:grid-cols-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-gray-100 bg-white p-4 space-y-2">
-            <Skeleton className="h-3 w-2/3" />
-            <Skeleton className="h-7 w-1/3 mt-1" />
-          </div>
+          <Card key={i} className="border border-gray-100 shadow-sm rounded-2xl">
+            <CardContent className="p-4 space-y-2">
+              <Skeleton className="h-3 w-2/3" />
+              <Skeleton className="h-7 w-1/3 mt-1" />
+            </CardContent>
+          </Card>
         ))}
       </div>
 
@@ -29,20 +32,40 @@ export function RegistrasiListSkeleton() {
       </div>
 
       {/* Table Card Skeleton */}
-      <div className="rounded-xl border border-gray-100 bg-white p-4 space-y-4">
-        <div className="flex items-center space-x-4">
-          <Skeleton className="h-10 w-10 rounded-full" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-[250px]" />
-            <Skeleton className="h-4 w-[200px]" />
+      <Card className="border border-gray-100 shadow-sm rounded-2xl overflow-hidden">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead className="bg-gray-50 border-b border-gray-100">
+                <tr>
+                  <th className="p-4 w-[50px]"><Skeleton className="h-4 w-6" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-28" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-16" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-24" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-16" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-24" /></th>
+                  <th className="p-4"><Skeleton className="h-4 w-20" /></th>
+                  <th className="p-4 w-[100px]"><Skeleton className="h-4 w-12" /></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {Array.from({ length: 4 }).map((_, rowIndex) => (
+                  <tr key={rowIndex}>
+                    <td className="p-4"><Skeleton className="h-4 w-4" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-32" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-16" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-28" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-16" /></td>
+                    <td className="p-4"><Skeleton className="h-4 w-20" /></td>
+                    <td className="p-4"><Skeleton className="h-5 w-16 rounded" /></td>
+                    <td className="p-4"><Skeleton className="h-7 w-16 rounded" /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
-        <div className="space-y-2 pt-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6" />
-          <Skeleton className="h-4 w-4/5" />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

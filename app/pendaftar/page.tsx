@@ -102,13 +102,13 @@ export default function PendaftarPage() {
                         Foto &amp; Nama
                       </th>
                       <th scope="col" className="px-6 py-4">
-                        Delegasi (PAC)
+                        Delegasi (PC/PAC)
                       </th>
                       <th scope="col" className="px-6 py-4 text-center">
                         Administrasi
                       </th>
                       <th scope="col" className="px-6 py-4 text-center">
-                        Screening
+                        Wawancara
                       </th>
                     </tr>
                   </thead>
