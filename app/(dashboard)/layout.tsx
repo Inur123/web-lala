@@ -44,8 +44,15 @@ export default async function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y">
-          {children}
+        <div className="flex-1 overflow-y-auto overscroll-contain touch-pan-y flex flex-col justify-between">
+          <div className="flex-1">
+            {children}
+          </div>
+          
+          {/* Dashboard Tiny Footer */}
+          <footer className="border-t border-gray-50 bg-white py-3 px-6 shrink-0 select-none text-[10px] text-gray-400 font-semibold tracking-wider text-center uppercase">
+            &copy; 2026 PC IPNU IPPNU Magetan. All Rights Reserved.
+          </footer>
         </div>
       </div>
     </SidebarProvider>

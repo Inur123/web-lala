@@ -5,12 +5,15 @@ export function RegistrasiListSkeleton() {
   return (
     <div className="p-6 space-y-6 w-full animate-pulse">
       {/* Page Header Skeleton */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-2">
           <Skeleton className="h-5 w-[180px]" />
           <Skeleton className="h-3 w-[250px]" />
         </div>
-        <Skeleton className="h-8 w-[80px] rounded-lg" />
+        <div className="flex items-center gap-2">
+          <Skeleton className="h-8 w-[100px] rounded-lg" />
+          <Skeleton className="h-8 w-[80px] rounded-lg" />
+        </div>
       </div>
 
       {/* Stats Cards Skeleton (6 Cards Grid matching layout exactly) */}
@@ -52,7 +55,12 @@ export function RegistrasiListSkeleton() {
                 {Array.from({ length: 4 }).map((_, rowIndex) => (
                   <tr key={rowIndex}>
                     <td className="p-4"><Skeleton className="h-4 w-4" /></td>
-                    <td className="p-4"><Skeleton className="h-4 w-32" /></td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+                        <Skeleton className="h-4 w-32" />
+                      </div>
+                    </td>
                     <td className="p-4"><Skeleton className="h-4 w-16" /></td>
                     <td className="p-4"><Skeleton className="h-4 w-28" /></td>
                     <td className="p-4"><Skeleton className="h-4 w-16" /></td>

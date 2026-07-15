@@ -26,6 +26,9 @@ const REQUIRED_TEXT_FIELDS = [
   "reason",
   "shirtSize",
   "sleeveType",
+  "whatsapp",
+  "birthDate",
+  "email",
 ] as const;
 
 export async function POST(request: Request) {
@@ -64,11 +67,36 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     }
+    if (textData.whatsapp.length > 30) {
+      return NextResponse.json(
+        { error: "No. WhatsApp terlalu panjang." },
+        { status: 400 }
+      );
+    }
+    if (textData.email.length > 150) {
+      return NextResponse.json(
+        { error: "Email terlalu panjang." },
+        { status: 400 }
+      );
+    }
+
+    // --- Cek Duplikasi Email ---
+    const emailCheck = await query(
+      `SELECT id FROM registrations WHERE email = $1`,
+      [textData.email.toLowerCase()]
+    );
+    if (emailCheck.rows.length > 0) {
+      return NextResponse.json(
+        { error: "Email ini sudah terdaftar. Silakan gunakan email lain." },
+        { status: 400 }
+      );
+    }
 
     // --- Validasi file fields ---
     const fileEntries: Record<string, File> = {};
     for (const field of REQUIRED_FILE_FIELDS) {
       const file = formData.get(field);
+
       if (!file || !(file instanceof File) || file.size === 0) {
         return NextResponse.json(
           { error: `Berkas "${field}" wajib diunggah.` },
@@ -114,8 +142,8 @@ export async function POST(request: Request) {
 
     // --- Simpan data registrasi ke database ---
     await query(
-      `INSERT INTO registrations (id, name, gender, delegation, reason, shirt_size, sleeve_type)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+      `INSERT INTO registrations (id, name, gender, delegation, reason, shirt_size, sleeve_type, whatsapp, birth_date, email)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       [
         registrationId,
         textData.name,
@@ -124,6 +152,9 @@ export async function POST(request: Request) {
         textData.reason,
         textData.shirtSize,
         textData.sleeveType,
+        textData.whatsapp,
+        textData.birthDate,
+        textData.email.toLowerCase(),
       ]
     );
 

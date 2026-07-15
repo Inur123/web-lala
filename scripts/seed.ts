@@ -107,6 +107,9 @@ async function main() {
       reason TEXT NOT NULL,
       shirt_size TEXT NOT NULL,
       sleeve_type TEXT NOT NULL,
+      whatsapp TEXT,
+      birth_date TEXT,
+      email TEXT UNIQUE,
       -- Tahap 1: Seleksi Administrasi
       admin_status TEXT NOT NULL DEFAULT 'pending',
       admin_note TEXT,
@@ -123,6 +126,9 @@ async function main() {
 
   // Migrate existing table: add 2-stage columns if they don't exist yet
   const alterColumns = [
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS whatsapp TEXT`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS birth_date TEXT`,
+    `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS email TEXT UNIQUE`,
     `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_status TEXT NOT NULL DEFAULT 'pending'`,
     `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_note TEXT`,
     `ALTER TABLE registrations ADD COLUMN IF NOT EXISTS admin_reviewed_at TIMESTAMP WITH TIME ZONE`,

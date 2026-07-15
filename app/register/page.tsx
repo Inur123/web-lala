@@ -10,8 +10,18 @@ import {
   Loader2,
   AlertCircle,
   ExternalLink,
+  CalendarDays,
 } from "lucide-react";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { id as idLocale } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -22,16 +32,37 @@ export default function RegisterPage() {
     reason: "",
     shirtSize: "",
     sleeveType: "",
+    whatsapp: "",
+    birthDate: "",
+    email: "",
   });
+
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
+  // Sync date selection with birthDate string format (YYYY-MM-DD)
+  const handleDateSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    if (selectedDate) {
+      const year = selectedDate.getFullYear();
+      const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+      const day = String(selectedDate.getDate()).padStart(2, "0");
+      setFormData((prev) => ({
+        ...prev,
+        birthDate: `${year}-${month}-${day}`,
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, birthDate: "" }));
+    }
+  };
 
   const [files, setFiles] = useState<{ [key: string]: File | null }>({
     sertifikatMakesta: null,
     sertifikatLakmud: null,
-    rekomendasi: null,
-    essay: null,
     ktpKta: null,
-    formulir: null,
+    rekomendasi: null,
     paktaIntegritas: null,
+    essay: null,
+    formulir: null,
     fotoFormal: null,
     buktiBayar: null,
   });
@@ -72,6 +103,13 @@ export default function RegisterPage() {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    // Auto-resize textarea height
+    if (e.target.tagName.toLowerCase() === "textarea" && name === "reason") {
+      const textarea = e.target as HTMLTextAreaElement;
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
   };
 
   const handleFileChange = (
@@ -205,7 +243,8 @@ export default function RegisterPage() {
           </h2>
           <p className="text-xs text-gray-400 mb-6 leading-relaxed font-semibold">
             Data Anda berhasil disimpan. Panitia akan segera meninjau kesesuaian
-            berkas administrasi dan kelayakan berkas Anda. Silakan bergabung ke grup WhatsApp koordinasi calon peserta melalui tombol di bawah ini:
+            berkas administrasi dan kelayakan berkas Anda. Silakan bergabung ke
+            grup WhatsApp koordinasi calon peserta melalui tombol di bawah ini:
           </p>
           <div className="flex flex-col gap-3">
             <a
@@ -328,21 +367,105 @@ export default function RegisterPage() {
                 />
               </div>
 
+              {/* No WhatsApp */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  No. WhatsApp <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  name="whatsapp"
+                  required
+                  value={formData.whatsapp}
+                  onChange={handleInputChange}
+                  placeholder="Contoh: 081234567890"
+                  className="w-full text-xs border border-gray-200 rounded-xl px-4 py-3 focus:border-[#1a4d2e] focus:ring-1 focus:ring-[#1a4d2e] outline-none transition-all font-semibold"
+                />
+              </div>
+
+              {/* Tanggal Lahir (Shadcn UI Calendar) */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  Tanggal Lahir <span className="text-red-500">*</span>
+                </label>
+                <div className="relative h-[42px] w-full">
+                  <Popover>
+                    <PopoverTrigger
+                      render={
+                        <button
+                          type="button"
+                          className={cn(
+                            "w-full text-left text-xs border border-gray-200 rounded-xl px-4 py-3 outline-none transition-all font-semibold bg-white flex items-center justify-between cursor-pointer absolute inset-0 h-full",
+                            !date && "text-gray-400",
+                          )}
+                        >
+                          {date ? (
+                            format(date, "dd MMMM yyyy", { locale: idLocale })
+                          ) : (
+                            <span>Pilih Tanggal Lahir</span>
+                          )}
+                          <CalendarDays className="h-4 w-4 text-gray-400" />
+                        </button>
+                      }
+                    />
+                    <PopoverContent
+                      className="w-auto p-0 bg-white shadow-xl border border-gray-100 rounded-xl"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={handleDateSelect}
+                        disabled={(date) =>
+                          date > new Date() || date < new Date("1900-01-01")
+                        }
+                        captionLayout="dropdown"
+                        startMonth={new Date("1970-01")}
+                        endMonth={new Date()}
+                        className="rounded-xl border border-gray-100 bg-white"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+
+              {/* Alamat Email */}
+              <div className="space-y-2">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  Alamat Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="Contoh: pelajar@gmail.com"
+                  className="w-full text-xs border border-gray-200 rounded-xl px-4 py-3 focus:border-[#1a4d2e] focus:ring-1 focus:ring-[#1a4d2e] outline-none transition-all font-semibold"
+                />
+              </div>
+
               {/* Alasan */}
               <div className="space-y-2 md:col-span-3">
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-500">
                   Alasan Mengikuti LATIN &amp; LATPEL{" "}
                   <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  name="reason"
-                  required
-                  rows={3}
-                  value={formData.reason}
-                  onChange={handleInputChange}
-                  placeholder="Tuliskan motivasi dan komitmen Anda mengikuti pelatihan ini..."
-                  className="w-full text-xs border border-gray-200 rounded-xl px-4 py-3 focus:border-[#1a4d2e] focus:ring-1 focus:ring-[#1a4d2e] outline-none transition-all font-semibold resize-none"
-                />
+                <div className="relative">
+                  <textarea
+                    name="reason"
+                    required
+                    rows={3}
+                    maxLength={1000}
+                    value={formData.reason}
+                    onChange={handleInputChange}
+                    placeholder="Tuliskan motivasi dan komitmen Anda mengikuti pelatihan ini..."
+                    className="w-full text-xs border border-gray-200 rounded-xl px-4 py-3 pb-8 focus:border-[#1a4d2e] focus:ring-1 focus:ring-[#1a4d2e] outline-none transition-all font-semibold resize-none overflow-hidden min-h-[80px]"
+                  />
+                  <div className="absolute bottom-2 right-4 text-[10px] font-bold text-gray-400 select-none bg-white px-1">
+                    {formData.reason.length}/1000
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -368,10 +491,23 @@ export default function RegisterPage() {
                   accept: ".pdf,.png,.jpg,.jpeg",
                 },
                 {
+                  id: "ktpKta",
+                  label: "KTP / KTA",
+                  format: "PDF / PNG / JPG (Max. 10MB)",
+                  accept: ".pdf,.png,.jpg,.jpeg",
+                },
+                {
                   id: "rekomendasi",
                   label: "Surat Rekomendasi PAC / PC",
                   format: "PDF saja (Max. 10MB)",
                   accept: ".pdf",
+                },
+                {
+                  id: "paktaIntegritas",
+                  label: "Pakta Integritas Bermaterai",
+                  format: "PDF / PNG / JPG (Max. 10MB)",
+                  accept: ".pdf,.png,.jpg,.jpeg",
+                  downloadTemplate: "https://laci.pelajarnumagetan.or.id/",
                 },
                 {
                   id: "essay",
@@ -380,23 +516,10 @@ export default function RegisterPage() {
                   accept: ".pdf",
                 },
                 {
-                  id: "ktpKta",
-                  label: "KTP / KTA",
-                  format: "PDF / PNG / JPG (Max. 10MB)",
-                  accept: ".pdf,.png,.jpg,.jpeg",
-                },
-                {
                   id: "formulir",
                   label: "Formulir Pendaftaran",
                   format: "PDF saja (Max. 10MB)",
                   accept: ".pdf",
-                  downloadTemplate: "https://laci.pelajarnumagetan.or.id/",
-                },
-                {
-                  id: "paktaIntegritas",
-                  label: "Pakta Integritas Bermaterai",
-                  format: "PDF / PNG / JPG (Max. 10MB)",
-                  accept: ".pdf,.png,.jpg,.jpeg",
                   downloadTemplate: "https://laci.pelajarnumagetan.or.id/",
                 },
                 {
@@ -578,7 +701,11 @@ export default function RegisterPage() {
                   reason: "",
                   shirtSize: "",
                   sleeveType: "",
+                  whatsapp: "",
+                  birthDate: "",
+                  email: "",
                 });
+                setDate(undefined);
                 setFiles({
                   sertifikatMakesta: null,
                   sertifikatLakmud: null,

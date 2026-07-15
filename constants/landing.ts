@@ -69,24 +69,40 @@ export const TIMELINE_STEPS = [
 // ─── Registration & Requirements ────────────────────────────────────────────────
 export const ADMIN_REQUIREMENTS = [
   {
+    title: "Sertifikat MAKESTA",
+    desc: "Sertifikat kelulusan jenjang kaderisasi pertama MAKESTA.",
+  },
+  {
+    title: "Sertifikat LAKMUD",
+    desc: "Sertifikat kelulusan jenjang kaderisasi LAKMUD (jika ada).",
+  },
+  {
+    title: "KTP / KTA",
+    desc: "KTP atau Kartu Tanda Anggota (KTA) membuktikan usia 17-23 tahun.",
+  },
+  {
     title: "Surat Rekomendasi",
-    desc: "Dari PAC (Internal) atau PC (Eksternal).",
-  },
-  {
-    title: "Sertifikat Kaderisasi",
-    desc: "Dinyatakan lulus Makesta & Lakmud.",
-  },
-  {
-    title: "Batas Usia",
-    desc: "KTP/KTA membuktikan usia 17-23 tahun.",
+    desc: "Surat rekomendasi dari PAC (Internal) atau PC (Eksternal).",
   },
   {
     title: "Pakta Integritas",
-    desc: "Menandatangani pakta kesediaan bermaterai 10.000.",
+    desc: "Pakta kesediaan bermaterai 10.000 yang ditandatangani.",
   },
   {
     title: "Karya Tulis Essay",
     desc: "Essay 750-1000 kata mengenai tema pilihan.",
+  },
+  {
+    title: "Formulir Pendaftaran",
+    desc: "Formulir pendaftaran resmi yang telah diisi lengkap.",
+  },
+  {
+    title: "Foto Formal Jas Merah",
+    desc: "Foto formal terbaru menggunakan jas IPNU/IPPNU background merah.",
+  },
+  {
+    title: "Bukti Bayar Kontribusi",
+    desc: "Bukti transfer pembayaran registrasi dan kontribusi.",
   },
 ] as const;
 

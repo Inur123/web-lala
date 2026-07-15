@@ -14,7 +14,7 @@ export async function GET() {
 
   const result = await query(
     `SELECT
-       r.id, r.name, r.gender, r.delegation, r.reason, r.shirt_size, r.sleeve_type,
+       r.id, r.name, r.gender, r.delegation, r.reason, r.shirt_size, r.sleeve_type, r.whatsapp, r.birth_date, r.email,
        r.admin_status, r.admin_reviewed_at,
        r.screening_status, r.screening_reviewed_at,
        r.created_at,

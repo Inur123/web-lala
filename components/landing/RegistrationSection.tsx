@@ -41,19 +41,21 @@ export default function RegistrationSection() {
         </div>
 
         {/* 3 Columns */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 items-stretch">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 items-stretch">
           {/* Col 1: Berkas Administrasi */}
           <div
             id="persyaratan"
-            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col"
+            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col lg:col-span-2"
           >
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
-              <FileText className="h-5 w-5" />
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
+                <FileText className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-black text-gray-900">
+                Berkas Administrasi
+              </h3>
             </div>
-            <h3 className="text-sm font-black text-gray-900 mb-6 flex items-center gap-2">
-              Berkas Administrasi
-            </h3>
-            <div className="space-y-4 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 flex-1">
               {ADMIN_REQUIREMENTS.map((req, i) => (
                 <div key={i} className="flex items-start gap-3">
                   <div className="mt-0.5 flex h-4.5 w-4.5 shrink-0 items-center justify-center rounded-full bg-[#1a4d2e]/10 text-[#1a4d2e]">
@@ -139,12 +141,14 @@ export default function RegistrationSection() {
             id="fasilitas"
             className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm flex flex-col"
           >
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
-              <Gift className="h-5 w-5" />
+            <div className="flex items-center gap-3 mb-6">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gray-50 border border-gray-100 text-[#1a4d2e]">
+                <Gift className="h-5 w-5" />
+              </div>
+              <h3 className="text-sm font-black text-gray-900">
+                Fasilitas Peserta
+              </h3>
             </div>
-            <h3 className="text-sm font-black text-gray-900 mb-6 flex items-center gap-2">
-              Fasilitas Peserta
-            </h3>
             <div className="space-y-2 flex-1">
               {FACILITIES.map((facility, i) => (
                 <div

@@ -39,6 +39,9 @@ type Registrant = {
   reason: string;
   shirt_size: string;
   sleeve_type: string;
+  whatsapp?: string;
+  birth_date?: string;
+  email?: string;
   admin_status: "pending" | "lolos" | "ditolak";
   admin_reviewed_at: string | null;
   screening_status: "pending" | "lolos" | "ditolak";
@@ -166,47 +169,120 @@ export default function RegistrasiDetailPage({
             <h3 className="font-bold text-gray-400 uppercase tracking-wider text-[9px] border-b border-gray-50 pb-1">
               Data Diri &amp; Profil
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-              <div>
-                <span className="text-gray-400 block mb-0.5 font-medium">
-                  Nama Lengkap
-                </span>
-                <span className="font-semibold text-gray-800">
-                  {registrant.name}
-                </span>
+            
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Foto Formal (fotoFormal) Preview */}
+              {(() => {
+                const fotoObj = registrant.files?.find((f) => f.field_key === "fotoFormal");
+                const fotoUrl = fotoObj?.r2_url || (fotoObj?.r2_key ? `/api/files/${fotoObj.r2_key}` : null);
+                
+                return (
+                  <div className="flex flex-col items-center shrink-0">
+                    {fotoUrl ? (
+                      <div className="relative group overflow-hidden rounded-xl border border-gray-100 bg-gray-50 h-36 w-28 shadow-sm">
+                        <img 
+                          src={fotoUrl} 
+                          alt={`Foto Formal ${registrant.name}`}
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 h-36 w-28 text-gray-300 text-center p-2">
+                        <span className="text-[10px] font-bold text-gray-400">Tidak ada Foto Formal</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+              {/* Data Diri Fields */}
+              <div className="flex-1 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Nama Lengkap
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.name}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Jenis Kelamin
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.gender}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Tanggal Lahir
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.birth_date ? (
+                        new Date(registrant.birth_date).toLocaleDateString("id-ID", {
+                          day: "2-digit",
+                          month: "long",
+                          year: "numeric",
+                        })
+                      ) : (
+                        <span className="text-gray-300">-</span>
+                      )}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      No. WhatsApp
+                    </span>
+                    {registrant.whatsapp ? (
+                      <a
+                        href={`https://wa.me/${registrant.whatsapp.replace(/[^0-9]/g, "")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-emerald-600 hover:text-emerald-800 hover:underline flex items-center gap-1 w-fit cursor-pointer"
+                      >
+                        {registrant.whatsapp}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : (
+                      <span className="font-semibold text-gray-800">-</span>
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Alamat Email
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.email || <span className="text-gray-300">-</span>}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Asal Delegasi
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.delegation}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 block mb-0.5 font-medium">
+                      Kaos &amp; Lengan
+                    </span>
+                    <span className="font-semibold text-gray-800">
+                      {registrant.shirt_size} ({registrant.sleeve_type})
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="pt-2 text-xs">
+                  <span className="text-gray-400 block mb-0.5 font-medium">
+                    Alasan Pelatihan
+                  </span>
+                  <p className="text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed font-medium">
+                    {registrant.reason}
+                  </p>
+                </div>
               </div>
-              <div>
-                <span className="text-gray-400 block mb-0.5 font-medium">
-                  Jenis Kelamin
-                </span>
-                <span className="font-semibold text-gray-800">
-                  {registrant.gender}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-400 block mb-0.5 font-medium">
-                  Asal Delegasi
-                </span>
-                <span className="font-semibold text-gray-800">
-                  {registrant.delegation}
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-400 block mb-0.5 font-medium">
-                  Kaos &amp; Lengan
-                </span>
-                <span className="font-semibold text-gray-800">
-                  {registrant.shirt_size} ({registrant.sleeve_type})
-                </span>
-              </div>
-            </div>
-            <div className="pt-2 text-xs">
-              <span className="text-gray-400 block mb-0.5 font-medium">
-                Alasan Pelatihan
-              </span>
-              <p className="text-gray-700 bg-gray-50 rounded-lg p-3 leading-relaxed font-medium">
-                {registrant.reason}
-              </p>
             </div>
           </div>
 

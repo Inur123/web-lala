@@ -19,15 +19,26 @@ export function RegistrasiDetailSkeleton() {
           {/* Profil Card */}
           <div className="rounded-xl border border-gray-100 bg-white p-6 space-y-4">
             <Skeleton className="h-3 w-[80px]" />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
-              <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
-              <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
-              <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
-            </div>
-            <div className="space-y-2 pt-2">
-              <Skeleton className="h-3 w-[100px]" />
-              <Skeleton className="h-12 w-full rounded-lg" />
+            
+            <div className="flex flex-col sm:flex-row gap-6">
+              {/* Foto Formal Skeleton */}
+              <Skeleton className="h-36 w-28 rounded-xl shrink-0" />
+
+              {/* Data Diri Fields Skeleton */}
+              <div className="flex-1 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                  <div className="space-y-2"><Skeleton className="h-3 w-1/3" /><Skeleton className="h-4 w-2/3" /></div>
+                </div>
+                <div className="space-y-2 pt-2">
+                  <Skeleton className="h-3 w-[100px]" />
+                  <Skeleton className="h-12 w-full rounded-lg" />
+                </div>
+              </div>
             </div>
           </div>
 
