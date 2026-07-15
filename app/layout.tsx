@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "LATIN & LATPEL 2026 – Latihan Instruktur & Latihan Pelatih",
   description:
-    "Akselerasi Kaderisasi, Ekspansi Pelatinan, Wujudkan Instruktur–Pelatih yang Militan. Program peningkatan instruktur anggota PK IPNU/IPPNU Kabupaten Magelang.",
+    "Episentrum Kaderisasi: Orkestrasi Ekosistem Inklusif menuju Kader Solutif-Transformatif",
   keywords: [
     "LATIN",
     "LATPEL",
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "LATIN & LATPEL 2026 – Latihan Instruktur & Latihan Pelatih",
     description:
-      "Akselerasi Kaderisasi, Ekspansi Pelatinan, Wujudkan Instruktur–Pelatih yang Militan.",
+      "Episentrum Kaderisasi: Orkestrasi Ekosistem Inklusif menuju Kader Solutif-Transformatif",
     type: "website",
     locale: "id_ID",
   },
@@ -38,9 +38,7 @@ export default function RootLayout({
   return (
     <html lang="id" className={inter.className}>
       <body>
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+        <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-right" />
       </body>
     </html>
