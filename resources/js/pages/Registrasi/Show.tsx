@@ -136,10 +136,10 @@ export default function RegistrasiShow({
                             </p>
                         </div>
                     </div>
-                    
+
                     <Dialog>
                         <DialogTrigger asChild>
-                            <button className="flex h-9 items-center justify-center gap-2 rounded-xl bg-red-50 px-4 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 shadow-sm">
+                            <button className="flex h-9 items-center justify-center gap-2 rounded-xl bg-red-50 px-4 text-xs font-semibold text-red-600 shadow-sm transition-colors hover:bg-red-100">
                                 Hapus Data
                             </button>
                         </DialogTrigger>
@@ -147,18 +147,21 @@ export default function RegistrasiShow({
                             <DialogHeader>
                                 <DialogTitle>Hapus Pendaftar?</DialogTitle>
                                 <DialogDescription>
-                                    Apakah Anda yakin ingin menghapus pendaftar ini? Tindakan ini tidak dapat dibatalkan dan semua berkas yang terunggah di penyimpanan (Cloudflare R2) akan dihapus permanen.
+                                    Apakah Anda yakin ingin menghapus pendaftar
+                                    ini? Tindakan ini tidak dapat dibatalkan dan
+                                    semua berkas yang terunggah di penyimpanan
+                                    (Cloudflare R2) akan dihapus permanen.
                                 </DialogDescription>
                             </DialogHeader>
-                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
                                 <DialogClose asChild>
-                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
                                         Batal
                                     </button>
                                 </DialogClose>
                                 <button
                                     onClick={handleDelete}
-                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
                                 >
                                     Ya, Hapus Data
                                 </button>
@@ -439,9 +442,9 @@ export default function RegistrasiShow({
                                                     ?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
                                                         Batal
                                                     </button>
                                                 </DialogClose>
@@ -452,7 +455,7 @@ export default function RegistrasiShow({
                                                             'lolos',
                                                         )
                                                     }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none"
                                                 >
                                                     Ya, Loloskan
                                                 </button>
@@ -494,9 +497,9 @@ export default function RegistrasiShow({
                                                     ?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
                                                         Batal
                                                     </button>
                                                 </DialogClose>
@@ -507,7 +510,7 @@ export default function RegistrasiShow({
                                                             'ditolak',
                                                         )
                                                     }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
                                                 >
                                                     Ya, Tolak
                                                 </button>
@@ -558,9 +561,9 @@ export default function RegistrasiShow({
                                                     wawancara/screening?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
                                                         Batal
                                                     </button>
                                                 </DialogClose>
@@ -571,7 +574,7 @@ export default function RegistrasiShow({
                                                             'lolos',
                                                         )
                                                     }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none"
                                                 >
                                                     Ya, Loloskan
                                                 </button>
@@ -614,9 +617,9 @@ export default function RegistrasiShow({
                                                     pada tahap screening?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
                                                         Batal
                                                     </button>
                                                 </DialogClose>
@@ -627,7 +630,7 @@ export default function RegistrasiShow({
                                                             'ditolak',
                                                         )
                                                     }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
                                                 >
                                                     Ya, Tolak
                                                 </button>

@@ -41,7 +41,7 @@ class StoreRegistrationRequest extends FormRequest
             'reason' => ['required', 'string', 'max:1000', $plainText, 'regex:/^[\pL\pM\s\d.,;:!?\'\"\/\-\(\)\n]+$/u'],
             'whatsapp' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9]{8,15}$/'],
             'birthDate' => ['required', 'date_format:Y-m-d', 'after_or_equal:1950-01-01', 'before:today'],
-            'email' => ['required', 'email:rfc,dns', 'max:150', 'regex:/^[^@]+@[^@]+\.[^@]+$/', 'unique:registrations,email'],
+            'email' => ['required', 'email:rfc', 'max:150', 'regex:/^[^@]+@[^@]+\.[^@]+$/', 'unique:registrations,email'],
             'cf-turnstile-response' => $this->turnstileRules(),
             'sertifikatMakesta' => ['required', 'file', 'mimes:pdf', 'max:10240'],
             'sertifikatLakmud' => ['required', 'file', 'mimes:pdf', 'max:10240'],

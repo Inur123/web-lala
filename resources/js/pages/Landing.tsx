@@ -14,7 +14,11 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 const quickFacts = [
-    { icon: CalendarDays, label: 'Tanggal kegiatan', value: '24-27 Desember 2026' },
+    {
+        icon: CalendarDays,
+        label: 'Tanggal kegiatan',
+        value: '24-27 Desember 2026',
+    },
     {
         icon: MapPin,
         label: 'Lokasi / venue',

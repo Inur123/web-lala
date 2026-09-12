@@ -197,10 +197,16 @@ export default function Register({
         let sanitized = value;
         if (key === 'name') {
             // Hanya huruf, spasi, titik, koma, tanda hubung, apostrof
-            sanitized = value.replace(/[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\s.',\-]/g, '');
+            sanitized = value.replace(
+                /[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\s.',-]/g,
+                '',
+            );
         } else if (key === 'delegation') {
             // Huruf, angka, spasi, titik, koma, tanda hubung, garis miring
-            sanitized = value.replace(/[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\d\s.',/\-]/g, '');
+            sanitized = value.replace(
+                /[^a-zA-Z\u00C0-\u024F\u0400-\u04FF\d\s.',/-]/g,
+                '',
+            );
         } else if (key === 'whatsapp') {
             // Hanya angka dan tanda + di awal
             sanitized = value.replace(/[^0-9+]/g, '');

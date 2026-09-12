@@ -7,19 +7,20 @@ Panduan lengkap untuk mendeploy website pendaftaran LATIN & LATPEL PC IPNU IPPNU
 ## 📋 Prasyarat di VPS
 
 ### Sistem Operasi
+
 - **Ubuntu 22.04 / 24.04 LTS**
 
 ### Software yang Harus Terinstal
 
-| Software | Versi Minimum | Cek Versi |
-|---|---|---|
-| PHP | 8.3+ | `php -v` |
-| Composer | 2.x | `composer -V` |
-| Node.js | 20+ | `node -v` |
-| NPM | 10+ | `npm -v` |
-| PostgreSQL | 15+ | `psql --version` |
-| Nginx | latest | `nginx -v` |
-| Git | latest | `git --version` |
+| Software   | Versi Minimum | Cek Versi        |
+| ---------- | ------------- | ---------------- |
+| PHP        | 8.3+          | `php -v`         |
+| Composer   | 2.x           | `composer -V`    |
+| Node.js    | 20+           | `node -v`        |
+| NPM        | 10+           | `npm -v`         |
+| PostgreSQL | 15+           | `psql --version` |
+| Nginx      | latest        | `nginx -v`       |
+| Git        | latest        | `git --version`  |
 
 ### Ekstensi PHP yang Dibutuhkan
 
@@ -130,6 +131,7 @@ VITE_APP_NAME="${APP_NAME}"
 ```
 
 > ⚠️ **PENTING:**
+>
 > - `APP_DEBUG` harus `false` di production!
 > - `APP_ENV` harus `production`
 > - Ganti semua `<...>` dengan nilai asli
@@ -239,7 +241,7 @@ Certbot akan otomatis mengubah konfigurasi Nginx ke HTTPS.
 
 ## 📧 Queue Worker (WAJIB untuk Email)
 
-Email konfirmasi pendaftaran dikirim melalui *queue* (background job). **Queue Worker HARUS berjalan** agar email terkirim.
+Email konfirmasi pendaftaran dikirim melalui _queue_ (background job). **Queue Worker HARUS berjalan** agar email terkirim.
 
 ### Setup Supervisor (Agar Berjalan Otomatis)
 
@@ -334,6 +336,7 @@ Pastikan semua item berikut sudah ✅:
 ## 🛠 Troubleshooting
 
 ### Email Tidak Terkirim
+
 ```bash
 # Cek apakah queue worker berjalan
 sudo supervisorctl status
@@ -349,6 +352,7 @@ php artisan queue:retry all
 ```
 
 ### Error 500 / Halaman Putih
+
 ```bash
 # Cek log Laravel
 tail -50 /var/www/web-lala/storage/logs/laravel.log
@@ -359,6 +363,7 @@ sudo chmod -R 775 storage bootstrap/cache
 ```
 
 ### Upload File Gagal
+
 ```bash
 # Cek konfigurasi R2 di .env
 php artisan tinker
@@ -371,6 +376,7 @@ php -i | grep upload_max_filesize
 ```
 
 ### Turnstile Tidak Muncul
+
 - Pastikan `TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` sudah diganti dengan key **production** dari dashboard Cloudflare
 - Pastikan domain `s.pelajarnumagetan.or.id` sudah ditambahkan di `TURNSTILE_ALLOWED_HOSTNAMES`
 
