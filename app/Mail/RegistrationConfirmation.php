@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Symfony\Component\Mime\Email;
 
 class RegistrationConfirmation extends Mailable implements ShouldQueue
 {
@@ -41,7 +42,7 @@ class RegistrationConfirmation extends Mailable implements ShouldQueue
      */
     public function build(): self
     {
-        return $this->withSymfonyMessage(function (\Symfony\Component\Mime\Email $message) {
+        return $this->withSymfonyMessage(function (Email $message) {
             $logoPath = public_path('images/logo-lala.png');
             if (file_exists($logoPath)) {
                 $message->embed(

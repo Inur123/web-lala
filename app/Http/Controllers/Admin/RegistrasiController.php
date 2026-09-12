@@ -101,7 +101,7 @@ class RegistrasiController extends Controller
         $r2Keys = $registration->files->pluck('r2_key')->toArray();
 
         // Hapus file fisik dari Cloudflare R2
-        if (!empty($r2Keys)) {
+        if (! empty($r2Keys)) {
             Storage::disk('r2')->delete($r2Keys);
         }
 
