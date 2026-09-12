@@ -69,7 +69,7 @@ APP_NAME="LATIN LATPEL 2026"
 APP_ENV=production
 APP_KEY=   # <-- sudah di-generate otomatis
 APP_DEBUG=false
-APP_URL=https://s.pelajarnumagetan.or.id
+APP_URL=https://lala.pelajarnumagetan.or.id
 
 APP_LOCALE=id
 APP_FALLBACK_LOCALE=id
@@ -125,7 +125,7 @@ R2_BUCKET_NAME="laciipnuippnu"
 # ─── Cloudflare Turnstile ─────────────────────────────
 TURNSTILE_SITE_KEY=<SITE_KEY_PRODUCTION>
 TURNSTILE_SECRET_KEY=<SECRET_KEY_PRODUCTION>
-TURNSTILE_ALLOWED_HOSTNAMES=s.pelajarnumagetan.or.id
+TURNSTILE_ALLOWED_HOSTNAMES=lala.pelajarnumagetan.or.id
 
 VITE_APP_NAME="${APP_NAME}"
 ```
@@ -173,7 +173,7 @@ Isi dengan:
 ```nginx
 server {
     listen 80;
-    server_name s.pelajarnumagetan.or.id;
+    server_name lala.pelajarnumagetan.or.id;
 
     root /var/www/web-lala/public;
     index index.php;
@@ -232,7 +232,7 @@ sudo systemctl restart nginx
 
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
-sudo certbot --nginx -d s.pelajarnumagetan.or.id
+sudo certbot --nginx -d lala.pelajarnumagetan.or.id
 ```
 
 Certbot akan otomatis mengubah konfigurasi Nginx ke HTTPS.
@@ -319,7 +319,7 @@ sudo systemctl restart php8.3-fpm
 
 Pastikan semua item berikut sudah ✅:
 
-- [ ] Website bisa diakses via `https://s.pelajarnumagetan.or.id`
+- [ ] Website bisa diakses via `https://lala.pelajarnumagetan.or.id`
 - [ ] Halaman pendaftaran (`/register`) bisa dibuka
 - [ ] Upload file (PDF/gambar) berhasil ke Cloudflare R2
 - [ ] Cloudflare Turnstile (captcha) muncul dan berfungsi
@@ -378,7 +378,7 @@ php -i | grep upload_max_filesize
 ### Turnstile Tidak Muncul
 
 - Pastikan `TURNSTILE_SITE_KEY` dan `TURNSTILE_SECRET_KEY` sudah diganti dengan key **production** dari dashboard Cloudflare
-- Pastikan domain `s.pelajarnumagetan.or.id` sudah ditambahkan di `TURNSTILE_ALLOWED_HOSTNAMES`
+- Pastikan domain `lala.pelajarnumagetan.or.id` sudah ditambahkan di `TURNSTILE_ALLOWED_HOSTNAMES`
 
 ---
 
