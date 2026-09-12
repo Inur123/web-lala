@@ -29,6 +29,16 @@ class FileController extends Controller
 
     private function r2Response(string $path, string $cacheControl): StreamedResponse
     {
+        // Cek dulu apakah file masih ada di server lokal (sedang dalam antrean upload)
+        if (Storage::disk('local')->exists($path)) {
+            /** @var FilesystemAdapter $localDisk */
+            $localDisk = Storage::disk('local');
+            return $localDisk->response($path, null, [
+                'Cache-Control' => $cacheControl,
+                'X-Content-Type-Options' => 'nosniff',
+            ]);
+        }
+
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('r2');
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRegistrationRequest;
+use App\Jobs\UploadRegistrationFilesToR2;
 use App\Mail\RegistrationConfirmation;
 use App\Models\Registration;
 use App\Models\RegistrationFile;
@@ -94,9 +95,7 @@ class RegisterController extends Controller
                 }
 
                 try {
-                    $stored = Storage::disk('r2')->put($r2Key, $stream, [
-                        'ContentType' => $mimeType,
-                    ]);
+                    $stored = Storage::disk('local')->put($r2Key, $stream);
                 } finally {
                     fclose($stream);
                 }
@@ -119,12 +118,16 @@ class RegisterController extends Controller
 
             DB::commit();
 
+            // Dispatch job untuk upload ke R2 di background
+            UploadRegistrationFilesToR2::dispatch($registration->id);
+
             // Kirim email konfirmasi di background (queue)
             Mail::to($registration->email)->queue(new RegistrationConfirmation($registration));
         } catch (Throwable $exception) {
             DB::rollBack();
 
             if ($uploadedKeys !== []) {
+                Storage::disk('local')->delete($uploadedKeys);
                 Storage::disk('r2')->delete($uploadedKeys);
             }
 
