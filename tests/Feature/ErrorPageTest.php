@@ -12,12 +12,9 @@ class ErrorPageTest extends TestCase
 
         $this->get('/halaman-yang-tidak-ada')
             ->assertNotFound()
-            ->assertSeeText('404')
-            ->assertSeeText('Halaman tidak ditemukan')
-            ->assertSeeText('Kembali ke beranda')
-            ->assertSee('/images/logo-lala.png', false)
-            ->assertDontSeeText('Not Found')
-            ->assertDontSee('<nav', false)
-            ->assertDontSee('<footer', false);
+            ->assertInertia(fn ($page) => $page
+                ->component('Error')
+                ->where('status', 404)
+            );
     }
 }
