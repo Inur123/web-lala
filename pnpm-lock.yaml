@@ -14,9 +14,6 @@ importers:
       '@inertiajs/vite':
         specifier: ^3.0.0
         version: 3.7.0(axios@1.20.0(debug@4.4.3(supports-color@10.2.2))(supports-color@10.2.2))(vite@8.2.2(@types/node@22.20.2)(jiti@2.7.0))
-      '@laravel/passkeys':
-        specifier: ^0.2.0
-        version: 0.2.0(react@19.3.0)
       '@radix-ui/react-avatar':
         specifier: ^1.1.3
         version: 1.2.6(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -47,12 +44,6 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.3
         version: 1.3.3(@types/react@19.3.0)(react@19.3.0)
-      '@radix-ui/react-toggle':
-        specifier: ^1.1.2
-        version: 1.1.18(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-toggle-group':
-        specifier: ^1.1.2
-        version: 1.1.19(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-tooltip':
         specifier: ^1.1.8
         version: 1.2.16(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -86,9 +77,6 @@ importers:
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0
-      input-otp:
-        specifier: ^1.4.2
-        version: 1.5.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       laravel-vite-plugin:
         specifier: ^3.0.0
         version: 3.2.0(vite@8.2.2(@types/node@22.20.2)(jiti@2.7.0))
@@ -101,6 +89,9 @@ importers:
       react:
         specifier: ^19.2.0
         version: 19.3.0
+      react-day-picker:
+        specifier: ^10.0.1
+        version: 10.0.1(@types/react@19.3.0)(react@19.3.0)
       react-dom:
         specifier: ^19.2.0
         version: 19.3.0(react@19.3.0)
@@ -250,6 +241,9 @@ packages:
   '@blazediff/core@1.9.1':
     resolution: {integrity: sha512-ehg3jIkYKulZh+8om/O25vkvSsXXwC+skXmyA87FFx6A/45eqOkZsBltMw/TVteb0mloiGT8oGRTcjRAz66zaA==}
 
+  '@date-fns/tz@1.5.0':
+    resolution: {integrity: sha512-lwYN/vDPeNRULcepoE/LO2Pgx+7/RV+S9ARfbc9lr2DtGkOD7pAiruHvbR1RX3Qyf6ja47EWJDMsNK5vK08DJg==}
+
   '@floating-ui/core@1.8.0':
     resolution: {integrity: sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==}
 
@@ -305,21 +299,6 @@ packages:
     engines: {node: '>=22.13.0'}
     os: [darwin, linux]
     hasBin: true
-
-  '@laravel/passkeys@0.2.0':
-    resolution: {integrity: sha512-K+owv26weKrYaoTJutqU40UsJZpwYkqB9jdlz5Bv/C54nxj2+Py9jbVwxASWg21fLsPhn3ngPKZE5RnfakCQKg==}
-    engines: {node: '>=20.19.0'}
-    peerDependencies:
-      react: ^18.0.0 || ^19.0.0
-      svelte: ^5.0.0
-      vue: ^3.0.0
-    peerDependenciesMeta:
-      react:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
 
   '@laravel/vite-plugin-wayfinder@0.1.10':
     resolution: {integrity: sha512-59ZCMCEeC1UcZkqbvn+G06C4D0C/jCm525gTft7T7RPAo+0ZaHtoKl9r86OFVFd/BwuJiOYky4zJUrAPRKyRaA==}
@@ -1432,9 +1411,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@simplewebauthn/browser@13.3.0':
-    resolution: {integrity: sha512-BE/UWv6FOToAdVk0EokzkqQQDOWtNydYlY6+OrmiZ5SCNmb41VehttboTetUM3T/fr6EAFYVXjz4My2wg230rQ==}
-
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
@@ -2214,12 +2190,6 @@ packages:
       react-devtools-core:
         optional: true
 
-  input-otp@1.5.0:
-    resolution: {integrity: sha512-3AcfdW1sNG0FmSA5hHMBXG7jNW5CdcdKs8ln8JOmn6S2SRkoXoJx+2UwC+ZvjflfnOdHJx0SfQ9/YjlxVYLtGQ==}
-    peerDependencies:
-      react: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
-      react-dom: ^16.8 || ^17.0 || ^18.0 || ^19.0.0 || ^19.0.0-rc
-
   is-fullwidth-code-point@5.1.0:
     resolution: {integrity: sha512-5XHYaSyiqADb4RnZ1Bdad6cPp8Toise4TzEjcOYDHZkTCbKgiUl7WTUCpNWHuxmDt91wnsZBc9xinNzopv3JMQ==}
     engines: {node: '>=18'}
@@ -2552,6 +2522,16 @@ packages:
       '@types/react':
         optional: true
       '@types/react-dom':
+        optional: true
+
+  react-day-picker@10.0.1:
+    resolution: {integrity: sha512-eNh6BlwcYInWaJtRv18mXQ06Ys/H6rdTZAnTaSdOYJuTpwP1JMCHNd1FDRadA+gbeinq+psdULN5Xnowy9mV8w==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@types/react': '>=16.8.0'
+      react: '>=16.8.0'
+    peerDependenciesMeta:
+      '@types/react':
         optional: true
 
   react-dom@19.3.0:
@@ -3047,6 +3027,8 @@ snapshots:
 
   '@blazediff/core@1.9.1': {}
 
+  '@date-fns/tz@1.5.0': {}
+
   '@floating-ui/core@1.8.0':
     dependencies:
       '@floating-ui/utils': 0.2.12
@@ -3123,12 +3105,6 @@ snapshots:
       - react-devtools-core
       - utf-8-validate
     optional: true
-
-  '@laravel/passkeys@0.2.0(react@19.3.0)':
-    dependencies:
-      '@simplewebauthn/browser': 13.3.0
-    optionalDependencies:
-      react: 19.3.0
 
   '@laravel/vite-plugin-wayfinder@0.1.10': {}
 
@@ -4083,8 +4059,6 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.9.5':
     optional: true
 
-  '@simplewebauthn/browser@13.3.0': {}
-
   '@standard-schema/spec@1.1.0': {}
 
   '@tailwindcss/node@4.3.3':
@@ -4719,11 +4693,6 @@ snapshots:
       - utf-8-validate
     optional: true
 
-  input-otp@1.5.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0):
-    dependencies:
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-
   is-fullwidth-code-point@5.1.0:
     dependencies:
       get-east-asian-width: 1.6.0
@@ -5040,6 +5009,14 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
       '@types/react-dom': 19.3.0(@types/react@19.3.0)
+
+  react-day-picker@10.0.1(@types/react@19.3.0)(react@19.3.0):
+    dependencies:
+      '@date-fns/tz': 1.5.0
+      date-fns: 4.4.0
+      react: 19.3.0
+    optionalDependencies:
+      '@types/react': 19.3.0
 
   react-dom@19.3.0(react@19.3.0):
     dependencies:

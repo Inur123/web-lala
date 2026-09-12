@@ -1,8 +1,3 @@
-export function fileUrl(key: string): string {
-    const encodedKey = key
-        .split('/')
-        .map((segment) => encodeURIComponent(segment))
-        .join('/');
-
-    return `/files/${encodedKey}`;
+export function fileUrl(fileId: string): string {
+    return `/files/${encodeURIComponent(fileId)}`;
 }

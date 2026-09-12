@@ -1,7 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { LayoutGrid, ClipboardList, Settings, Users } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import {
@@ -26,9 +25,6 @@ const mainNavItems: NavItem[] = [
         href: '/registrasi',
         icon: ClipboardList,
     },
-];
-
-const footerNavItems: NavItem[] = [
     {
         title: 'Pengaturan Portal',
         href: '/portal-settings',
@@ -61,7 +57,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

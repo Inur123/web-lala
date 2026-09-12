@@ -17,17 +17,21 @@ export default function AuthSimpleLayout({
                             href={home()}
                             className="flex flex-col items-center gap-2 font-medium"
                         >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
+                            <div className="mb-1 flex h-24 w-24 items-center justify-center">
+                                <AppLogoIcon className="size-24" />
                             </div>
                             <span className="sr-only">{title}</span>
                         </Link>
 
                         <div className="space-y-2 text-center">
-                            <h1 className="text-xl font-medium">{title}</h1>
-                            <p className="text-muted-foreground text-center text-sm">
-                                {description}
-                            </p>
+                            <h1 className="text-2xl font-bold tracking-tight">
+                                {title}
+                            </h1>
+                            {description && (
+                                <p className="text-muted-foreground text-center text-sm">
+                                    {description}
+                                </p>
+                            )}
                         </div>
                     </div>
                     {children}

@@ -1,138 +1,80 @@
 import { Form, Head, usePage } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
-import ProfileController from '@/actions/App/Http/Controllers/Settings/ProfileController';
-import DeleteUser from '@/components/delete-user';
-import Heading from '@/components/heading';
+import { UserRound } from 'lucide-react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { edit } from '@/routes/profile';
 import type { Auth } from '@/types';
-import { send } from '@/routes/verification';
 
-type PageProps = {
-    auth: Auth;
-};
-
-export default function Profile({
-    mustVerifyEmail,
-    status,
-}: {
-    mustVerifyEmail: boolean;
-    status?: string;
-}) {
-    const { auth } = usePage<PageProps>().props;
+export default function Profile() {
+    const { auth } = usePage<{ auth: Auth }>().props;
 
     return (
         <>
-            <Head title="Profile settings" />
-
-            <h1 className="sr-only">Profile settings</h1>
-
-            <div className="space-y-6">
-                <Heading
-                    variant="small"
-                    title="Profile"
-                    description="Update your name and email address"
-                />
-
-                <Form
-                    {...ProfileController.update.form()}
-                    options={{
-                        preserveScroll: true,
-                    }}
-                    className="space-y-6"
-                >
-                    {({ processing, errors }) => (
-                        <>
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
-
-                                <Input
-                                    id="name"
-                                    className="mt-1 block w-full"
-                                    defaultValue={auth.user.name}
-                                    name="name"
-                                    required
-                                    autoComplete="name"
-                                    placeholder="Full name"
-                                />
-
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.name}
-                                />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    className="mt-1 block w-full"
-                                    defaultValue={auth.user.email}
-                                    name="email"
-                                    required
-                                    autoComplete="username"
-                                    placeholder="Email address"
-                                />
-
-                                <InputError
-                                    className="mt-2"
-                                    message={errors.email}
-                                />
-                            </div>
-
-                            {mustVerifyEmail &&
-                                auth.user.email_verified_at === null && (
-                                    <div>
-                                        <p className="text-muted-foreground -mt-4 text-sm">
-                                            Your email address is unverified.{' '}
-                                            <Link
-                                                href={send()}
-                                                as="button"
-                                                className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
-                                            >
-                                                Click here to re-send the
-                                                verification email.
-                                            </Link>
-                                        </p>
-
-                                        {status ===
-                                            'verification-link-sent' && (
-                                            <div className="mt-2 text-sm font-medium text-green-600">
-                                                A new verification link has been
-                                                sent to your email address.
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                            <div className="flex items-center gap-4">
+            <Head title="Pengaturan Profil" />
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                        <UserRound className="size-5" /> Profil
+                    </CardTitle>
+                    <CardDescription>
+                        Perbarui nama dan alamat email administrator.
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <Form
+                        action="/settings/profile"
+                        method="patch"
+                        options={{ preserveScroll: true }}
+                        className="space-y-5"
+                    >
+                        {({ processing, errors }) => (
+                            <>
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">Nama</Label>
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        defaultValue={auth.user.name}
+                                        autoComplete="name"
+                                        required
+                                    />
+                                    <InputError message={errors.name} />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Alamat Email</Label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        defaultValue={auth.user.email}
+                                        autoComplete="username"
+                                        required
+                                    />
+                                    <InputError message={errors.email} />
+                                </div>
                                 <Button
                                     disabled={processing}
                                     data-test="update-profile-button"
                                 >
-                                    Save
+                                    Simpan Profil
                                 </Button>
-                            </div>
-                        </>
-                    )}
-                </Form>
-            </div>
-
-            <DeleteUser />
+                            </>
+                        )}
+                    </Form>
+                </CardContent>
+            </Card>
         </>
     );
 }
 
 Profile.layout = {
-    breadcrumbs: [
-        {
-            title: 'Profile settings',
-            href: edit(),
-        },
-    ],
+    breadcrumbs: [{ title: 'Pengaturan Akun', href: '/settings/profile' }],
 };

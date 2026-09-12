@@ -12,9 +12,9 @@ class FileController extends Controller
     /**
      * Proxy file dari Cloudflare R2
      */
-    public function show(string $path): StreamedResponse
+    public function show(RegistrationFile $file): StreamedResponse
     {
-        return $this->r2Response($path);
+        return $this->r2Response($file->r2_key, 'private, max-age=300');
     }
 
     /**
@@ -24,10 +24,10 @@ class FileController extends Controller
     {
         abort_unless($file->field_key === 'fotoFormal', 404);
 
-        return $this->r2Response($file->r2_key);
+        return $this->r2Response($file->r2_key, 'public, max-age=86400');
     }
 
-    private function r2Response(string $path): StreamedResponse
+    private function r2Response(string $path, string $cacheControl): StreamedResponse
     {
         /** @var FilesystemAdapter $disk */
         $disk = Storage::disk('r2');
@@ -37,7 +37,8 @@ class FileController extends Controller
         }
 
         return $disk->response($path, null, [
-            'Cache-Control' => 'public, max-age=86400',
+            'Cache-Control' => $cacheControl,
+            'X-Content-Type-Options' => 'nosniff',
         ]);
     }
 }

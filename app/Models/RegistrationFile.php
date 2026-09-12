@@ -19,6 +19,9 @@ class RegistrationFile extends Model
         'mime_type',
     ];
 
+    /**
+     * @return BelongsTo<Registration, $this>
+     */
     public function registration(): BelongsTo
     {
         return $this->belongsTo(Registration::class);

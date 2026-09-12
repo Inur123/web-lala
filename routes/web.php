@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/pendaftar', [PublicController::class, 'pendaftar'])->name('pendaftar');
 Route::get('/register', [RegisterController::class, 'create'])->name('register');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::post('/register', [RegisterController::class, 'store'])
+    ->middleware('throttle:registration')
+    ->name('register.store');
 
 // File proxy publik hanya untuk foto formal peserta.
 Route::get('/participant-photos/{file}', [FileController::class, 'photo'])->name('files.photo');
@@ -25,7 +27,7 @@ Route::get('/api/public/settings', [PublicController::class, 'settingsJson']);
 // ─── Dashboard (Auth Required) ───────────────────────────────────
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dokumen pendaftaran lainnya hanya dapat dibaca admin.
-    Route::get('/files/{path}', [FileController::class, 'show'])->where('path', '.*')->name('files.show');
+    Route::get('/files/{file}', [FileController::class, 'show'])->name('files.show');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -33,6 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/registrasi', [RegistrasiController::class, 'index'])->name('registrasi.index');
     Route::get('/registrasi/{id}', [RegistrasiController::class, 'show'])->name('registrasi.show');
     Route::patch('/registrasi/{id}', [RegistrasiController::class, 'update'])->name('registrasi.update');
+    Route::delete('/registrasi/{id}', [RegistrasiController::class, 'destroy'])->name('registrasi.destroy');
 
     // Settings (Admin Custom)
     Route::get('/portal-settings', [SettingsController::class, 'index'])->name('settings.index');

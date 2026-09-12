@@ -23,23 +23,25 @@ class PublicController extends Controller
      */
     public function registrantsJson(): JsonResponse
     {
-        $registrants = Registration::select([
+        $registrants = Registration::query()->select([
             'id', 'name', 'gender', 'delegation',
             'admin_status', 'screening_status',
         ])
+            ->with([
+                'files' => fn ($query) => $query->where('field_key', 'fotoFormal'),
+            ])
             ->orderBy('created_at', 'desc')
             ->get()
-            ->map(function ($r) {
-                // Cari foto formal dari file
-                $photo = $r->files()->where('field_key', 'fotoFormal')->first();
+            ->map(function (Registration $registration): array {
+                $photo = $registration->files->first();
 
                 return [
-                    'id' => $r->id,
-                    'name' => $r->name,
-                    'gender' => $r->gender,
-                    'delegation' => $r->delegation,
-                    'adminStatus' => $r->admin_status,
-                    'screeningStatus' => $r->screening_status,
+                    'id' => $registration->id,
+                    'name' => $registration->name,
+                    'gender' => $registration->gender,
+                    'delegation' => $registration->delegation,
+                    'adminStatus' => $registration->admin_status,
+                    'screeningStatus' => $registration->screening_status,
                     'photoUrl' => $photo
                         ? route('files.photo', ['file' => $photo->id], absolute: false)
                         : null,

@@ -10,13 +10,31 @@ class Registration extends Model
 {
     use HasUuids;
 
+    protected static function booted(): void
+    {
+        static::saving(function (Registration $registration): void {
+            if ($registration->admin_status === 'ditolak') {
+                $registration->screening_status = 'ditolak';
+                $registration->screening_reviewed_at ??= now();
+
+                return;
+            }
+
+            if (
+                $registration->isDirty('admin_status')
+                && $registration->getOriginal('admin_status') === 'ditolak'
+            ) {
+                $registration->screening_status = 'pending';
+                $registration->screening_reviewed_at = null;
+            }
+        });
+    }
+
     protected $fillable = [
         'name',
         'gender',
         'delegation',
         'reason',
-        'shirt_size',
-        'sleeve_type',
         'whatsapp',
         'birth_date',
         'email',
@@ -36,6 +54,9 @@ class Registration extends Model
         ];
     }
 
+    /**
+     * @return HasMany<RegistrationFile, $this>
+     */
     public function files(): HasMany
     {
         return $this->hasMany(RegistrationFile::class);

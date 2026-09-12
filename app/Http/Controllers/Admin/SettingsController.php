@@ -15,7 +15,7 @@ class SettingsController extends Controller
     {
         $isOpen = SystemSetting::getValue('registration_open', 'true') === 'true';
 
-        return Inertia::render('Settings/Index', [
+        return Inertia::render('PortalSettings/Index', [
             'isOpen' => $isOpen,
         ]);
     }
@@ -45,6 +45,7 @@ class SettingsController extends Controller
     public function apiIndex(): JsonResponse
     {
         $isOpen = SystemSetting::getValue('registration_open', 'true') === 'true';
+
         return response()->json(['isOpen' => $isOpen]);
     }
 }

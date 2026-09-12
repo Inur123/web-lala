@@ -2,14 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRegistrationRequest;
+use App\Mail\RegistrationConfirmation;
 use App\Models\Registration;
 use App\Models\RegistrationFile;
 use App\Models\SystemSetting;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
+use Throwable;
 
 class RegisterController extends Controller
 {
@@ -23,7 +29,17 @@ class RegisterController extends Controller
         'formulir',
         'paktaIntegritas',
         'fotoFormal',
-        'buktiBayar',
+    ];
+
+    private const FILE_NAMES = [
+        'sertifikatMakesta' => 'sertifikat-makesta',
+        'sertifikatLakmud' => 'sertifikat-lakmud',
+        'rekomendasi' => 'surat-rekomendasi',
+        'essay' => 'esai-karya-tulis',
+        'ktpKta' => 'ktp',
+        'formulir' => 'formulir-pendaftaran',
+        'paktaIntegritas' => 'pakta-integritas',
+        'fotoFormal' => 'foto-formal-3x4',
     ];
 
     public function create(): Response
@@ -32,10 +48,11 @@ class RegisterController extends Controller
 
         return Inertia::render('Register', [
             'isOpen' => $isOpen,
+            'turnstileSiteKey' => config('services.turnstile.site_key'),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreRegistrationRequest $request): JsonResponse
     {
         // Cek apakah pendaftaran dibuka
         $isOpen = SystemSetting::getValue('registration_open', 'true') === 'true';
@@ -43,87 +60,79 @@ class RegisterController extends Controller
             return response()->json(['error' => 'Pendaftaran sedang ditutup.'], 403);
         }
 
-        // Validasi text fields
-        $validated = $request->validate([
-            'name' => 'required|string|max:100',
-            'gender' => 'required|string|max:20',
-            'delegation' => 'required|string|max:100',
-            'reason' => 'required|string|max:1000',
-            'shirtSize' => 'required|string|max:10',
-            'sleeveType' => 'required|string|max:20',
-            'whatsapp' => 'required|string|max:30',
-            'birthDate' => 'required|string|max:20',
-            'email' => 'required|email|max:150|unique:registrations,email',
-        ], [
-            'email.unique' => 'Email ini sudah terdaftar. Silakan gunakan email lain.',
-            'name.required' => 'Nama Lengkap wajib diisi.',
-            'name.max' => 'Nama Lengkap terlalu panjang (Maksimal 100 karakter).',
-            'reason.max' => 'Alasan Pendaftaran terlalu panjang (Maksimal 1000 karakter).',
-        ]);
+        $validated = $request->validated();
+        $uploadedKeys = [];
 
-        // Validasi file fields
-        foreach (self::REQUIRED_FILE_FIELDS as $field) {
-            if (! $request->hasFile($field)) {
-                return response()->json(['error' => "Berkas \"{$field}\" wajib diunggah."], 400);
-            }
+        DB::beginTransaction();
 
-            $file = $request->file($field);
-            if ($file->getSize() > 10 * 1024 * 1024) {
-                return response()->json(['error' => "Berkas \"{$field}\" melebihi batas ukuran 10MB."], 400);
-            }
-
-            // Validasi ekstensi
-            $ext = strtolower($file->getClientOriginalExtension());
-            if (in_array($field, ['rekomendasi', 'essay', 'formulir']) && $ext !== 'pdf') {
-                return response()->json(['error' => "Berkas \"{$field}\" wajib berupa format PDF saja."], 400);
-            }
-            if ($field === 'fotoFormal' && ! in_array($ext, ['png', 'jpg', 'jpeg'])) {
-                return response()->json(['error' => 'Foto Formal wajib berupa gambar (PNG / JPG) saja.'], 400);
-            }
-        }
-
-        // Simpan registrasi
-        $registration = Registration::create([
-            'name' => $validated['name'],
-            'gender' => $validated['gender'],
-            'delegation' => $validated['delegation'],
-            'reason' => $validated['reason'],
-            'shirt_size' => $validated['shirtSize'],
-            'sleeve_type' => $validated['sleeveType'],
-            'whatsapp' => $validated['whatsapp'],
-            'birth_date' => $validated['birthDate'],
-            'email' => strtolower($validated['email']),
-        ]);
-
-        // Sanitize nama untuk folder R2
-        $sanitizedName = Str::slug($validated['name'], '-');
-        if (empty($sanitizedName)) {
-            $sanitizedName = $registration->id;
-        } else {
-            $nameCount = Registration::where('name', $validated['name'])->count();
-            if ($nameCount > 1) {
-                $sanitizedName = $sanitizedName.'-'.($nameCount - 1);
-            }
-        }
-
-        // Upload file ke R2
-        foreach (self::REQUIRED_FILE_FIELDS as $field) {
-            $file = $request->file($field);
-            $ext = strtolower($file->getClientOriginalExtension());
-            $r2Key = "registrations/{$sanitizedName}/{$field}.{$ext}";
-
-            Storage::disk('r2')->put($r2Key, file_get_contents($file->getRealPath()), [
-                'ContentType' => $file->getMimeType(),
+        try {
+            $registration = Registration::create([
+                'name' => $validated['name'],
+                'gender' => $validated['gender'],
+                'delegation' => $validated['delegation'],
+                'reason' => $validated['reason'],
+                'whatsapp' => $validated['whatsapp'],
+                'birth_date' => $validated['birthDate'],
+                'email' => $validated['email'],
             ]);
 
-            RegistrationFile::create([
-                'registration_id' => $registration->id,
-                'field_key' => $field,
-                'file_name' => $file->getClientOriginalName(),
-                'r2_key' => $r2Key,
-                'file_size' => $file->getSize(),
-                'mime_type' => $file->getMimeType(),
-            ]);
+            $nameSlug = Str::limit(Str::slug($validated['name'], '-'), 80, '');
+            $nameSlug = $nameSlug !== '' ? $nameSlug : 'peserta';
+            $uniqueSuffix = Str::lower(Str::substr(Str::replace('-', '', $registration->id), -12));
+            $folder = $nameSlug.'--'.$uniqueSuffix;
+
+            foreach (self::REQUIRED_FILE_FIELDS as $field) {
+                $file = $request->file($field);
+                $mimeType = (string) $file->getMimeType();
+                $extension = $this->safeExtension($mimeType);
+                $storedName = self::FILE_NAMES[$field].'.'.$extension;
+                $r2Key = "registrations/{$folder}/{$storedName}";
+                $stream = fopen($file->getRealPath(), 'rb');
+
+                if ($stream === false) {
+                    throw new RuntimeException('Berkas unggahan tidak dapat dibaca.');
+                }
+
+                try {
+                    $stored = Storage::disk('r2')->put($r2Key, $stream, [
+                        'ContentType' => $mimeType,
+                    ]);
+                } finally {
+                    fclose($stream);
+                }
+
+                if (! $stored) {
+                    throw new RuntimeException('Berkas gagal disimpan ke penyimpanan.');
+                }
+
+                $uploadedKeys[] = $r2Key;
+
+                RegistrationFile::create([
+                    'registration_id' => $registration->id,
+                    'field_key' => $field,
+                    'file_name' => $storedName,
+                    'r2_key' => $r2Key,
+                    'file_size' => $file->getSize(),
+                    'mime_type' => $mimeType,
+                ]);
+            }
+
+            DB::commit();
+
+            // Kirim email konfirmasi di background (queue)
+            Mail::to($registration->email)->queue(new RegistrationConfirmation($registration));
+        } catch (Throwable $exception) {
+            DB::rollBack();
+
+            if ($uploadedKeys !== []) {
+                Storage::disk('r2')->delete($uploadedKeys);
+            }
+
+            report($exception);
+
+            return response()->json([
+                'error' => 'Pendaftaran belum dapat disimpan. Silakan coba lagi.',
+            ], 500);
         }
 
         return response()->json([
@@ -131,5 +140,15 @@ class RegisterController extends Controller
             'registrationId' => $registration->id,
             'message' => 'Registrasi berhasil dikirim.',
         ], 201);
+    }
+
+    private function safeExtension(string $mimeType): string
+    {
+        return match ($mimeType) {
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            default => throw new RuntimeException('Format berkas tidak didukung.'),
+        };
     }
 }

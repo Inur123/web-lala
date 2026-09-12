@@ -1,26 +1,47 @@
 import { useEffect, useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
-    Users,
-    Search,
-    ChevronLeft,
+    AlertCircle,
     CheckCircle2,
-    XCircle,
+    ChevronLeft,
     Clock,
-    RefreshCw,
+    Search,
+    Users,
+    XCircle,
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import AppLogoIcon from '@/components/app-logo-icon';
 import axios from 'axios';
+import AppLogoIcon from '@/components/app-logo-icon';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+
+type RegistrationStatus = 'pending' | 'lolos' | 'ditolak';
 
 type RegistrantPublic = {
     id: string;
     name: string;
     gender: string;
     delegation: string;
-    adminStatus: 'pending' | 'lolos' | 'ditolak';
-    screeningStatus: 'pending' | 'lolos' | 'ditolak';
+    adminStatus: RegistrationStatus;
+    screeningStatus: RegistrationStatus;
     photoUrl?: string;
 };
 
@@ -38,221 +59,230 @@ const STATUS_CONFIG = {
     ditolak: {
         label: 'Ditolak',
         icon: XCircle,
-        className: 'border-red-200 bg-red-50 text-red-600',
+        className: 'border-red-200 bg-red-50 text-red-700',
     },
-};
+} satisfies Record<
+    RegistrationStatus,
+    { label: string; icon: typeof Clock; className: string }
+>;
+
+function StatusBadge({ status }: { status: RegistrationStatus }) {
+    const config = STATUS_CONFIG[status];
+    const Icon = config.icon;
+
+    return (
+        <Badge variant="outline" className={config.className}>
+            <Icon />
+            {config.label}
+        </Badge>
+    );
+}
+
+function RegistrantAvatar({ registrant }: { registrant: RegistrantPublic }) {
+    const avatar = (
+        <Avatar className="size-10 border">
+            {registrant.photoUrl ? (
+                <AvatarImage
+                    src={registrant.photoUrl}
+                    alt={`Foto ${registrant.name}`}
+                    className="object-cover"
+                />
+            ) : null}
+            <AvatarFallback>
+                {registrant.name.substring(0, 2).toUpperCase()}
+            </AvatarFallback>
+        </Avatar>
+    );
+
+    if (!registrant.photoUrl) return avatar;
+
+    return (
+        <Button variant="ghost" size="icon" className="rounded-full" asChild>
+            <a
+                href={registrant.photoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Buka foto ${registrant.name}`}
+            >
+                {avatar}
+            </a>
+        </Button>
+    );
+}
 
 export default function Pendaftar() {
-    const [data, setData] = useState<RegistrantPublic[]>([]);
+    const [registrants, setRegistrants] = useState<RegistrantPublic[]>([]);
     const [loading, setLoading] = useState(true);
+    const [failed, setFailed] = useState(false);
     const [search, setSearch] = useState('');
-    const [refreshing, setRefreshing] = useState(false);
-
-    const fetchData = async () => {
-        setRefreshing(true);
-        try {
-            const res = await axios.get('/api/public/registrants');
-            setData(res.data.registrants || []);
-        } catch (error) {
-            console.error('Error fetching registrants:', error);
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    };
 
     useEffect(() => {
-        void fetchData();
+        const fetchRegistrants = async () => {
+            try {
+                const response = await axios.get('/api/public/registrants');
+                setRegistrants(response.data.registrants ?? []);
+            } catch {
+                setFailed(true);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        void fetchRegistrants();
     }, []);
 
-    const filteredData = data.filter(
-        (r) =>
-            r.name.toLowerCase().includes(search.toLowerCase()) ||
-            r.delegation.toLowerCase().includes(search.toLowerCase()),
+    const keyword = search.trim().toLowerCase();
+    const filteredRegistrants = registrants.filter(
+        (registrant) =>
+            registrant.name.toLowerCase().includes(keyword) ||
+            registrant.delegation.toLowerCase().includes(keyword),
     );
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12">
+        <main className="bg-muted/30 min-h-screen py-8 lg:py-10">
             <Head title="Data Pendaftar - LATIN & LATPEL 2026" />
 
-            <div className="container mx-auto max-w-5xl px-6">
-                <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <Link
-                            href="/"
-                            className="mb-6 inline-flex items-center text-sm font-bold text-gray-500 transition-colors hover:text-[#1a4d2e]"
-                        >
-                            <ChevronLeft className="mr-1 h-4 w-4" /> Kembali ke
-                            Beranda
-                        </Link>
-                        <div className="mt-2 flex items-center gap-3">
-                            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-white shadow-sm">
-                                <AppLogoIcon className="h-6 w-6 text-[#1a4d2e]" />
+            <div className="mx-auto w-full max-w-[1440px] space-y-6 px-4 sm:px-6 lg:px-8">
+                <Button variant="ghost" size="sm" asChild>
+                    <Link href="/">
+                        <ChevronLeft /> Kembali ke Beranda
+                    </Link>
+                </Button>
+
+                <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+                    <div className="flex items-center gap-4">
+                        <AppLogoIcon className="bg-card size-14 shrink-0 rounded-xl border p-1.5" />
+                        <div>
+                            <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                                Data Pendaftar
+                            </h1>
+                            <p className="text-muted-foreground text-sm">
+                                Total {registrants.length} calon peserta
+                            </p>
+                        </div>
+                    </div>
+                    <div className="relative w-full md:max-w-sm">
+                        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                        <Input
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
+                            placeholder="Cari nama atau delegasi..."
+                            className="bg-background pl-9"
+                            aria-label="Cari nama atau delegasi"
+                        />
+                    </div>
+                </header>
+
+                {failed ? (
+                    <Alert variant="destructive">
+                        <AlertCircle />
+                        <AlertTitle>Data belum dapat dimuat</AlertTitle>
+                        <AlertDescription>
+                            Silakan buka kembali halaman ini beberapa saat lagi.
+                        </AlertDescription>
+                    </Alert>
+                ) : null}
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Daftar Peserta</CardTitle>
+                        <CardDescription>
+                            Status administrasi dan screening peserta LATIN &
+                            LATPEL 2026.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="px-0">
+                        {loading ? (
+                            <div className="space-y-3 px-6">
+                                {Array.from({ length: 5 }).map((_, index) => (
+                                    <Skeleton
+                                        key={index}
+                                        className="h-14 w-full"
+                                    />
+                                ))}
                             </div>
-                            <div>
-                                <h1 className="text-xl font-black text-gray-900 md:text-2xl">
-                                    Data Pendaftar
-                                </h1>
-                                <p className="mt-0.5 text-xs font-medium text-gray-500">
-                                    Total:{' '}
-                                    <strong className="text-[#1a4d2e]">
-                                        {data.length}
-                                    </strong>{' '}
-                                    Calon Peserta
+                        ) : filteredRegistrants.length === 0 ? (
+                            <div className="flex min-h-72 flex-col items-center justify-center gap-2 px-6 text-center">
+                                <Users className="text-muted-foreground size-10" />
+                                <h2 className="font-semibold">
+                                    Pendaftar tidak ditemukan
+                                </h2>
+                                <p className="text-muted-foreground text-sm">
+                                    Belum ada data atau kata kunci tidak cocok.
                                 </p>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="relative w-full sm:w-64">
-                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
-                            <Input
-                                placeholder="Cari nama atau delegasi..."
-                                className="h-11 rounded-xl border-gray-200 bg-white pl-9"
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </div>
-                        <button
-                            onClick={fetchData}
-                            disabled={refreshing}
-                            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-50 hover:text-[#1a4d2e] disabled:opacity-50"
-                        >
-                            <RefreshCw
-                                className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`}
-                            />
-                        </button>
-                    </div>
-                </div>
-
-                <div className="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-xl">
-                    {loading ? (
-                        <div className="flex flex-col items-center justify-center py-20">
-                            <RefreshCw className="h-8 w-8 animate-spin text-[#1a4d2e]" />
-                            <p className="mt-4 text-sm font-semibold text-gray-500">
-                                Memuat data pendaftar...
-                            </p>
-                        </div>
-                    ) : filteredData.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-20">
-                            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50">
-                                <Users className="h-8 w-8 text-gray-300" />
-                            </div>
-                            <h3 className="text-lg font-bold text-gray-700">
-                                Pendaftar tidak ditemukan
-                            </h3>
-                            <p className="mt-1 text-sm text-gray-400">
-                                Belum ada data atau kata kunci tidak cocok.
-                            </p>
-                        </div>
-                    ) : (
-                        <div className="overflow-x-auto">
-                            <table className="w-full">
-                                <thead>
-                                    <tr className="border-b border-gray-100 bg-gray-50/80">
-                                        <th className="px-6 py-4 text-left text-xs font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase">
-                                            Peserta
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase">
-                                            Delegasi
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase">
-                                            Administrasi
-                                        </th>
-                                        <th className="px-6 py-4 text-left text-xs font-bold tracking-wide whitespace-nowrap text-gray-500 uppercase">
-                                            Screening
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-50">
-                                    {filteredData.map((reg) => {
-                                        const AdminIcon =
-                                            STATUS_CONFIG[reg.adminStatus].icon;
-                                        const ScreenIcon =
-                                            STATUS_CONFIG[reg.screeningStatus]
-                                                .icon;
-
-                                        return (
-                                            <tr
-                                                key={reg.id}
-                                                className="transition-colors hover:bg-gray-50/50"
-                                            >
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <div className="flex items-center gap-4">
-                                                        {reg.photoUrl ? (
-                                                            <img
-                                                                src={
-                                                                    reg.photoUrl
-                                                                }
-                                                                alt=""
-                                                                className="h-10 w-10 shrink-0 rounded-full border border-gray-100 bg-gray-50 object-cover"
-                                                                loading="lazy"
-                                                            />
-                                                        ) : (
-                                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-xs font-bold text-gray-400">
-                                                                {reg.name
-                                                                    .substring(
-                                                                        0,
-                                                                        2,
-                                                                    )
-                                                                    .toUpperCase()}
-                                                            </div>
-                                                        )}
+                        ) : (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-14 text-center">
+                                            No
+                                        </TableHead>
+                                        <TableHead>Peserta</TableHead>
+                                        <TableHead>Delegasi</TableHead>
+                                        <TableHead>Administrasi</TableHead>
+                                        <TableHead>Screening</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {filteredRegistrants.map(
+                                        (registrant, index) => (
+                                            <TableRow key={registrant.id}>
+                                                <TableCell className="text-muted-foreground text-center font-medium">
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-3">
+                                                        <RegistrantAvatar
+                                                            registrant={
+                                                                registrant
+                                                            }
+                                                        />
                                                         <div>
-                                                            <p className="text-sm font-bold text-gray-900">
-                                                                {reg.name}
+                                                            <p className="font-medium">
+                                                                {
+                                                                    registrant.name
+                                                                }
                                                             </p>
-                                                            <p className="text-[11px] font-medium text-gray-500">
-                                                                {reg.gender ===
+                                                            <p className="text-muted-foreground text-xs">
+                                                                {registrant.gender ===
                                                                     'Laki-laki' ||
-                                                                reg.gender ===
+                                                                registrant.gender ===
                                                                     'l'
                                                                     ? 'Laki-laki (IPNU)'
                                                                     : 'Perempuan (IPPNU)'}
                                                             </p>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <span className="inline-flex items-center rounded-lg bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-700">
-                                                        {reg.delegation}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <Badge
-                                                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${STATUS_CONFIG[reg.adminStatus].className}`}
-                                                    >
-                                                        <AdminIcon className="mr-1 h-3 w-3" />
-                                                        {
-                                                            STATUS_CONFIG[
-                                                                reg.adminStatus
-                                                            ].label
-                                                        }
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge variant="secondary">
+                                                        {registrant.delegation}
                                                     </Badge>
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap">
-                                                    <Badge
-                                                        className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${STATUS_CONFIG[reg.screeningStatus].className}`}
-                                                    >
-                                                        <ScreenIcon className="mr-1 h-3 w-3" />
-                                                        {
-                                                            STATUS_CONFIG[
-                                                                reg
-                                                                    .screeningStatus
-                                                            ].label
+                                                </TableCell>
+                                                <TableCell>
+                                                    <StatusBadge
+                                                        status={
+                                                            registrant.adminStatus
                                                         }
-                                                    </Badge>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
-                </div>
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <StatusBadge
+                                                        status={
+                                                            registrant.screeningStatus
+                                                        }
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        ),
+                                    )}
+                                </TableBody>
+                            </Table>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
-        </div>
+        </main>
     );
 }

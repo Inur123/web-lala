@@ -10,20 +10,20 @@ import {
     ExternalLink,
 } from 'lucide-react';
 import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose,
+} from '@/components/ui/dialog';
 import axios from 'axios';
 import { fileUrl } from '@/lib/file-url';
 
 type RegFile = {
+    id: string;
     field_key: string;
     file_name: string;
     r2_key: string;
@@ -35,8 +35,6 @@ type Registrant = {
     gender: string;
     delegation: string;
     reason: string;
-    shirt_size: string;
-    sleeve_type: string;
     whatsapp?: string;
     birth_date?: string;
     email?: string;
@@ -65,11 +63,10 @@ const FILE_FIELD_LABELS: Record<string, string> = {
     sertifikatLakmud: 'Sertifikat LAKMUD',
     rekomendasi: 'Surat Rekomendasi PAC / PC',
     essay: 'Essay Karya Tulis',
-    ktpKta: 'Scan KTP / KTA',
+    ktpKta: 'Kartu Tanda Penduduk (KTP)',
     formulir: 'Scan Formulir Pendaftaran',
     paktaIntegritas: 'Pakta Integritas Bermaterai',
-    fotoFormal: 'Foto Formal Jas (Merah)',
-    buktiBayar: 'Bukti Transfer Kontribusi',
+    fotoFormal: 'Foto Formal 3×4 Background Merah',
 };
 
 export default function RegistrasiShow({
@@ -91,9 +88,7 @@ export default function RegistrasiShow({
             });
             if (res.data.success) {
                 toast.success(
-                    status === 'lolos'
-                        ? `Peserta diterima di tahap ${stage === 'admin' ? 'Administrasi' : 'Screening'}.`
-                        : `Peserta ditolak di tahap ${stage === 'admin' ? 'Administrasi' : 'Screening'}.`,
+                    res.data.message || 'Status berhasil diperbarui.',
                 );
                 router.reload({ only: ['registrant'] });
             }
@@ -106,28 +101,70 @@ export default function RegistrasiShow({
         }
     };
 
+    const handleDelete = () => {
+        router.delete(`/registrasi/${registrant.id}`, {
+            onSuccess: () => {
+                toast.success('Data pendaftar berhasil dihapus');
+            },
+            onError: () => {
+                toast.error('Gagal menghapus data pendaftar');
+            },
+        });
+    };
+
     return (
         <>
             <Head title={`Detail - ${registrant.name}`} />
 
             <div className="max-w-6xl space-y-6 p-6">
                 {/* Back & Header */}
-                <div className="flex items-center gap-4">
-                    <Link
-                        href="/registrasi"
-                        className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-700 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] transition-all hover:scale-105 hover:bg-gray-50 hover:text-gray-900 active:scale-95"
-                        aria-label="Kembali"
-                    >
-                        <ChevronLeft className="h-5 w-5" />
-                    </Link>
-                    <div>
-                        <h1 className="text-base leading-tight font-bold text-gray-900">
-                            Detail Profil & Berkas
-                        </h1>
-                        <p className="mt-0.5 text-xs text-gray-400">
-                            Detail pendaftaran peserta LATIN & LATPEL
-                        </p>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/registrasi"
+                            className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-700 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] transition-all hover:scale-105 hover:bg-gray-50 hover:text-gray-900 active:scale-95"
+                            aria-label="Kembali"
+                        >
+                            <ChevronLeft className="h-5 w-5" />
+                        </Link>
+                        <div>
+                            <h1 className="text-base leading-tight font-bold text-gray-900">
+                                Detail Profil & Berkas
+                            </h1>
+                            <p className="mt-0.5 text-xs text-gray-400">
+                                Detail pendaftaran peserta LATIN & LATPEL
+                            </p>
+                        </div>
                     </div>
+                    
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <button className="flex h-9 items-center justify-center gap-2 rounded-xl bg-red-50 px-4 text-xs font-semibold text-red-600 transition-colors hover:bg-red-100 shadow-sm">
+                                Hapus Data
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Hapus Pendaftar?</DialogTitle>
+                                <DialogDescription>
+                                    Apakah Anda yakin ingin menghapus pendaftar ini? Tindakan ini tidak dapat dibatalkan dan semua berkas yang terunggah di penyimpanan (Cloudflare R2) akan dihapus permanen.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                <DialogClose asChild>
+                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                        Batal
+                                    </button>
+                                </DialogClose>
+                                <button
+                                    onClick={handleDelete}
+                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
+                                >
+                                    Ya, Hapus Data
+                                </button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -145,8 +182,8 @@ export default function RegistrasiShow({
                                     const fotoObj = registrant.files?.find(
                                         (f) => f.field_key === 'fotoFormal',
                                     );
-                                    const fotoUrl = fotoObj?.r2_key
-                                        ? fileUrl(fotoObj.r2_key)
+                                    const fotoUrl = fotoObj?.id
+                                        ? fileUrl(fotoObj.id)
                                         : null;
 
                                     return (
@@ -252,15 +289,6 @@ export default function RegistrasiShow({
                                                 {registrant.delegation}
                                             </span>
                                         </div>
-                                        <div>
-                                            <span className="mb-0.5 block font-medium text-gray-400">
-                                                Kaos & Lengan
-                                            </span>
-                                            <span className="font-semibold text-gray-800">
-                                                {registrant.shirt_size} (
-                                                {registrant.sleeve_type})
-                                            </span>
-                                        </div>
                                     </div>
 
                                     <div className="pt-2 text-xs">
@@ -286,8 +314,8 @@ export default function RegistrasiShow({
                                         const fileObj = registrant.files?.find(
                                             (f) => f.field_key === fieldKey,
                                         );
-                                        const r2DownloadUrl = fileObj?.r2_key
-                                            ? fileUrl(fileObj.r2_key)
+                                        const r2DownloadUrl = fileObj?.id
+                                            ? fileUrl(fileObj.id)
                                             : '#';
 
                                         return (
@@ -378,8 +406,8 @@ export default function RegistrasiShow({
                                     Keputusan Administrasi
                                 </span>
                                 <div className="flex gap-2">
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
                                             <button
                                                 disabled={
                                                     registrant.admin_status ===
@@ -395,13 +423,13 @@ export default function RegistrasiShow({
                                                 )}
                                                 Terima
                                             </button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>
                                                     Terima Administrasi Peserta?
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription>
+                                                </DialogTitle>
+                                                <DialogDescription>
                                                     Apakah Anda yakin ingin
                                                     meloloskan seleksi
                                                     administrasi untuk peserta{' '}
@@ -409,29 +437,31 @@ export default function RegistrasiShow({
                                                         {registrant.name}
                                                     </strong>
                                                     ?
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel className="cursor-pointer">
-                                                    Batal
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                                <DialogClose asChild>
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                        Batal
+                                                    </button>
+                                                </DialogClose>
+                                                <button
                                                     onClick={() =>
                                                         handleUpdate(
                                                             'admin',
                                                             'lolos',
                                                         )
                                                     }
-                                                    className="cursor-pointer border-0 bg-emerald-700 text-white hover:bg-emerald-800"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
                                                 >
                                                     Ya, Loloskan
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                                </button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
 
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
                                             <button
                                                 disabled={
                                                     registrant.admin_status ===
@@ -448,13 +478,13 @@ export default function RegistrasiShow({
                                                 )}
                                                 Tolak
                                             </button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>
                                                     Tolak Administrasi Peserta?
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription>
+                                                </DialogTitle>
+                                                <DialogDescription>
                                                     Apakah Anda yakin ingin
                                                     menolak berkas administrasi
                                                     peserta{' '}
@@ -462,26 +492,28 @@ export default function RegistrasiShow({
                                                         {registrant.name}
                                                     </strong>
                                                     ?
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel className="cursor-pointer">
-                                                    Batal
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                                <DialogClose asChild>
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                        Batal
+                                                    </button>
+                                                </DialogClose>
+                                                <button
                                                     onClick={() =>
                                                         handleUpdate(
                                                             'admin',
                                                             'ditolak',
                                                         )
                                                     }
-                                                    className="cursor-pointer border-0 bg-red-600 text-white hover:bg-red-700"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
                                                 >
                                                     Ya, Tolak
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                                </button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                             </div>
 
@@ -491,8 +523,8 @@ export default function RegistrasiShow({
                                     Keputusan Screening
                                 </span>
                                 <div className="flex gap-2">
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
                                             <button
                                                 disabled={
                                                     registrant.admin_status !==
@@ -511,42 +543,44 @@ export default function RegistrasiShow({
                                                 )}
                                                 Terima
                                             </button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>
                                                     Loloskan Screening Peserta?
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription>
+                                                </DialogTitle>
+                                                <DialogDescription>
                                                     Apakah Anda yakin peserta{' '}
                                                     <strong>
                                                         {registrant.name}
                                                     </strong>{' '}
                                                     lolos tahap
                                                     wawancara/screening?
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel className="cursor-pointer">
-                                                    Batal
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                                <DialogClose asChild>
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                        Batal
+                                                    </button>
+                                                </DialogClose>
+                                                <button
                                                     onClick={() =>
                                                         handleUpdate(
                                                             'screening',
                                                             'lolos',
                                                         )
                                                     }
-                                                    className="cursor-pointer border-0 bg-emerald-700 text-white hover:bg-emerald-800"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2"
                                                 >
                                                     Ya, Loloskan
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                                </button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
 
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
                                             <button
                                                 disabled={
                                                     registrant.admin_status !==
@@ -565,39 +599,41 @@ export default function RegistrasiShow({
                                                 )}
                                                 Tolak
                                             </button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>
+                                        </DialogTrigger>
+                                        <DialogContent>
+                                            <DialogHeader>
+                                                <DialogTitle>
                                                     Tolak Screening Peserta?
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription>
+                                                </DialogTitle>
+                                                <DialogDescription>
                                                     Apakah Anda yakin ingin
                                                     menolak peserta{' '}
                                                     <strong>
                                                         {registrant.name}
                                                     </strong>{' '}
                                                     pada tahap screening?
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel className="cursor-pointer">
-                                                    Batal
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+                                                <DialogClose asChild>
+                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                                                        Batal
+                                                    </button>
+                                                </DialogClose>
+                                                <button
                                                     onClick={() =>
                                                         handleUpdate(
                                                             'screening',
                                                             'ditolak',
                                                         )
                                                     }
-                                                    className="cursor-pointer border-0 bg-red-600 text-white hover:bg-red-700"
+                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
                                                 >
                                                     Ya, Tolak
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                                </button>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
                                 </div>
                                 {registrant.admin_status !== 'lolos' && (
                                     <p className="mt-1 text-[9px] leading-relaxed font-medium text-red-500">

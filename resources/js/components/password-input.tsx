@@ -2,6 +2,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import type { ComponentProps, Ref } from 'react';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export default function PasswordInput({
@@ -19,11 +20,17 @@ export default function PasswordInput({
                 ref={ref}
                 {...props}
             />
-            <button
+            <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="text-muted-foreground hover:text-foreground focus-visible:ring-ring absolute inset-y-0 right-0 flex items-center rounded-r-md px-3 focus-visible:ring-[3px] focus-visible:outline-none"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="text-muted-foreground absolute top-1/2 right-0 -translate-y-1/2"
+                aria-label={
+                    showPassword
+                        ? 'Sembunyikan kata sandi'
+                        : 'Tampilkan kata sandi'
+                }
                 tabIndex={-1}
             >
                 {showPassword ? (
@@ -31,7 +38,7 @@ export default function PasswordInput({
                 ) : (
                     <Eye className="size-4" />
                 )}
-            </button>
+            </Button>
         </div>
     );
 }
