@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\UploadRegistrationFilesToR2;
 use App\Models\Registration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -15,6 +16,7 @@ class PublicRegistrationTest extends TestCase
 
     public function test_participant_can_register_without_shirt_size_sleeve_type_and_payment_proof(): void
     {
+        Storage::fake('local');
         Storage::fake('r2');
 
         $response = $this->post(route('register.store'), $this->registrationPayload());
@@ -29,6 +31,11 @@ class PublicRegistrationTest extends TestCase
         $this->assertNull($registration->shirt_size);
         $this->assertCount(8, $registration->files);
         $this->assertFalse($registration->files->contains('field_key', 'buktiBayar'));
+
+        // Jalankan job upload R2 secara sinkron agar status menjadi 'uploaded'
+        (new UploadRegistrationFilesToR2($registration->id))->handle();
+        $registration->refresh();
+
         $this->assertTrue(
             $registration->files->every(
                 fn ($file): bool => $file->upload_status === 'uploaded',
