@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use App\Models\Registration;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 use Throwable;
 
-class UploadRegistrationFilesToR2 implements ShouldBeUnique, ShouldQueue
+class UploadRegistrationFilesToR2 implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -32,11 +31,6 @@ class UploadRegistrationFilesToR2 implements ShouldBeUnique, ShouldQueue
      * Waktu maksimal (dalam detik) job ini boleh berjalan.
      */
     public int $timeout = 120;
-
-    /**
-     * Hindari dua job upload berjalan untuk pendaftaran yang sama.
-     */
-    public int $uniqueFor = 300;
 
     /**
      * Create a new job instance.
@@ -57,41 +51,34 @@ class UploadRegistrationFilesToR2 implements ShouldBeUnique, ShouldQueue
         }
 
         foreach ($registration->files as $file) {
-            $path = $file->r2_key;
-
+            // Lewati file yang sudah terupload
             if ($file->upload_status === 'uploaded') {
                 continue;
             }
 
-            if ($file->upload_attempts >= 6) {
-                continue;
-            }
+            $path = $file->r2_key;
 
+            // Tandai bahwa proses upload sedang dicoba
             $file->update([
                 'upload_status' => 'pending',
                 'upload_attempts' => $file->upload_attempts + 1,
-                'upload_error' => null,
                 'upload_attempted_at' => now(),
+                'upload_error' => null,
             ]);
 
+            // Cek apakah file masih ada di penyimpanan lokal
             if (! Storage::disk('local')->exists($path)) {
-                if (Storage::disk('r2')->exists($path)) {
-                    $file->update([
-                        'upload_status' => 'uploaded',
-                        'upload_error' => null,
-                        'uploaded_at' => now(),
-                    ]);
-
-                    continue;
-                }
-
-                throw new RuntimeException('Berkas lokal untuk upload R2 tidak ditemukan.');
+                // File sudah tidak ada di lokal, tandai sebagai uploaded
+                $file->update(['upload_status' => 'uploaded', 'uploaded_at' => now()]);
+                continue;
             }
 
             $stream = Storage::disk('local')->readStream($path);
 
-            if (! is_resource($stream)) {
-                throw new RuntimeException('Berkas lokal tidak dapat dibaca.');
+            if ($stream === null || $stream === false) {
+                $errorMsg = "Tidak dapat membaca stream dari file lokal: {$path}";
+                $file->update(['upload_status' => 'failed', 'upload_error' => $errorMsg]);
+                throw new RuntimeException($errorMsg);
             }
 
             try {
@@ -100,36 +87,42 @@ class UploadRegistrationFilesToR2 implements ShouldBeUnique, ShouldQueue
                 ]);
 
                 if (! $stored) {
-                    throw new RuntimeException('Cloudflare R2 menolak upload berkas.');
+                    throw new RuntimeException("Cloudflare R2 menolak upload file: {$path}");
                 }
 
+                // Sukses: hapus file lokal dan tandai sebagai uploaded
+                Storage::disk('local')->delete($path);
                 $file->update([
                     'upload_status' => 'uploaded',
-                    'upload_error' => null,
                     'uploaded_at' => now(),
+                    'upload_error' => null,
+                ]);
+            } catch (Throwable $e) {
+                $file->update([
+                    'upload_status' => 'failed',
+                    'upload_error' => $e->getMessage(),
                 ]);
 
-                Storage::disk('local')->delete($path);
-            } catch (Throwable $exception) {
-                Log::error('Upload berkas registrasi ke R2 gagal.', [
+                Log::error('Gagal mengupload file registrasi ke R2', [
                     'registration_id' => $registration->id,
-                    'file_id' => $file->id,
-                    'exception' => $exception::class,
+                    'file_path' => $path,
+                    'attempt' => $file->upload_attempts,
+                    'error' => $e->getMessage(),
                 ]);
 
-                throw $exception;
+                throw $e; // Lempar ulang agar job di-retry
             } finally {
-                fclose($stream);
+                if (is_resource($stream)) {
+                    fclose($stream);
+                }
             }
         }
     }
 
-    public function uniqueId(): string
-    {
-        return $this->registrationId;
-    }
-
-    public function failed(?Throwable $exception): void
+    /**
+     * Dipanggil saat job gagal setelah semua percobaan habis.
+     */
+    public function failed(Throwable $exception): void
     {
         $registration = Registration::with('files')->find($this->registrationId);
 
@@ -137,17 +130,19 @@ class UploadRegistrationFilesToR2 implements ShouldBeUnique, ShouldQueue
             return;
         }
 
-        foreach ($registration->files->where('upload_status', '!=', 'uploaded') as $file) {
-            $file->update([
-                'upload_status' => 'failed',
-                'upload_error' => 'Upload gagal setelah beberapa percobaan.',
-                'upload_attempted_at' => now(),
-            ]);
+        // Tandai semua file yang masih pending sebagai failed
+        foreach ($registration->files as $file) {
+            if ($file->upload_status === 'pending') {
+                $file->update([
+                    'upload_status' => 'failed',
+                    'upload_error' => $exception->getMessage(),
+                ]);
+            }
         }
 
-        Log::critical('Upload registrasi ke R2 gagal permanen.', [
-            'registration_id' => $registration->id,
-            'exception' => $exception ? $exception::class : null,
+        Log::critical('Job upload R2 gagal total setelah semua percobaan', [
+            'registration_id' => $this->registrationId,
+            'error' => $exception->getMessage(),
         ]);
     }
 }
