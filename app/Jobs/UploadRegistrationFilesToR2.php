@@ -52,12 +52,12 @@ class UploadRegistrationFilesToR2 implements ShouldQueue
 
         foreach ($registration->files as $file) {
             $path = $file->r2_key;
-            
+
             // Cek apakah file masih ada di penyimpanan lokal
             if (Storage::disk('local')->exists($path)) {
                 $stream = Storage::disk('local')->readStream($path);
-                
-                if ($stream === null || $stream === false) {
+
+                if ($stream === null) {
                     throw new RuntimeException("Tidak dapat membaca stream dari file lokal: {$path}");
                 }
 
@@ -69,11 +69,11 @@ class UploadRegistrationFilesToR2 implements ShouldQueue
                     if (! $stored) {
                         throw new RuntimeException("Cloudflare R2 menolak upload file: {$path}");
                     }
-                    
+
                     // Jika sukses upload, hapus file lokal agar tidak menumpuk
                     Storage::disk('local')->delete($path);
                 } catch (Throwable $e) {
-                    Log::error("Gagal mengupload file registrasi ke R2", [
+                    Log::error('Gagal mengupload file registrasi ke R2', [
                         'registration_id' => $registration->id,
                         'file_path' => $path,
                         'error' => $e->getMessage(),

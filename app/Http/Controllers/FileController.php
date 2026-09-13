@@ -33,6 +33,7 @@ class FileController extends Controller
         if (Storage::disk('local')->exists($path)) {
             /** @var FilesystemAdapter $localDisk */
             $localDisk = Storage::disk('local');
+
             return $localDisk->response($path, null, [
                 'Cache-Control' => $cacheControl,
                 'X-Content-Type-Options' => 'nosniff',
