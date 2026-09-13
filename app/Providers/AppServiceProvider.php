@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -54,6 +55,15 @@ class AppServiceProvider extends ServiceProvider
 
     private function configureRateLimiting(): void
     {
+        RateLimiter::for('login', function (Request $request): array {
+            $email = Str::transliterate(Str::lower((string) $request->input('email')));
+
+            return [
+                Limit::perMinute(5)->by($email.'|'.$request->ip()),
+                Limit::perMinute(20)->by('login-ip|'.$request->ip()),
+            ];
+        });
+
         RateLimiter::for('registration', fn (Request $request): array => [
             Limit::perMinute(3)->by('registration-minute|'.$request->ip()),
             Limit::perHour(10)->by('registration-hour|'.$request->ip()),
