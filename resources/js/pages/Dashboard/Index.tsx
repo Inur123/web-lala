@@ -20,13 +20,6 @@ import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 
-type RegFile = {
-    id: string;
-    field_key: string;
-    file_name: string;
-    r2_key: string;
-};
-
 type Registrant = {
     id: string;
     name: string;
@@ -35,7 +28,6 @@ type Registrant = {
     admin_status: 'pending' | 'lolos' | 'ditolak';
     screening_status: 'pending' | 'lolos' | 'ditolak';
     created_at: string;
-    files?: RegFile[];
 };
 
 export default function Dashboard({

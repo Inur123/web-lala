@@ -11,7 +11,11 @@ class DashboardController extends Controller
 {
     public function index(): Response
     {
-        $registrants = Registration::with('files')
+        $registrants = Registration::query()
+            ->select([
+                'id', 'name', 'gender', 'delegation',
+                'admin_status', 'screening_status', 'created_at',
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 

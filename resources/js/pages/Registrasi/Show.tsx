@@ -27,6 +27,7 @@ type RegFile = {
     field_key: string;
     file_name: string;
     r2_key: string;
+    upload_status: 'pending' | 'uploaded' | 'failed';
 };
 
 type Registrant = {
@@ -68,6 +69,12 @@ const FILE_FIELD_LABELS: Record<string, string> = {
     paktaIntegritas: 'Pakta Integritas Bermaterai',
     fotoFormal: 'Foto Formal 3×4 Background Merah',
 };
+
+const UPLOAD_STATUS_LABEL = {
+    pending: 'Antre R2',
+    uploaded: 'Tersimpan',
+    failed: 'Upload gagal',
+} satisfies Record<RegFile['upload_status'], string>;
 
 export default function RegistrasiShow({
     registrant,
@@ -334,7 +341,7 @@ export default function RegistrasiShow({
                                                         </span>
                                                         <span className="block max-w-[140px] truncate text-[9px] text-gray-400">
                                                             {fileObj
-                                                                ? fileObj.file_name
+                                                                ? `${fileObj.file_name} · ${UPLOAD_STATUS_LABEL[fileObj.upload_status]}`
                                                                 : 'Belum diunggah'}
                                                         </span>
                                                     </div>

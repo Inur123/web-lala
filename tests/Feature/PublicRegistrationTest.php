@@ -29,6 +29,11 @@ class PublicRegistrationTest extends TestCase
         $this->assertNull($registration->shirt_size);
         $this->assertCount(8, $registration->files);
         $this->assertFalse($registration->files->contains('field_key', 'buktiBayar'));
+        $this->assertTrue(
+            $registration->files->every(
+                fn ($file): bool => $file->upload_status === 'uploaded',
+            ),
+        );
 
         $folder = 'registrations/peserta-uji--'.strtolower(substr(str_replace('-', '', $registration->id), -12));
         Storage::disk('r2')->assertExists($folder.'/sertifikat-makesta.pdf');
@@ -82,6 +87,25 @@ class PublicRegistrationTest extends TestCase
         }
 
         $request->postJson(route('register.store'), [])->assertTooManyRequests();
+    }
+
+    public function test_registration_rate_limit_uses_forwarded_ip_from_a_trusted_proxy(): void
+    {
+        $firstClient = $this
+            ->withServerVariables(['REMOTE_ADDR' => '127.0.0.1'])
+            ->withHeader('X-Forwarded-For', '198.51.100.60');
+
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $firstClient->postJson(route('register.store'), [])->assertUnprocessable();
+        }
+
+        $firstClient->postJson(route('register.store'), [])->assertTooManyRequests();
+
+        $this
+            ->withServerVariables(['REMOTE_ADDR' => '127.0.0.1'])
+            ->withHeader('X-Forwarded-For', '198.51.100.61')
+            ->postJson(route('register.store'), [])
+            ->assertUnprocessable();
     }
 
     public function test_turnstile_is_verified_server_side_with_action_and_hostname(): void
@@ -145,6 +169,60 @@ class PublicRegistrationTest extends TestCase
             ->assertJsonValidationErrors('cf-turnstile-response');
     }
 
+    public function test_invalid_pdf_content_is_rejected(): void
+    {
+        $payload = $this->registrationPayload('invalid-pdf@example.com');
+        $payload['essay'] = UploadedFile::fake()->createWithContent(
+            'essay.pdf',
+            '<html><script>alert(1)</script></html>',
+        );
+
+        $this->postJson(route('register.store'), $payload)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('essay');
+    }
+
+    public function test_required_malware_scanner_fails_closed_when_disabled(): void
+    {
+        config([
+            'malware.enabled' => false,
+            'malware.required' => true,
+        ]);
+
+        $this->postJson(
+            route('register.store'),
+            $this->registrationPayload('scanner-required@example.com'),
+        )
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('sertifikatMakesta');
+    }
+
+    public function test_public_registrant_cache_is_invalidated_after_registration(): void
+    {
+        $this->getJson('/api/public/registrants')
+            ->assertOk()
+            ->assertJsonCount(0, 'registrants');
+
+        $this->post(route('register.store'), $this->registrationPayload('cache@example.com'))
+            ->assertCreated();
+
+        $this->getJson('/api/public/registrants')
+            ->assertOk()
+            ->assertJsonCount(1, 'registrants');
+    }
+
+    public function test_public_registrant_endpoint_supports_conditional_requests(): void
+    {
+        $response = $this->getJson('/api/public/registrants')->assertOk();
+        $etag = $response->headers->get('ETag');
+
+        $this->assertNotNull($etag);
+
+        $this->withHeader('If-None-Match', $etag)
+            ->getJson('/api/public/registrants')
+            ->assertNotModified();
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -158,14 +236,22 @@ class PublicRegistrationTest extends TestCase
             'whatsapp' => '081234567890',
             'birthDate' => '2000-01-01',
             'email' => $email,
-            'sertifikatMakesta' => UploadedFile::fake()->create('makesta.pdf', 100, 'application/pdf'),
-            'sertifikatLakmud' => UploadedFile::fake()->create('lakmud.pdf', 100, 'application/pdf'),
-            'rekomendasi' => UploadedFile::fake()->create('rekomendasi.pdf', 100, 'application/pdf'),
-            'essay' => UploadedFile::fake()->create('essay.pdf', 100, 'application/pdf'),
+            'sertifikatMakesta' => $this->fakePdf('makesta.pdf'),
+            'sertifikatLakmud' => $this->fakePdf('lakmud.pdf'),
+            'rekomendasi' => $this->fakePdf('rekomendasi.pdf'),
+            'essay' => $this->fakePdf('essay.pdf'),
             'ktpKta' => UploadedFile::fake()->image('kta.jpg'),
-            'formulir' => UploadedFile::fake()->create('formulir.pdf', 100, 'application/pdf'),
-            'paktaIntegritas' => UploadedFile::fake()->create('pakta.pdf', 100, 'application/pdf'),
+            'formulir' => $this->fakePdf('formulir.pdf'),
+            'paktaIntegritas' => $this->fakePdf('pakta.pdf'),
             'fotoFormal' => UploadedFile::fake()->image('foto-3x4-merah.jpg', 300, 400),
         ];
+    }
+
+    private function fakePdf(string $name): UploadedFile
+    {
+        return UploadedFile::fake()->createWithContent(
+            $name,
+            "%PDF-1.4\n1 0 obj\n<<>>\nendobj\n%%EOF",
+        );
     }
 }

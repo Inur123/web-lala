@@ -89,6 +89,27 @@ class RegistrationSelectionTest extends TestCase
         );
     }
 
+    public function test_status_update_invalidates_the_public_registrant_cache(): void
+    {
+        $user = User::factory()->create();
+        $registration = $this->createRegistration();
+
+        $this->getJson('/api/public/registrants')
+            ->assertOk()
+            ->assertJsonPath('registrants.0.adminStatus', 'pending');
+
+        $this->actingAs($user)
+            ->patchJson(route('registrasi.update', $registration), [
+                'stage' => 'admin',
+                'status' => 'lolos',
+            ])
+            ->assertOk();
+
+        $this->getJson('/api/public/registrants')
+            ->assertOk()
+            ->assertJsonPath('registrants.0.adminStatus', 'lolos');
+    }
+
     /**
      * @param  array<string, mixed>  $overrides
      */

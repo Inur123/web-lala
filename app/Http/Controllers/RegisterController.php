@@ -8,8 +8,10 @@ use App\Mail\RegistrationConfirmation;
 use App\Models\Registration;
 use App\Models\RegistrationFile;
 use App\Models\SystemSetting;
+use App\Services\PublicRegistrantCache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -53,7 +55,7 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function store(StoreRegistrationRequest $request): JsonResponse
+    public function store(StoreRegistrationRequest $request, PublicRegistrantCache $cache): JsonResponse
     {
         // Cek apakah pendaftaran dibuka
         $isOpen = SystemSetting::getValue('registration_open', 'true') === 'true';
@@ -117,14 +119,10 @@ class RegisterController extends Controller
             }
 
             DB::commit();
-
-            // Dispatch job untuk upload ke R2 di background
-            UploadRegistrationFilesToR2::dispatch($registration->id);
-
-            // Kirim email konfirmasi di background (queue)
-            Mail::to($registration->email)->queue(new RegistrationConfirmation($registration));
         } catch (Throwable $exception) {
-            DB::rollBack();
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
 
             if ($uploadedKeys !== []) {
                 Storage::disk('local')->delete($uploadedKeys);
@@ -136,6 +134,36 @@ class RegisterController extends Controller
             return response()->json([
                 'error' => 'Pendaftaran belum dapat disimpan. Silakan coba lagi.',
             ], 500);
+        }
+
+        try {
+            $cache->forget();
+        } catch (Throwable $exception) {
+            Log::warning('Cache daftar pendaftar belum dapat dibersihkan.', [
+                'registration_id' => $registration->id,
+                'exception' => $exception::class,
+            ]);
+            report($exception);
+        }
+
+        try {
+            UploadRegistrationFilesToR2::dispatch($registration->id);
+        } catch (Throwable $exception) {
+            Log::error('Job upload R2 belum dapat dimasukkan ke antrean.', [
+                'registration_id' => $registration->id,
+                'exception' => $exception::class,
+            ]);
+            report($exception);
+        }
+
+        try {
+            Mail::to($registration->email)->queue(new RegistrationConfirmation($registration));
+        } catch (Throwable $exception) {
+            Log::error('Email konfirmasi belum dapat dimasukkan ke antrean.', [
+                'registration_id' => $registration->id,
+                'exception' => $exception::class,
+            ]);
+            report($exception);
         }
 
         return response()->json([

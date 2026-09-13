@@ -17,7 +17,21 @@ class RegistrationFile extends Model
         'r2_key',
         'file_size',
         'mime_type',
+        'upload_status',
+        'upload_attempts',
+        'upload_error',
+        'upload_attempted_at',
+        'uploaded_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'upload_attempts' => 'integer',
+            'upload_attempted_at' => 'datetime',
+            'uploaded_at' => 'datetime',
+        ];
+    }
 
     /**
      * @return BelongsTo<Registration, $this>

@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Registration;
+use App\Services\PublicRegistrantCache;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use RuntimeException;
+use Throwable;
 
 class RegistrasiController extends Controller
 {
@@ -18,7 +23,17 @@ class RegistrasiController extends Controller
      */
     public function index(): Response
     {
-        $data = Registration::with('files')
+        $data = Registration::query()
+            ->select([
+                'id', 'name', 'gender', 'delegation',
+                'admin_status', 'admin_reviewed_at',
+                'screening_status', 'screening_reviewed_at', 'created_at',
+            ])
+            ->with([
+                'files' => fn ($query) => $query
+                    ->select(['id', 'registration_id', 'field_key'])
+                    ->where('field_key', 'fotoFormal'),
+            ])
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -42,7 +57,7 @@ class RegistrasiController extends Controller
     /**
      * Update status seleksi (PATCH)
      */
-    public function update(Request $request, string $id): JsonResponse
+    public function update(Request $request, string $id, PublicRegistrantCache $cache): JsonResponse
     {
         $request->validate([
             'stage' => 'required|in:admin,screening',
@@ -84,6 +99,8 @@ class RegistrasiController extends Controller
                 : 'Peserta ditolak pada tahap screening.';
         }
 
+        $this->forgetPublicRegistrantCache($cache, $registration->id);
+
         return response()->json([
             'success' => true,
             'message' => $message,
@@ -93,7 +110,7 @@ class RegistrasiController extends Controller
     /**
      * Hapus registrasi (DELETE) beserta file di R2
      */
-    public function destroy(string $id): RedirectResponse
+    public function destroy(string $id, PublicRegistrantCache $cache): RedirectResponse
     {
         $registration = Registration::with('files')->findOrFail($id);
 
@@ -102,15 +119,35 @@ class RegistrasiController extends Controller
 
         // Hapus file fisik dari Cloudflare R2 dan Penyimpanan Lokal
         if (! empty($r2Keys)) {
-            Storage::disk('local')->delete($r2Keys);
-            Storage::disk('r2')->delete($r2Keys);
+            $localDeleted = Storage::disk('local')->delete($r2Keys);
+            $r2Deleted = Storage::disk('r2')->delete($r2Keys);
+
+            if (! $localDeleted || ! $r2Deleted) {
+                throw new RuntimeException('Sebagian berkas pendaftar gagal dihapus dari penyimpanan.');
+            }
         }
 
-        // Hapus record pendaftaran (file akan terhapus otomatis jika ada cascade, tapi kita hapus manual record filenya dulu biar aman)
-        $registration->files()->delete();
-        $registration->delete();
+        DB::transaction(function () use ($registration): void {
+            $registration->files()->delete();
+            $registration->delete();
+        });
+
+        $this->forgetPublicRegistrantCache($cache, $registration->id);
 
         return redirect()->route('registrasi.index')->with('success', 'Data pendaftar dan berkas berhasil dihapus.');
+    }
+
+    private function forgetPublicRegistrantCache(PublicRegistrantCache $cache, string $registrationId): void
+    {
+        try {
+            $cache->forget();
+        } catch (Throwable $exception) {
+            Log::warning('Cache daftar pendaftar belum dapat dibersihkan.', [
+                'registration_id' => $registrationId,
+                'exception' => $exception::class,
+            ]);
+            report($exception);
+        }
     }
 
     /**

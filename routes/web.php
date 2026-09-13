@@ -25,7 +25,7 @@ Route::get('/api/public/registrants', [PublicController::class, 'registrantsJson
 Route::get('/api/public/settings', [PublicController::class, 'settingsJson']);
 
 // ─── Dashboard (Auth Required) ───────────────────────────────────
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     // Dokumen pendaftaran lainnya hanya dapat dibaca admin.
     Route::get('/files/{file}', [FileController::class, 'show'])->name('files.show');
 

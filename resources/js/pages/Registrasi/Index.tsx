@@ -38,8 +38,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 type RegFile = {
     id: string;
     field_key: string;
-    file_name: string;
-    r2_key: string;
 };
 
 type Registrant = {

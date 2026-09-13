@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\PlainText;
+use App\Rules\SafeUploadedFile;
 use App\Rules\ValidTurnstile;
 use App\Services\TurnstileVerifier;
 use Illuminate\Foundation\Http\FormRequest;
@@ -43,14 +44,21 @@ class StoreRegistrationRequest extends FormRequest
             'birthDate' => ['required', 'date_format:Y-m-d', 'after_or_equal:1950-01-01', 'before:today'],
             'email' => ['required', 'email:rfc', 'max:150', 'regex:/^[^@]+@[^@]+\.[^@]+$/', 'unique:registrations,email'],
             'cf-turnstile-response' => $this->turnstileRules(),
-            'sertifikatMakesta' => ['required', 'file', 'mimes:pdf', 'max:10240'],
-            'sertifikatLakmud' => ['required', 'file', 'mimes:pdf', 'max:10240'],
-            'rekomendasi' => ['required', 'file', 'mimes:pdf', 'max:10240'],
-            'essay' => ['required', 'file', 'mimes:pdf', 'max:10240'],
-            'ktpKta' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'formulir' => ['required', 'file', 'mimes:pdf', 'max:10240'],
-            'paktaIntegritas' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:10240'],
-            'fotoFormal' => ['required', 'image', 'mimes:jpg,jpeg,png', 'max:10240'],
+            'sertifikatMakesta' => $this->pdfRules(),
+            'sertifikatLakmud' => $this->pdfRules(),
+            'rekomendasi' => $this->pdfRules(),
+            'essay' => $this->pdfRules(),
+            'ktpKta' => $this->documentOrImageRules(),
+            'formulir' => $this->pdfRules(),
+            'paktaIntegritas' => $this->documentOrImageRules(),
+            'fotoFormal' => [
+                'bail',
+                'required',
+                'image',
+                'mimes:jpg,jpeg,png',
+                'max:10240',
+                new SafeUploadedFile(['image/jpeg', 'image/png']),
+            ],
         ];
     }
 
@@ -109,6 +117,36 @@ class StoreRegistrationRequest extends FormRequest
             'string',
             'max:2048',
             new ValidTurnstile('registration'),
+        ];
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    private function pdfRules(): array
+    {
+        return [
+            'bail',
+            'required',
+            'file',
+            'mimes:pdf',
+            'max:10240',
+            new SafeUploadedFile(['application/pdf']),
+        ];
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    private function documentOrImageRules(): array
+    {
+        return [
+            'bail',
+            'required',
+            'file',
+            'mimes:pdf,jpg,jpeg,png',
+            'max:10240',
+            new SafeUploadedFile(['application/pdf', 'image/jpeg', 'image/png']),
         ];
     }
 }

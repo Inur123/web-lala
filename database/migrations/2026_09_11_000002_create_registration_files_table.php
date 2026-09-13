@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('r2_key');
             $table->integer('file_size')->nullable();
             $table->string('mime_type', 100)->nullable();
+            $table->string('upload_status', 20)->default('pending')->index();
+            $table->unsignedSmallInteger('upload_attempts')->default(0);
+            $table->text('upload_error')->nullable();
+            $table->timestamp('upload_attempted_at')->nullable();
+            $table->timestamp('uploaded_at')->nullable();
             $table->timestamps();
 
             $table->foreign('registration_id')

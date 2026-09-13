@@ -28,6 +28,9 @@ return new class extends Migration
             $table->text('screening_note')->nullable();
             $table->timestamp('screening_reviewed_at')->nullable();
             $table->timestamps();
+
+            $table->index('created_at');
+            $table->index(['admin_status', 'screening_status']);
         });
     }
 

@@ -29,11 +29,14 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="TRUSTED_PROXIES" value="127.0.0.1" force="true"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
         <env name="TURNSTILE_SITE_KEY" value="" force="true"/>
         <env name="TURNSTILE_SECRET_KEY" value="" force="true"/>
         <env name="TURNSTILE_ALLOWED_HOSTNAMES" value="localhost,127.0.0.1" force="true"/>
+        <env name="MALWARE_SCANNER_ENABLED" value="false" force="true"/>
+        <env name="MALWARE_SCANNER_REQUIRED" value="false" force="true"/>
     </php>
 </phpunit>
