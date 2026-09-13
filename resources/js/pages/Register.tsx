@@ -287,7 +287,10 @@ export default function Register({
             const response = await axios.post('/register', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
-            if (response.data.success) setSuccess(true);
+            if (response.data.success) {
+                toast.success('Pendaftaran berhasil dikirim!');
+                setSuccess(true);
+            }
         } catch (error: unknown) {
             const responseData = axios.isAxiosError(error)
                 ? error.response?.data
