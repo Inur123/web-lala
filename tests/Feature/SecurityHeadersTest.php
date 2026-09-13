@@ -16,7 +16,8 @@ class SecurityHeadersTest extends TestCase
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'SAMEORIGIN')
             ->assertHeader('X-XSS-Protection', '0')
-            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin')
+            ->assertHeader('Permissions-Policy', 'camera=(self), microphone=(), geolocation=()');
     }
 
     public function test_production_csp_allows_turnstile_only_on_required_directives(): void

@@ -7,6 +7,7 @@ import {
     Settings,
     ArrowRight,
     TrendingUp,
+    CalendarClock,
 } from 'lucide-react';
 import {
     Card,
@@ -33,9 +34,11 @@ type Registrant = {
 export default function Dashboard({
     registrants,
     registrationOpen,
+    totalSessions = 0,
 }: {
     registrants: Registrant[];
     registrationOpen: boolean;
+    totalSessions?: number;
 }) {
     const data = registrants;
 
@@ -92,7 +95,7 @@ export default function Dashboard({
                 </div>
 
                 {/* Grid Stats */}
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
@@ -159,6 +162,23 @@ export default function Dashboard({
                             </div>
                             <p className="text-muted-foreground mt-1 text-xs">
                                 Memerlukan review segera
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-muted-foreground text-sm font-medium">
+                                Total Sesi Absensi
+                            </CardTitle>
+                            <CalendarClock className="text-muted-foreground size-4" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-semibold tabular-nums">
+                                {totalSessions}
+                            </div>
+                            <p className="text-muted-foreground mt-1 text-xs">
+                                Total kegiatan sesi absensi
                             </p>
                         </CardContent>
                     </Card>
@@ -241,6 +261,17 @@ export default function Dashboard({
                                     <Link href="/registrasi">
                                         <ClipboardList className="mr-2 size-4" />
                                         Seleksi Administrasi & Screening
+                                        <ArrowRight className="ml-auto size-4" />
+                                    </Link>
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    className="w-full justify-start"
+                                    asChild
+                                >
+                                    <Link href="/absensi">
+                                        <CalendarClock className="mr-2 size-4" />
+                                        Kelola Absensi Peserta
                                         <ArrowRight className="ml-auto size-4" />
                                     </Link>
                                 </Button>

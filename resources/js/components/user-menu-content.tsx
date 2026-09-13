@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { UserInfo } from '@/components/user-info';
 import { useMobileNavigation } from '@/hooks/use-mobile-navigation';
+import { useSidebar } from '@/components/ui/sidebar';
 import { logout } from '@/routes';
 import type { User } from '@/types';
 
@@ -17,9 +18,20 @@ type Props = {
 
 export function UserMenuContent({ user }: Props) {
     const cleanup = useMobileNavigation();
+    const { isMobile, setOpenMobile } = useSidebar();
+
+    const handleSettingsClick = () => {
+        cleanup();
+        if (isMobile) {
+            setOpenMobile(false);
+        }
+    };
 
     const handleLogout = () => {
         cleanup();
+        if (isMobile) {
+            setOpenMobile(false);
+        }
         router.flushAll();
     };
 
@@ -36,7 +48,7 @@ export function UserMenuContent({ user }: Props) {
                     <Link
                         className="block w-full cursor-pointer"
                         href="/settings/profile"
-                        onClick={cleanup}
+                        onClick={handleSettingsClick}
                     >
                         <Settings className="mr-2" />
                         Pengaturan Akun

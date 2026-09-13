@@ -30,6 +30,17 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->respond(function ($response, $exception, Request $request) {
+            if ($response->getStatusCode() === 429 && $request->expectsJson()) {
+                $message = $request->routeIs('admin.absensi.scan')
+                    ? 'Terlalu banyak pemindaian. Tunggu sebentar lalu coba lagi.'
+                    : 'Terlalu banyak permintaan. Tunggu sebentar lalu coba lagi.';
+
+                return response()->json([
+                    'success' => false,
+                    'message' => $message,
+                ], 429, $response->headers->all());
+            }
+
             if (
                 $response->getStatusCode() === 429
                 && $request->header('X-Inertia')

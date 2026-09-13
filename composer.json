@@ -9,6 +9,9 @@
     ],
     "license": "MIT",
     "require": {
+        "bacon/bacon-qr-code": "^3.1",
+        "ext-gd": "*",
+        "ext-zip": "*",
         "php": "^8.3",
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/chisel": "^0.1.0",

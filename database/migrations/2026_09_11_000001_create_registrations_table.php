@@ -10,7 +10,8 @@ return new class extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 100);
+            $table->string('qr_token', 80)->unique();
+            $table->string('name', 150);
             $table->string('gender', 20);
             $table->string('delegation', 100);
             $table->text('reason');

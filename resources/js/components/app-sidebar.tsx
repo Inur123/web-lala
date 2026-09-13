@@ -1,8 +1,16 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, ClipboardList, Settings, Users } from 'lucide-react';
+import {
+    LayoutGrid,
+    ClipboardList,
+    Settings,
+    Users,
+    CalendarClock,
+    X,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
+import { Button } from '@/components/ui/button';
 import {
     Sidebar,
     SidebarContent,
@@ -11,6 +19,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import type { NavItem } from '@/types';
 
@@ -26,6 +35,11 @@ const mainNavItems: NavItem[] = [
         icon: ClipboardList,
     },
     {
+        title: 'Absensi Peserta',
+        href: '/absensi',
+        icon: CalendarClock,
+    },
+    {
         title: 'Pengaturan Portal',
         href: '/portal-settings',
         icon: Settings,
@@ -38,18 +52,43 @@ const mainNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { isMobile, setOpenMobile } = useSidebar();
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
-                            <Link href="/dashboard" prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <div className="flex items-center justify-between gap-2">
+                    <SidebarMenu className="flex-1">
+                        <SidebarMenuItem>
+                            <SidebarMenuButton size="lg" asChild>
+                                <Link
+                                    href="/dashboard"
+                                    prefetch
+                                    onClick={() => {
+                                        if (isMobile) {
+                                            setOpenMobile(false);
+                                        }
+                                    }}
+                                >
+                                    <AppLogo />
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+
+                    {isMobile && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setOpenMobile(false)}
+                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 active:scale-95"
+                            aria-label="Tutup menu sidebar"
+                        >
+                            <X className="h-5 w-5" />
+                        </Button>
+                    )}
+                </div>
             </SidebarHeader>
 
             <SidebarContent>

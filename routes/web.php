@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\AttendanceScanController;
+use App\Http\Controllers\Admin\AttendanceSessionController;
 use App\Http\Controllers\Admin\RegistrasiController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\DashboardController;
@@ -33,6 +35,7 @@ Route::middleware('auth')->group(function () {
 
     // Registrasi
     Route::get('/registrasi', [RegistrasiController::class, 'index'])->name('registrasi.index');
+    Route::get('/registrasi/download-qr-all', [RegistrasiController::class, 'downloadAllQr'])->name('registrasi.download-qr-all');
     Route::get('/registrasi/{id}', [RegistrasiController::class, 'show'])->name('registrasi.show');
     Route::patch('/registrasi/{id}', [RegistrasiController::class, 'update'])->name('registrasi.update');
     Route::delete('/registrasi/{id}', [RegistrasiController::class, 'destroy'])->name('registrasi.destroy');
@@ -41,8 +44,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/portal-settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/portal-settings', [SettingsController::class, 'update'])->name('settings.update');
 
+    // Absensi
+    Route::get('/absensi', [AttendanceSessionController::class, 'index'])->name('admin.absensi.index');
+    Route::post('/absensi', [AttendanceSessionController::class, 'store'])->name('admin.absensi.store');
+    Route::get('/absensi/{absensi}', [AttendanceSessionController::class, 'show'])->name('admin.absensi.show');
+    Route::get('/absensi/{absensi}/scan', [AttendanceSessionController::class, 'scanner'])->name('admin.absensi.scanner');
+    Route::post('/absensi/{absensi}/scan', [AttendanceScanController::class, 'store'])
+        ->middleware('throttle:attendance-scan')
+        ->name('admin.absensi.scan');
+    Route::delete('/absensi/{absensi}', [AttendanceSessionController::class, 'destroy'])->name('admin.absensi.destroy');
+
     // API Admin (JSON)
-    Route::get('/api/admin/registrasi', [RegistrasiController::class, 'apiIndex']);
     Route::get('/api/admin/settings', [SettingsController::class, 'apiIndex']);
 });
 

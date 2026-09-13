@@ -58,5 +58,12 @@ class AppServiceProvider extends ServiceProvider
             Limit::perMinute(3)->by('registration-minute|'.$request->ip()),
             Limit::perHour(10)->by('registration-hour|'.$request->ip()),
         ]);
+
+        RateLimiter::for('attendance-scan', fn (Request $request): array => [
+            Limit::perMinute(60)
+                ->by('attendance-scan-user|'.$request->user()?->getAuthIdentifier()),
+            Limit::perMinute(90)
+                ->by('attendance-scan-ip|'.$request->ip()),
+        ]);
     }
 }

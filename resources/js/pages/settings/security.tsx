@@ -97,6 +97,7 @@ export default function Security({ passwordRules }: { passwordRules: string }) {
                                 <Button
                                     disabled={processing}
                                     data-test="update-password-button"
+                                    className="w-full sm:w-auto"
                                 >
                                     Simpan Kata Sandi
                                 </Button>

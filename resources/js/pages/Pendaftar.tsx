@@ -151,7 +151,7 @@ export default function Pendaftar() {
 
                 <header className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
                     <div className="flex items-center gap-4">
-                        <AppLogoIcon className="bg-card size-14 shrink-0 rounded-xl border p-1.5" />
+                        <AppLogoIcon className="size-14 shrink-0 object-contain" />
                         <div>
                             <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
                                 Data Pendaftar

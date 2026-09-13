@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Head, router, Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { toast } from 'sonner';
 import {
     BadgeCheck,
@@ -8,12 +8,14 @@ import {
     Clock3,
     Eye,
     FileDown,
-    RefreshCw,
+    QrCode,
+    Loader2,
     UserCheck,
     Users,
     UserX,
 } from 'lucide-react';
 import { fileUrl } from '@/lib/file-url';
+import { formatDate } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -86,18 +88,28 @@ export default function RegistrasiIndex({
     registrants: Registrant[];
 }) {
     const [activeTab, setActiveTab] = useState<Stage>('administrasi');
-    const [refreshing, setRefreshing] = useState(false);
+    const [isDownloadingAllQr, setIsDownloadingAllQr] = useState(false);
     const data = registrants;
 
-    const handleRefresh = () => {
-        setRefreshing(true);
-        router.reload({
-            only: ['registrants'],
-            onFinish: () => {
-                setRefreshing(false);
-                toast.success('Data berhasil diperbarui');
-            },
-        });
+    const handleDownloadAllQr = () => {
+        const lolosCount = registrants.filter(
+            (r) => r.screening_status === 'lolos',
+        ).length;
+        if (lolosCount === 0) {
+            toast.error('Belum ada peserta dengan status lolos screening.');
+            return;
+        }
+
+        setIsDownloadingAllQr(true);
+        toast.info(
+            `Menyiapkan ${lolosCount} QR Code peserta lolos screening...`,
+        );
+
+        window.location.href = '/registrasi/download-qr-all';
+
+        setTimeout(() => {
+            setIsDownloadingAllQr(false);
+        }, 2500);
     };
 
     const filteredData =
@@ -142,13 +154,7 @@ export default function RegistrasiIndex({
                 'Status Screening':
                     STATUS_LABEL[item.screening_status] ||
                     item.screening_status,
-                'Tanggal Mendaftar': new Date(
-                    item.created_at,
-                ).toLocaleDateString('id-ID', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                }),
+                'Tanggal Mendaftar': formatDate(item.created_at, 'long'),
             });
 
             const allPendaftar = data;
@@ -424,11 +430,11 @@ export default function RegistrasiIndex({
                     workbook,
                     `Data_Seleksi_Latin_Latpel_${new Date().getFullYear()}.xlsx`,
                 );
-                toast.success('Berhasil mengexport data Excel.');
+                toast.success('Berhasil mengekspor data Excel.');
             });
         } catch (err) {
             console.error(err);
-            toast.error('Gagal mengexport data ke Excel.');
+            toast.error('Gagal mengekspor data ke Excel.');
         }
     };
 
@@ -486,21 +492,25 @@ export default function RegistrasiIndex({
                             LATIN & LATPEL 2026.
                         </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <Button onClick={handleExportExcel}>
-                            <FileDown /> Export Excel
+                    <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row sm:items-center">
+                        <Button
+                            onClick={handleExportExcel}
+                            className="w-full justify-center sm:w-auto"
+                        >
+                            <FileDown className="mr-2 h-4 w-4" /> Ekspor Excel
                         </Button>
                         <Button
                             variant="outline"
-                            onClick={handleRefresh}
-                            disabled={refreshing}
+                            onClick={handleDownloadAllQr}
+                            disabled={isDownloadingAllQr}
+                            className="w-full justify-center border-emerald-200 bg-emerald-50/80 font-medium text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 sm:w-auto"
                         >
-                            <RefreshCw
-                                className={
-                                    refreshing ? 'animate-spin' : undefined
-                                }
-                            />
-                            Perbarui
+                            {isDownloadingAllQr ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <QrCode className="mr-2 h-4 w-4 text-emerald-600" />
+                            )}
+                            Unduh Semua QR (Lolos)
                         </Button>
                     </div>
                 </div>
@@ -534,19 +544,35 @@ export default function RegistrasiIndex({
                     onValueChange={(value) => setActiveTab(value as Stage)}
                     className="space-y-4"
                 >
-                    <TabsList>
-                        <TabsTrigger value="administrasi">
-                            <ClipboardList /> Seleksi Administrasi
+                    <TabsList className="grid w-full grid-cols-2 sm:inline-flex sm:w-auto">
+                        <TabsTrigger
+                            value="administrasi"
+                            className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs sm:py-1 sm:text-sm"
+                        >
+                            <ClipboardList className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+                            <span className="truncate">
+                                Seleksi Administrasi
+                            </span>
                             {adminPending > 0 ? (
-                                <Badge variant="secondary">
+                                <Badge
+                                    variant="secondary"
+                                    className="ml-1 px-1.5 py-0 text-[10px]"
+                                >
                                     {adminPending}
                                 </Badge>
                             ) : null}
                         </TabsTrigger>
-                        <TabsTrigger value="screening">
-                            <Users /> Seleksi Screening
+                        <TabsTrigger
+                            value="screening"
+                            className="flex items-center justify-center gap-1.5 px-3 py-2 text-xs sm:py-1 sm:text-sm"
+                        >
+                            <Users className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" />
+                            <span className="truncate">Seleksi Screening</span>
                             {screeningPending > 0 ? (
-                                <Badge variant="secondary">
+                                <Badge
+                                    variant="secondary"
+                                    className="ml-1 px-1.5 py-0 text-[10px]"
+                                >
                                     {screeningPending}
                                 </Badge>
                             ) : null}
@@ -667,15 +693,9 @@ export default function RegistrasiIndex({
                                                             }
                                                         </TableCell>
                                                         <TableCell className="text-muted-foreground">
-                                                            {new Date(
+                                                            {formatDate(
                                                                 registrant.created_at,
-                                                            ).toLocaleDateString(
-                                                                'id-ID',
-                                                                {
-                                                                    day: '2-digit',
-                                                                    month: 'short',
-                                                                    year: 'numeric',
-                                                                },
+                                                                'short',
                                                             )}
                                                         </TableCell>
                                                         <TableCell>

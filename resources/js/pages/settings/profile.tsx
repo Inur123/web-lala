@@ -63,6 +63,7 @@ export default function Profile() {
                                 <Button
                                     disabled={processing}
                                     data-test="update-profile-button"
+                                    className="w-full sm:w-auto"
                                 >
                                     Simpan Profil
                                 </Button>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AttendanceSession;
 use App\Models\Registration;
 use App\Models\SystemSetting;
 use Inertia\Inertia;
@@ -20,10 +21,12 @@ class DashboardController extends Controller
             ->get();
 
         $isOpen = SystemSetting::getValue('registration_open', 'true') === 'true';
+        $totalSessions = AttendanceSession::count();
 
         return Inertia::render('Dashboard/Index', [
             'registrants' => $registrants,
             'registrationOpen' => $isOpen,
+            'totalSessions' => $totalSessions,
         ]);
     }
 }

@@ -27,6 +27,7 @@ void createInertiaApp({
         if (
             name.startsWith('Dashboard/') ||
             name.startsWith('Registrasi/') ||
+            name.startsWith('Absensi/') ||
             name.startsWith('PortalSettings/') ||
             name === 'dashboard'
         ) {

@@ -8,6 +8,8 @@ import {
     ChevronLeft,
     FileText,
     ExternalLink,
+    Download,
+    Trash2,
 } from 'lucide-react';
 import {
     Dialog,
@@ -21,6 +23,10 @@ import {
 } from '@/components/ui/dialog';
 import axios from 'axios';
 import { fileUrl } from '@/lib/file-url';
+import { formatDate } from '@/lib/utils';
+import QRCode from 'react-qr-code';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 type RegFile = {
     id: string;
@@ -43,6 +49,7 @@ type Registrant = {
     admin_reviewed_at: string | null;
     screening_status: 'pending' | 'lolos' | 'ditolak';
     screening_reviewed_at: string | null;
+    qr_token?: string;
     created_at: string;
     files?: RegFile[];
 };
@@ -118,12 +125,93 @@ export default function RegistrasiShow({
             },
         });
     };
+    const [isDownloading, setIsDownloading] = useState(false);
+
+    const getVectorQrImage = (
+        svgElement: SVGSVGElement,
+        size: number,
+    ): Promise<HTMLImageElement> => {
+        return new Promise((resolve, reject) => {
+            const clonedSvg = svgElement.cloneNode(true) as SVGSVGElement;
+            clonedSvg.setAttribute('width', size.toString());
+            clonedSvg.setAttribute('height', size.toString());
+            if (!clonedSvg.getAttribute('viewBox')) {
+                clonedSvg.setAttribute('viewBox', '0 0 256 256');
+            }
+
+            const svgData = new XMLSerializer().serializeToString(clonedSvg);
+            const svgBlob = new Blob([svgData], {
+                type: 'image/svg+xml;charset=utf-8',
+            });
+            const blobUrl = URL.createObjectURL(svgBlob);
+            const img = new Image();
+            img.onload = () => {
+                URL.revokeObjectURL(blobUrl);
+                resolve(img);
+            };
+            img.onerror = (e) => {
+                URL.revokeObjectURL(blobUrl);
+                reject(e);
+            };
+            img.src = blobUrl;
+        });
+    };
+
+    const downloadQRCode = async () => {
+        const svg = document.querySelector(
+            '#qr-code-svg svg',
+        ) as SVGSVGElement | null;
+        if (!svg) {
+            toast.error('QR Code tidak ditemukan.');
+            return;
+        }
+
+        setIsDownloading(true);
+        try {
+            // Ultra HD square canvas: 1200 x 1200 px
+            const canvasSize = 1200;
+            const margin = 100;
+            const qrSize = canvasSize - margin * 2; // 1000 x 1000 px
+
+            const canvas = document.createElement('canvas');
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+
+            // Pure clean white background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+            // Pure sharp vector QR Code, centered with margin, NO text underneath
+            const qrImg = await getVectorQrImage(svg, qrSize);
+            ctx.drawImage(qrImg, margin, margin, qrSize, qrSize);
+
+            // Export PNG
+            const pngFile = canvas.toDataURL('image/png', 1.0);
+            const downloadLink = document.createElement('a');
+            const safeName = registrant.name
+                .replace(/[^a-z0-9]/gi, '_')
+                .toLowerCase();
+            const safeDelegation = registrant.delegation
+                .replace(/[^a-z0-9]/gi, '_')
+                .toLowerCase();
+            downloadLink.download = `${safeName}_${safeDelegation}_qrcode.png`;
+            downloadLink.href = pngFile;
+            downloadLink.click();
+            toast.success('QR Code berhasil diunduh');
+        } catch {
+            toast.error('Gagal mengunduh QR Code.');
+        } finally {
+            setIsDownloading(false);
+        }
+    };
 
     return (
         <>
             <Head title={`Detail - ${registrant.name}`} />
 
-            <div className="max-w-6xl space-y-6 p-6">
+            <div className="max-w-6xl space-y-6 p-4 sm:p-6">
                 {/* Back & Header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">
@@ -144,37 +232,42 @@ export default function RegistrasiShow({
                         </div>
                     </div>
 
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <button className="flex h-9 items-center justify-center gap-2 rounded-xl bg-red-50 px-4 text-xs font-semibold text-red-600 shadow-sm transition-colors hover:bg-red-100">
-                                Hapus Data
-                            </button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Hapus Pendaftar?</DialogTitle>
-                                <DialogDescription>
-                                    Apakah Anda yakin ingin menghapus pendaftar
-                                    ini? Tindakan ini tidak dapat dibatalkan dan
-                                    semua berkas yang terunggah di penyimpanan
-                                    (Cloudflare R2) akan dihapus permanen.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
-                                <DialogClose asChild>
-                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
-                                        Batal
-                                    </button>
-                                </DialogClose>
-                                <button
-                                    onClick={handleDelete}
-                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
+                    <div className="flex w-full sm:w-auto">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    className="h-10 w-full justify-center rounded-xl border border-red-100/80 bg-red-50 px-4 font-medium text-red-600 hover:bg-red-100 hover:text-red-700 sm:w-auto"
                                 >
-                                    Ya, Hapus Data
-                                </button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                                    <Trash2 className="mr-2 h-4 w-4" />
+                                    Hapus Data
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Hapus Pendaftar?</DialogTitle>
+                                    <DialogDescription>
+                                        Apakah Anda yakin ingin menghapus
+                                        pendaftar ini? Tindakan ini tidak dapat
+                                        dibatalkan dan semua berkas yang
+                                        terunggah di penyimpanan (Cloudflare R2)
+                                        akan dihapus permanen.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <DialogFooter>
+                                    <DialogClose asChild>
+                                        <Button variant="outline">Batal</Button>
+                                    </DialogClose>
+                                    <Button
+                                        onClick={handleDelete}
+                                        variant="destructive"
+                                    >
+                                        Ya, Hapus Data
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -242,15 +335,9 @@ export default function RegistrasiShow({
                                             </span>
                                             <span className="font-semibold text-gray-800">
                                                 {registrant.birth_date ? (
-                                                    new Date(
+                                                    formatDate(
                                                         registrant.birth_date,
-                                                    ).toLocaleDateString(
-                                                        'id-ID',
-                                                        {
-                                                            day: '2-digit',
-                                                            month: 'long',
-                                                            year: 'numeric',
-                                                        },
+                                                        'long',
                                                     )
                                                 ) : (
                                                     <span className="text-gray-300">
@@ -418,13 +505,14 @@ export default function RegistrasiShow({
                                 <div className="flex gap-2">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button
+                                            <Button
+                                                type="button"
                                                 disabled={
                                                     registrant.admin_status ===
                                                         'lolos' ||
                                                     updating !== null
                                                 }
-                                                className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-emerald-700 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="flex-1 bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800"
                                             >
                                                 {updating === 'admin-lolos' ? (
                                                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -432,7 +520,7 @@ export default function RegistrasiShow({
                                                     <Check className="h-3.5 w-3.5" />
                                                 )}
                                                 Terima
-                                            </button>
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
@@ -449,36 +537,40 @@ export default function RegistrasiShow({
                                                     ?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                                            <DialogFooter>
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
+                                                    <Button variant="outline">
                                                         Batal
-                                                    </button>
+                                                    </Button>
                                                 </DialogClose>
-                                                <button
-                                                    onClick={() =>
-                                                        handleUpdate(
-                                                            'admin',
-                                                            'lolos',
-                                                        )
-                                                    }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none"
-                                                >
-                                                    Ya, Loloskan
-                                                </button>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        onClick={() =>
+                                                            handleUpdate(
+                                                                'admin',
+                                                                'lolos',
+                                                            )
+                                                        }
+                                                        className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                                    >
+                                                        Ya, Loloskan
+                                                    </Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
 
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
                                                 disabled={
                                                     registrant.admin_status ===
                                                         'ditolak' ||
                                                     updating !== null
                                                 }
-                                                className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-red-600 py-2 text-xs font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="flex-1 text-xs font-bold"
                                             >
                                                 {updating ===
                                                 'admin-ditolak' ? (
@@ -487,7 +579,7 @@ export default function RegistrasiShow({
                                                     <X className="h-3.5 w-3.5" />
                                                 )}
                                                 Tolak
-                                            </button>
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
@@ -504,23 +596,25 @@ export default function RegistrasiShow({
                                                     ?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                                            <DialogFooter>
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
+                                                    <Button variant="outline">
                                                         Batal
-                                                    </button>
+                                                    </Button>
                                                 </DialogClose>
-                                                <button
-                                                    onClick={() =>
-                                                        handleUpdate(
-                                                            'admin',
-                                                            'ditolak',
-                                                        )
-                                                    }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
-                                                >
-                                                    Ya, Tolak
-                                                </button>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        variant="destructive"
+                                                        onClick={() =>
+                                                            handleUpdate(
+                                                                'admin',
+                                                                'ditolak',
+                                                            )
+                                                        }
+                                                    >
+                                                        Ya, Tolak
+                                                    </Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
@@ -535,7 +629,8 @@ export default function RegistrasiShow({
                                 <div className="flex gap-2">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button
+                                            <Button
+                                                type="button"
                                                 disabled={
                                                     registrant.admin_status !==
                                                         'lolos' ||
@@ -543,7 +638,7 @@ export default function RegistrasiShow({
                                                         'lolos' ||
                                                     updating !== null
                                                 }
-                                                className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-emerald-700 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="flex-1 bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800"
                                             >
                                                 {updating ===
                                                 'screening-lolos' ? (
@@ -552,7 +647,7 @@ export default function RegistrasiShow({
                                                     <Check className="h-3.5 w-3.5" />
                                                 )}
                                                 Terima
-                                            </button>
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
@@ -568,30 +663,34 @@ export default function RegistrasiShow({
                                                     wawancara/screening?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                                            <DialogFooter>
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
+                                                    <Button variant="outline">
                                                         Batal
-                                                    </button>
+                                                    </Button>
                                                 </DialogClose>
-                                                <button
-                                                    onClick={() =>
-                                                        handleUpdate(
-                                                            'screening',
-                                                            'lolos',
-                                                        )
-                                                    }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus:ring-2 focus:ring-emerald-700 focus:ring-offset-2 focus:outline-none"
-                                                >
-                                                    Ya, Loloskan
-                                                </button>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        onClick={() =>
+                                                            handleUpdate(
+                                                                'screening',
+                                                                'lolos',
+                                                            )
+                                                        }
+                                                        className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                                    >
+                                                        Ya, Loloskan
+                                                    </Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
 
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <button
+                                            <Button
+                                                type="button"
+                                                variant="destructive"
                                                 disabled={
                                                     registrant.admin_status !==
                                                         'lolos' ||
@@ -599,7 +698,7 @@ export default function RegistrasiShow({
                                                         'ditolak' ||
                                                     updating !== null
                                                 }
-                                                className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1.5 rounded-lg border-0 bg-red-600 py-2 text-xs font-bold text-white transition-colors hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                                                className="flex-1 text-xs font-bold"
                                             >
                                                 {updating ===
                                                 'screening-ditolak' ? (
@@ -608,7 +707,7 @@ export default function RegistrasiShow({
                                                     <X className="h-3.5 w-3.5" />
                                                 )}
                                                 Tolak
-                                            </button>
+                                            </Button>
                                         </DialogTrigger>
                                         <DialogContent>
                                             <DialogHeader>
@@ -624,23 +723,25 @@ export default function RegistrasiShow({
                                                     pada tahap screening?
                                                 </DialogDescription>
                                             </DialogHeader>
-                                            <DialogFooter className="mt-4 gap-2 sm:gap-0">
+                                            <DialogFooter>
                                                 <DialogClose asChild>
-                                                    <button className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-100 focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:outline-none">
+                                                    <Button variant="outline">
                                                         Batal
-                                                    </button>
+                                                    </Button>
                                                 </DialogClose>
-                                                <button
-                                                    onClick={() =>
-                                                        handleUpdate(
-                                                            'screening',
-                                                            'ditolak',
-                                                        )
-                                                    }
-                                                    className="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 focus:ring-2 focus:ring-red-600 focus:ring-offset-2 focus:outline-none"
-                                                >
-                                                    Ya, Tolak
-                                                </button>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        variant="destructive"
+                                                        onClick={() =>
+                                                            handleUpdate(
+                                                                'screening',
+                                                                'ditolak',
+                                                            )
+                                                        }
+                                                    >
+                                                        Ya, Tolak
+                                                    </Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
@@ -653,6 +754,45 @@ export default function RegistrasiShow({
                                 )}
                             </div>
                         </div>
+
+                        {/* Panel QR Code */}
+                        {registrant.qr_token && (
+                            <Card className="gap-0 overflow-hidden py-0">
+                                <CardHeader className="border-b py-4">
+                                    <CardTitle className="text-xs tracking-wider uppercase">
+                                        QR Code Absensi
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex flex-col items-center justify-center space-y-4 py-5">
+                                    <div className="group relative rounded-2xl border border-gray-200 bg-white p-3 shadow-sm">
+                                        <div id="qr-code-svg">
+                                            <QRCode
+                                                value={registrant.qr_token}
+                                                size={180}
+                                                level="H"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Download Action Button */}
+                                    <div className="w-full pt-1">
+                                        <Button
+                                            onClick={downloadQRCode}
+                                            disabled={isDownloading}
+                                            variant="default"
+                                            className="h-10 w-full rounded-xl bg-emerald-600 font-semibold text-white shadow-sm hover:bg-emerald-700"
+                                        >
+                                            {isDownloading ? (
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            ) : (
+                                                <Download className="mr-2 h-4 w-4" />
+                                            )}
+                                            Unduh QR Code (HD)
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
                     </div>
                 </div>
             </div>

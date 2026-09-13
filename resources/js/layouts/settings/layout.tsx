@@ -27,20 +27,28 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
 
             <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
                 <nav
-                    className="flex w-full gap-2 lg:w-52 lg:flex-col"
+                    className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto lg:w-52 lg:flex-col"
                     aria-label="Pengaturan akun"
                 >
                     {navigation.map((item) => (
                         <Button
                             key={item.href}
                             variant="ghost"
-                            className={cn('justify-start', {
-                                'bg-muted': isCurrentOrParentUrl(item.href),
-                            })}
+                            className={cn(
+                                'h-10 w-full justify-center sm:justify-start lg:w-full',
+                                {
+                                    'bg-muted font-semibold':
+                                        isCurrentOrParentUrl(item.href),
+                                },
+                            )}
                             asChild
                         >
-                            <Link href={item.href}>
-                                <item.icon /> {item.title}
+                            <Link
+                                href={item.href}
+                                className="flex items-center justify-center gap-2 sm:justify-start"
+                            >
+                                <item.icon className="h-4 w-4 shrink-0" />
+                                <span>{item.title}</span>
                             </Link>
                         </Button>
                     ))}

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Registration extends Model
 {
@@ -12,6 +13,12 @@ class Registration extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (Registration $registration): void {
+            if (blank($registration->qr_token)) {
+                $registration->qr_token = 'lala-2026-'.Str::upper(Str::random(32));
+            }
+        });
+
         static::saving(function (Registration $registration): void {
             if ($registration->admin_status === 'ditolak') {
                 $registration->screening_status = 'ditolak';
@@ -58,5 +65,13 @@ class Registration extends Model
     public function files(): HasMany
     {
         return $this->hasMany(RegistrationFile::class);
+    }
+
+    /**
+     * @return HasMany<Attendance, $this>
+     */
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(Attendance::class);
     }
 }
