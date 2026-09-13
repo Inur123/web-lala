@@ -27,8 +27,6 @@ class PublicRegistrationTest extends TestCase
 
         $registration = Registration::query()->firstOrFail();
 
-        $this->assertNull($registration->sleeve_type);
-        $this->assertNull($registration->shirt_size);
         $this->assertCount(8, $registration->files);
         $this->assertFalse($registration->files->contains('field_key', 'buktiBayar'));
 

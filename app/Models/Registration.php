@@ -39,10 +39,8 @@ class Registration extends Model
         'birth_date',
         'email',
         'admin_status',
-        'admin_note',
         'admin_reviewed_at',
         'screening_status',
-        'screening_note',
         'screening_reviewed_at',
     ];
 

@@ -14,18 +14,14 @@ return new class extends Migration
             $table->string('gender', 20);
             $table->string('delegation', 100);
             $table->text('reason');
-            $table->string('shirt_size', 10)->nullable();
-            $table->string('sleeve_type', 20)->nullable();
             $table->string('whatsapp', 30)->nullable();
             $table->string('birth_date', 20)->nullable();
             $table->string('email', 150)->unique();
             // Tahap 1: Seleksi Administrasi
             $table->enum('admin_status', ['pending', 'lolos', 'ditolak'])->default('pending');
-            $table->text('admin_note')->nullable();
             $table->timestamp('admin_reviewed_at')->nullable();
             // Tahap 2: Seleksi Screening
             $table->enum('screening_status', ['pending', 'lolos', 'ditolak'])->default('pending');
-            $table->text('screening_note')->nullable();
             $table->timestamp('screening_reviewed_at')->nullable();
             $table->timestamps();
 
