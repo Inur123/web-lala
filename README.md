@@ -11,7 +11,7 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.3.1"><img src="https://img.shields.io/badge/Rilis-v1.3.1-166534.svg?style=flat" alt="Rilis v1.3.1" /></a>
+  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/Rilis-v1.3.2-166534.svg?style=flat" alt="Rilis v1.3.2" /></a>
   <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-13-FF2D20.svg?style=flat&logo=laravel&logoColor=white" alt="Laravel" /></a>
   <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61DAFB.svg?style=flat&logo=react&logoColor=black" alt="React" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6.svg?style=flat&logo=typescript&logoColor=white" alt="TypeScript" /></a>
@@ -53,9 +53,9 @@ Sistem ini memastikan pengumpulan data peserta, unggahan berkas administratif, h
 
 ## 🚀 Rilis Saat Ini
 
-Versi stabil terbaru adalah **v1.3.1 — Autentikasi Admin Ringkas**.
+Versi stabil terbaru adalah **v1.3.2 — Pembersihan Struktur Proyek**.
 
-Rilis ini mencakup pengelolaan sesi absensi, pemindai QR berbasis kamera, sinkronisasi peserta lolos, unduhan QR massal, dan pengamanan konkurensi. Autentikasi admin menggunakan alur login Laravel yang ringkas dengan Turnstile dan rate limiter, tanpa pemulihan kata sandi melalui email maupun passkey. Struktur database fitur sudah disatukan ke migration `create` agar lingkungan pengembangan dapat dibangun ulang menggunakan `migrate:fresh`.
+Rilis ini mempertahankan seluruh fitur pendaftaran, seleksi, dan absensi QR dari v1.3.1 sambil membersihkan halaman contoh, layout alternatif, komponen UI, aset, serta dependensi yang tidak lagi digunakan. Sisa struktur two-factor dari starter kit juga dihapus karena autentikasi admin menggunakan alur login Laravel yang ringkas dengan Turnstile dan rate limiter. Struktur database tetap dapat dibangun ulang menggunakan `migrate:fresh`.
 
 ---
 

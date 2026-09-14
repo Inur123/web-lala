@@ -7,7 +7,7 @@ import PublicLayout from '@/layouts/public-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
-const publicPages = new Set(['Landing', 'Pendaftar', 'Register', 'welcome']);
+const publicPages = new Set(['Landing', 'Pendaftar', 'Register']);
 
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
@@ -28,8 +28,7 @@ void createInertiaApp({
             name.startsWith('Dashboard/') ||
             name.startsWith('Registrasi/') ||
             name.startsWith('Absensi/') ||
-            name.startsWith('PortalSettings/') ||
-            name === 'dashboard'
+            name.startsWith('PortalSettings/')
         ) {
             return AppLayout;
         }
