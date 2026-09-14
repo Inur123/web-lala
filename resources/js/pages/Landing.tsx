@@ -172,9 +172,17 @@ export default function Landing() {
                     </div>
 
                     <Separator className="my-5 bg-white/10" />
-                    <p className="text-xs text-green-100/50">
-                        © 2026 PC IPNU IPPNU Kabupaten Magetan
-                    </p>
+                    <div className="flex items-center justify-between gap-4">
+                        <p className="text-xs text-green-100/50">
+                            © 2026 PC IPNU IPPNU Kabupaten Magetan
+                        </p>
+                        <Link
+                            href="/login"
+                            className="text-xs font-medium text-green-100/50 transition-colors hover:text-green-100"
+                        >
+                            Login
+                        </Link>
+                    </div>
                 </div>
             </footer>
         </div>
