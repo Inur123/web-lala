@@ -9,6 +9,18 @@ import SettingsLayout from '@/layouts/settings/layout';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 const publicPages = new Set(['Landing', 'Pendaftar', 'Register']);
 
+declare global {
+    interface Window {
+        deferredPrompt: any;
+    }
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    window.deferredPrompt = e;
+    window.dispatchEvent(new Event('pwa-installable'));
+});
+
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {

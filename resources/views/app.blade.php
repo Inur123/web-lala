@@ -12,8 +12,10 @@
             }
         </style>
 
+        <meta name="theme-color" content="#ffffff">
+        <link rel="manifest" href="/build/manifest.webmanifest">
         <link rel="icon" href="/images/logo-lala.png" type="image/png">
-        <link rel="apple-touch-icon" href="/images/logo-lala.png">
+        <link rel="apple-touch-icon" href="/images/pwa-192x192.png">
 
         @fonts
 

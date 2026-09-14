@@ -6,6 +6,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { bunny } from 'laravel-vite-plugin/fonts';
 import { defineConfig, lazyPlugins } from 'vite-plus';
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
     plugins: lazyPlugins(() => [
@@ -26,6 +27,35 @@ export default defineConfig({
         tailwindcss(),
         wayfinder({
             formVariants: true,
+        }),
+        VitePWA({
+            outDir: 'public/build',
+            buildBase: '/build/',
+            injectRegister: 'auto',
+            manifest: {
+                name: 'LATIN LATPEL 2026',
+                short_name: 'LATIN',
+                description: 'Pendaftaran dan Absensi LATIN LATPEL 2026',
+                theme_color: '#ffffff',
+                background_color: '#ffffff',
+                display: 'standalone',
+                icons: [
+                    {
+                        src: '/images/pwa-192x192.png',
+                        sizes: '192x192',
+                        type: 'image/png'
+                    },
+                    {
+                        src: '/images/pwa-512x512.png',
+                        sizes: '512x512',
+                        type: 'image/png'
+                    }
+                ]
+            },
+            workbox: {
+                navigateFallback: null,
+                globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}']
+            }
         }),
     ]),
     server: {

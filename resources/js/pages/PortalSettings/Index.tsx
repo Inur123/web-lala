@@ -4,11 +4,14 @@ import axios from 'axios';
 import {
     ArrowUpRight,
     CalendarDays,
+    Smartphone,
+    Info,
     Loader2,
     ShieldCheck,
     Users,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { usePwaInstall } from '@/hooks/use-pwa-install';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -29,6 +32,7 @@ export default function PortalSettings({
 }) {
     const [isOpen, setIsOpen] = useState(initialIsOpen);
     const [saving, setSaving] = useState(false);
+    const { isInstallable, isIos, isStandalone, promptInstall } = usePwaInstall();
 
     const handleToggle = async (nextState: boolean) => {
         setSaving(true);
@@ -168,6 +172,39 @@ export default function PortalSettings({
                         </Button>
                     </CardContent>
                 </Card>
+
+                {/* Aplikasi Mobile (PWA) Settings Card */}
+                {!isStandalone && (isInstallable || isIos) && (
+                    <Card className="gap-4 py-5">
+                        <CardHeader className="px-5 pb-0">
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Smartphone className="size-4" />
+                                Aplikasi Mobile (PWA)
+                            </CardTitle>
+                            <CardDescription>
+                                Instal website ini sebagai aplikasi di perangkat Anda untuk akses yang lebih cepat.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="px-5 pt-4">
+                            {isIos ? (
+                                <Alert className="border-blue-200 bg-blue-50 text-blue-800">
+                                    <Info className="size-4" />
+                                    <AlertTitle>Panduan Pengguna iOS</AlertTitle>
+                                    <AlertDescription>
+                                        Untuk menginstal di iPhone/iPad, tekan ikon <strong>Share</strong> di bagian bawah Safari, lalu pilih <strong>Add to Home Screen</strong>.
+                                    </AlertDescription>
+                                </Alert>
+                            ) : isInstallable ? (
+                                <Button 
+                                    onClick={promptInstall}
+                                    className="h-11 w-full rounded-xl sm:w-auto"
+                                >
+                                    Instal Aplikasi
+                                </Button>
+                            ) : null}
+                        </CardContent>
+                    </Card>
+                )}
             </div>
         </>
     );
