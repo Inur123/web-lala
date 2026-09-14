@@ -242,7 +242,7 @@ export default function Dashboard({
                     </Card>
 
                     {/* Shortcuts / Quick Actions */}
-                    <Card className="flex flex-col justify-between md:col-span-2 lg:col-span-3">
+                    <Card className="hidden flex-col justify-between md:col-span-2 md:flex lg:col-span-3">
                         <div>
                             <CardHeader>
                                 <CardTitle>Aksi Cepat Admin</CardTitle>
