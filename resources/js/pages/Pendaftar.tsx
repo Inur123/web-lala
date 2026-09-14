@@ -232,7 +232,6 @@ export default function Pendaftar() {
                                                                 </p>
                                                                 <div className="mt-1 flex flex-wrap items-center gap-1.5">
                                                                     <p className="text-muted-foreground text-xs">
-                                                                        {index + 1}.{' '}
                                                                         {registrant.gender === 'Laki-laki' || registrant.gender === 'l' ? 'Laki-laki (IPNU)' : 'Perempuan (IPPNU)'}
                                                                     </p>
                                                                     <span className="text-muted-foreground text-[10px]">•</span>

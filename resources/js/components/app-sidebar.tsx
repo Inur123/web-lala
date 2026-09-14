@@ -28,7 +28,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Seleksi Peserta',
-        href: '/registrasi',
+        href: '/seleksi',
         icon: ClipboardList,
     },
     {

@@ -257,7 +257,7 @@ export default function Dashboard({
                                     className="w-full justify-start"
                                     asChild
                                 >
-                                    <Link href="/registrasi">
+                                    <Link href="/seleksi">
                                         <ClipboardList className="mr-2 size-4" />
                                         Seleksi Administrasi & Screening
                                         <ArrowRight className="ml-auto size-4" />

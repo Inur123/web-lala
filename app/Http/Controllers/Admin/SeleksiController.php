@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Throwable;
 use ZipArchive;
 
-class RegistrasiController extends Controller
+class SeleksiController extends Controller
 {
     /**
      * Halaman daftar registrasi (Inertia)
@@ -44,7 +44,7 @@ class RegistrasiController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return Inertia::render('Registrasi/Index', [
+        return Inertia::render('Seleksi/Index', [
             'registrants' => $data,
         ]);
     }
@@ -56,7 +56,7 @@ class RegistrasiController extends Controller
     {
         $registrant = Registration::with('files')->findOrFail($id);
 
-        return Inertia::render('Registrasi/Show', [
+        return Inertia::render('Seleksi/Show', [
             'registrant' => $registrant,
         ]);
     }
@@ -154,7 +154,7 @@ class RegistrasiController extends Controller
 
         $this->forgetPublicRegistrantCache($cache, $registration->id);
 
-        return redirect()->route('registrasi.index')->with('success', 'Data pendaftar dan berkas berhasil dihapus.');
+        return redirect()->route('seleksi.index')->with('success', 'Data pendaftar dan berkas berhasil dihapus.');
     }
 
     private function forgetPublicRegistrantCache(PublicRegistrantCache $cache, string $registrationId): void

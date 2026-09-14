@@ -105,7 +105,7 @@ export default function RegistrasiIndex({
             `Menyiapkan ${lolosCount} QR Code peserta lolos screening...`,
         );
 
-        window.location.href = '/registrasi/download-qr-all';
+        window.location.href = '/seleksi/download-qr-all';
 
         setTimeout(() => {
             setIsDownloadingAllQr(false);
@@ -627,7 +627,7 @@ export default function RegistrasiIndex({
                                     return (
                                         <Link
                                             key={registrant.id}
-                                            href={`/registrasi/${registrant.id}`}
+                                            href={`/seleksi/${registrant.id}`}
                                             className="bg-card text-card-foreground block rounded-xl border p-4 shadow-sm transition-all hover:border-emerald-200 hover:shadow-md active:scale-[0.98]"
                                         >
                                             <div className="flex items-start gap-3">
@@ -817,7 +817,7 @@ export default function RegistrasiIndex({
                                                                     asChild
                                                                 >
                                                                     <Link
-                                                                        href={`/registrasi/${registrant.id}`}
+                                                                        href={`/seleksi/${registrant.id}`}
                                                                     >
                                                                         <Eye />{' '}
                                                                         Detail
@@ -868,5 +868,5 @@ export default function RegistrasiIndex({
 }
 
 RegistrasiIndex.layout = {
-    breadcrumbs: [{ title: 'Seleksi Peserta', href: '/registrasi' }],
+    breadcrumbs: [{ title: 'Seleksi Peserta', href: '/seleksi' }],
 };

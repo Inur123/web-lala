@@ -96,7 +96,7 @@ export default function RegistrasiShow({
     ) => {
         setUpdating(`${stage}-${status}`);
         try {
-            const res = await axios.patch(`/registrasi/${registrant.id}`, {
+            const res = await axios.patch(`/seleksi/${registrant.id}`, {
                 stage,
                 status,
             });
@@ -116,7 +116,7 @@ export default function RegistrasiShow({
     };
 
     const handleDelete = () => {
-        router.delete(`/registrasi/${registrant.id}`, {
+        router.delete(`/seleksi/${registrant.id}`, {
             onSuccess: () => {
                 toast.success('Data pendaftar berhasil dihapus');
             },
@@ -216,7 +216,7 @@ export default function RegistrasiShow({
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">
                         <Link
-                            href="/registrasi"
+                            href="/seleksi"
                             className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-2xl border border-gray-100 bg-white text-gray-700 shadow-[0_2px_8px_-3px_rgba(0,0,0,0.05)] transition-all hover:scale-105 hover:bg-gray-50 hover:text-gray-900 active:scale-95"
                             aria-label="Kembali"
                         >
@@ -512,7 +512,7 @@ export default function RegistrasiShow({
                                                         'lolos' ||
                                                     updating !== null
                                                 }
-                                                className="flex-1 bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800"
+                                                className="flex-1 bg-[#047857] text-xs font-bold text-white hover:bg-[#065f46]"
                                             >
                                                 {updating === 'admin-lolos' ? (
                                                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -551,7 +551,7 @@ export default function RegistrasiShow({
                                                                 'lolos',
                                                             )
                                                         }
-                                                        className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                                        className="bg-[#059669] text-white hover:bg-[#047857]"
                                                     >
                                                         Ya, Loloskan
                                                     </Button>
@@ -638,7 +638,7 @@ export default function RegistrasiShow({
                                                         'lolos' ||
                                                     updating !== null
                                                 }
-                                                className="flex-1 bg-emerald-700 text-xs font-bold text-white hover:bg-emerald-800"
+                                                className="flex-1 bg-[#047857] text-xs font-bold text-white hover:bg-[#065f46]"
                                             >
                                                 {updating ===
                                                 'screening-lolos' ? (
@@ -677,7 +677,7 @@ export default function RegistrasiShow({
                                                                 'lolos',
                                                             )
                                                         }
-                                                        className="bg-emerald-600 text-white hover:bg-emerald-700"
+                                                        className="bg-[#059669] text-white hover:bg-[#047857]"
                                                     >
                                                         Ya, Loloskan
                                                     </Button>
@@ -780,7 +780,7 @@ export default function RegistrasiShow({
                                             onClick={downloadQRCode}
                                             disabled={isDownloading}
                                             variant="default"
-                                            className="h-10 w-full rounded-xl bg-emerald-600 font-semibold text-white shadow-sm hover:bg-emerald-700"
+                                            className="h-10 w-full rounded-xl bg-[#059669] font-semibold text-white shadow-sm hover:bg-[#047857]"
                                         >
                                             {isDownloading ? (
                                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -802,7 +802,7 @@ export default function RegistrasiShow({
 
 RegistrasiShow.layout = ({ registrant }: { registrant: Registrant }) => ({
     breadcrumbs: [
-        { title: 'Seleksi Peserta', href: '/registrasi' },
-        { title: registrant.name, href: `/registrasi/${registrant.id}` },
+        { title: 'Seleksi Peserta', href: '/seleksi' },
+        { title: registrant.name, href: `/seleksi/${registrant.id}` },
     ],
 });

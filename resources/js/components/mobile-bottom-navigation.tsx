@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 const navigation = [
     { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid },
-    { title: 'Seleksi', href: '/registrasi', icon: ClipboardList },
+    { title: 'Seleksi', href: '/seleksi', icon: ClipboardList },
     { title: 'Pengaturan', href: '/portal-settings', icon: Settings },
 ] as const;
 
@@ -70,7 +70,7 @@ export function MobileBottomNavigation() {
             >
                 <span
                     className={cn(
-                        '-mt-7 flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#28774c] to-[#12492b] text-white shadow-[0_10px_28px_rgba(22,92,54,0.34)] transition-transform active:scale-95',
+                        '-mt-7 flex size-14 items-center justify-center rounded-full bg-[#1a4d2e] text-white shadow-[0_10px_28px_rgba(22,92,54,0.34)] transition-transform active:scale-95',
                         absensiActive && 'scale-105',
                     )}
                 >

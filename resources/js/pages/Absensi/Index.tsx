@@ -119,7 +119,7 @@ export default function AbsensiIndex({
                             <DialogTrigger asChild>
                                 <Button
                                     size="icon"
-                                    className="fixed right-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 size-14 rounded-full bg-gradient-to-br from-[#28774c] to-[#12492b] text-white shadow-[0_10px_28px_rgba(22,92,54,0.3)] hover:from-[#236a43] hover:to-[#103f25] md:hidden"
+                                    className="fixed right-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 size-14 rounded-full bg-[#1a4d2e] text-white shadow-[0_10px_28px_rgba(22,92,54,0.3)] hover:bg-[#123620] md:hidden"
                                     aria-label="Buat sesi absensi"
                                     title="Buat sesi absensi"
                                 >

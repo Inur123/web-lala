@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Admin\AttendanceScanController;
 use App\Http\Controllers\Admin\AttendanceSessionController;
-use App\Http\Controllers\Admin\RegistrasiController;
+use App\Http\Controllers\Admin\SeleksiController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\DashboardController;
@@ -45,12 +45,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Registrasi
-    Route::get('/registrasi', [RegistrasiController::class, 'index'])->name('registrasi.index');
-    Route::get('/registrasi/download-qr-all', [RegistrasiController::class, 'downloadAllQr'])->name('registrasi.download-qr-all');
-    Route::get('/registrasi/{id}', [RegistrasiController::class, 'show'])->name('registrasi.show');
-    Route::patch('/registrasi/{id}', [RegistrasiController::class, 'update'])->name('registrasi.update');
-    Route::delete('/registrasi/{id}', [RegistrasiController::class, 'destroy'])->name('registrasi.destroy');
+    // Seleksi (dulunya Registrasi)
+    Route::get('/seleksi', [SeleksiController::class, 'index'])->name('seleksi.index');
+    Route::get('/seleksi/download-qr-all', [SeleksiController::class, 'downloadAllQr'])->name('seleksi.download-qr-all');
+    Route::get('/seleksi/{id}', [SeleksiController::class, 'show'])->name('seleksi.show');
+    Route::patch('/seleksi/{id}', [SeleksiController::class, 'update'])->name('seleksi.update');
+    Route::delete('/seleksi/{id}', [SeleksiController::class, 'destroy'])->name('seleksi.destroy');
 
     // Settings (Admin Custom)
     Route::get('/portal-settings', [SettingsController::class, 'index'])->name('settings.index');
