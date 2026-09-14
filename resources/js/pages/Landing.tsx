@@ -71,13 +71,13 @@ export default function Landing() {
                             variant="outline"
                             className="bg-background/80 text-[#1a4d2e]"
                         >
-                            <span className="size-2 rounded-full bg-emerald-500" />
+                            <span className="size-2 rounded-full bg-[#10b981]" />
                             Registrasi calon instruktur &amp; pelatih
                         </Badge>
 
                         <h1 className="mx-auto mt-8 max-w-6xl text-5xl leading-[1.05] font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl xl:text-8xl">
                             Latihan Instruktur &amp;
-                            <span className="mt-2 block bg-gradient-to-r from-[#174d2d] to-emerald-500 bg-clip-text text-transparent">
+                            <span className="mt-2 block bg-gradient-to-r from-[#174d2d] to-[#10b981] bg-clip-text text-transparent">
                                 Latihan Pelatih 2026
                             </span>
                         </h1>
@@ -106,7 +106,7 @@ export default function Landing() {
                                     key={item.label}
                                     className="relative flex items-center gap-4 px-6 py-5 sm:px-8"
                                 >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-[#1a4d2e]">
+                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#d1fae5] text-[#1a4d2e]">
                                         <item.icon className="size-5" />
                                     </div>
                                     <div className="min-w-0 text-left">
@@ -153,7 +153,7 @@ export default function Landing() {
                                 asChild
                             >
                                 <a href="mailto:pelajarnumagetan@gmail.com">
-                                    <Mail className="size-4 text-emerald-400" />
+                                    <Mail className="size-4 text-[#34d399]" />
                                     pelajarnumagetan@gmail.com
                                 </a>
                             </Button>
@@ -164,7 +164,7 @@ export default function Landing() {
                                 asChild
                             >
                                 <a href="tel:+6285708837146">
-                                    <Phone className="size-4 text-emerald-400" />
+                                    <Phone className="size-4 text-[#34d399]" />
                                     belum diseting
                                 </a>
                             </Button>
