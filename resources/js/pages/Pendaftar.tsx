@@ -212,73 +212,150 @@ export default function Pendaftar() {
                                 </p>
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-14 text-center">
-                                            No
-                                        </TableHead>
-                                        <TableHead>Peserta</TableHead>
-                                        <TableHead>Delegasi</TableHead>
-                                        <TableHead>Administrasi</TableHead>
-                                        <TableHead>Screening</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                            <>
+                                <div className="divide-y md:hidden">
                                     {filteredRegistrants.map(
                                         (registrant, index) => (
-                                            <TableRow key={registrant.id}>
-                                                <TableCell className="text-muted-foreground text-center font-medium">
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center gap-3">
-                                                        <RegistrantAvatar
-                                                            registrant={
-                                                                registrant
-                                                            }
-                                                        />
-                                                        <div>
-                                                            <p className="font-medium">
+                                            <article
+                                                key={registrant.id}
+                                                className="p-4"
+                                            >
+                                                <div className="flex items-start gap-3">
+                                                    <RegistrantAvatar
+                                                        registrant={registrant}
+                                                    />
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="flex items-start justify-between gap-3">
+                                                            <div className="min-w-0">
+                                                                <p className="truncate text-sm font-semibold">
+                                                                    {
+                                                                        registrant.name
+                                                                    }
+                                                                </p>
+                                                                <p className="text-muted-foreground mt-0.5 text-xs">
+                                                                    {index + 1}.{' '}
+                                                                    {registrant.gender ===
+                                                                        'Laki-laki' ||
+                                                                    registrant.gender ===
+                                                                        'l'
+                                                                        ? 'Laki-laki (IPNU)'
+                                                                        : 'Perempuan (IPPNU)'}
+                                                                </p>
+                                                            </div>
+                                                            <Badge
+                                                                variant="secondary"
+                                                                className="max-w-32 shrink-0 truncate"
+                                                            >
                                                                 {
-                                                                    registrant.name
+                                                                    registrant.delegation
                                                                 }
-                                                            </p>
-                                                            <p className="text-muted-foreground text-xs">
-                                                                {registrant.gender ===
-                                                                    'Laki-laki' ||
-                                                                registrant.gender ===
-                                                                    'l'
-                                                                    ? 'Laki-laki (IPNU)'
-                                                                    : 'Perempuan (IPPNU)'}
-                                                            </p>
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="mt-3 grid grid-cols-2 gap-2">
+                                                            <div className="rounded-xl bg-slate-50 p-2.5">
+                                                                <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
+                                                                    Administrasi
+                                                                </p>
+                                                                <StatusBadge
+                                                                    status={
+                                                                        registrant.adminStatus
+                                                                    }
+                                                                />
+                                                            </div>
+                                                            <div className="rounded-xl bg-slate-50 p-2.5">
+                                                                <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
+                                                                    Screening
+                                                                </p>
+                                                                <StatusBadge
+                                                                    status={
+                                                                        registrant.screeningStatus
+                                                                    }
+                                                                />
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge variant="secondary">
-                                                        {registrant.delegation}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <StatusBadge
-                                                        status={
-                                                            registrant.adminStatus
-                                                        }
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <StatusBadge
-                                                        status={
-                                                            registrant.screeningStatus
-                                                        }
-                                                    />
-                                                </TableCell>
-                                            </TableRow>
+                                                </div>
+                                            </article>
                                         ),
                                     )}
-                                </TableBody>
-                            </Table>
+                                </div>
+
+                                <div className="hidden md:block">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-14 text-center">
+                                                    No
+                                                </TableHead>
+                                                <TableHead>Peserta</TableHead>
+                                                <TableHead>Delegasi</TableHead>
+                                                <TableHead>
+                                                    Administrasi
+                                                </TableHead>
+                                                <TableHead>Screening</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredRegistrants.map(
+                                                (registrant, index) => (
+                                                    <TableRow
+                                                        key={registrant.id}
+                                                    >
+                                                        <TableCell className="text-muted-foreground text-center font-medium">
+                                                            {index + 1}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-3">
+                                                                <RegistrantAvatar
+                                                                    registrant={
+                                                                        registrant
+                                                                    }
+                                                                />
+                                                                <div>
+                                                                    <p className="font-medium">
+                                                                        {
+                                                                            registrant.name
+                                                                        }
+                                                                    </p>
+                                                                    <p className="text-muted-foreground text-xs">
+                                                                        {registrant.gender ===
+                                                                            'Laki-laki' ||
+                                                                        registrant.gender ===
+                                                                            'l'
+                                                                            ? 'Laki-laki (IPNU)'
+                                                                            : 'Perempuan (IPPNU)'}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge variant="secondary">
+                                                                {
+                                                                    registrant.delegation
+                                                                }
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <StatusBadge
+                                                                status={
+                                                                    registrant.adminStatus
+                                                                }
+                                                            />
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <StatusBadge
+                                                                status={
+                                                                    registrant.screeningStatus
+                                                                }
+                                                            />
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ),
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            </>
                         )}
                     </CardContent>
                 </Card>

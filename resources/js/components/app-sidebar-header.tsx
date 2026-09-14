@@ -9,7 +9,7 @@ export function AppSidebarHeader({
     breadcrumbs?: BreadcrumbItemType[];
 }) {
     return (
-        <header className="border-sidebar-border/50 sticky top-0 z-30 flex h-14 shrink-0 items-center border-b bg-white/90 px-4 backdrop-blur-xl md:static md:h-16 md:bg-transparent md:px-4 md:backdrop-blur-none md:group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+        <header className="border-sidebar-border/50 sticky top-0 z-30 flex h-14 shrink-0 items-center border-b bg-gradient-to-r from-[#edf8f1]/95 via-white/95 to-[#f4f7ff]/95 px-4 backdrop-blur-xl md:static md:h-16 md:bg-transparent md:bg-none md:px-4 md:backdrop-blur-none md:group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
             <div className="hidden items-center gap-2 md:flex">
                 <SidebarTrigger className="-ml-1" />
                 <Breadcrumbs breadcrumbs={breadcrumbs} />

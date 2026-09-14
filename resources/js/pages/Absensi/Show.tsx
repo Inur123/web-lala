@@ -136,7 +136,7 @@ export default function AbsensiShow({ session }: { session: Session }) {
                     {/* Toolbar: Status Filter Pills & Search */}
                     <CardHeader className="bg-muted/30 flex flex-col gap-4 border-b p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
                         {/* Filter Tabs */}
-                        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0">
+                        <div className="flex w-full items-center gap-2 pb-1 sm:w-auto sm:pb-0">
                             <Button
                                 type="button"
                                 size="sm"
@@ -152,7 +152,7 @@ export default function AbsensiShow({ session }: { session: Session }) {
                                             : 'sudah absen',
                                     )
                                 }
-                                className={`shrink-0 text-xs ${
+                                className={`flex-1 text-xs sm:flex-none ${
                                     filterStatus === 'sudah absen'
                                         ? 'bg-emerald-600 text-white hover:bg-emerald-700'
                                         : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
@@ -191,7 +191,7 @@ export default function AbsensiShow({ session }: { session: Session }) {
                                             : 'belum absen',
                                     )
                                 }
-                                className={`shrink-0 text-xs ${
+                                className={`flex-1 text-xs sm:flex-none ${
                                     filterStatus === 'belum absen'
                                         ? 'bg-amber-600 text-white hover:bg-amber-700'
                                         : 'border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'
@@ -266,7 +266,7 @@ export default function AbsensiShow({ session }: { session: Session }) {
                                     )}
                                 </div>
                             ) : (
-                                filteredAttendances.map((att, index) => {
+                                filteredAttendances.map((att) => {
                                     const initial = (
                                         att.registration?.name || '?'
                                     )
@@ -291,7 +291,6 @@ export default function AbsensiShow({ session }: { session: Session }) {
                                                                 ?.name || '-'}
                                                         </p>
                                                         <p className="mt-0.5 truncate text-xs text-gray-500">
-                                                            {index + 1}.{' '}
                                                             {att.registration
                                                                 ?.delegation ||
                                                                 '-'}

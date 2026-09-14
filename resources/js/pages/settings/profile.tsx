@@ -1,5 +1,5 @@
-import { Form, Head, usePage } from '@inertiajs/react';
-import { UserRound } from 'lucide-react';
+import { Form, Head, Link, router, usePage } from '@inertiajs/react';
+import { LogOut, UserRound } from 'lucide-react';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import {
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { logout } from '@/routes';
 import type { Auth } from '@/types';
 
 export default function Profile() {
@@ -72,6 +73,22 @@ export default function Profile() {
                     </Form>
                 </CardContent>
             </Card>
+
+            <Button
+                variant="ghost"
+                className="mt-4 h-11 w-full justify-center rounded-xl bg-white text-red-600 shadow-sm hover:bg-red-50 hover:text-red-700 md:hidden"
+                asChild
+            >
+                <Link
+                    href={logout()}
+                    as="button"
+                    onClick={() => router.flushAll()}
+                    data-test="mobile-logout-button"
+                >
+                    <LogOut className="mr-2 size-4" />
+                    Keluar dari akun
+                </Link>
+            </Button>
         </>
     );
 }

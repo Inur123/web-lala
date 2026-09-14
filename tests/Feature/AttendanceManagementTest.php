@@ -38,7 +38,7 @@ class AttendanceManagementTest extends TestCase
                 'name' => 'Absensi Hari Pertama',
                 'description' => 'Sesi pagi.',
             ])
-            ->assertRedirect();
+            ->assertRedirect(route('admin.absensi.index'));
 
         $session = AttendanceSession::query()->sole();
 

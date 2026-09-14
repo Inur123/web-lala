@@ -42,7 +42,7 @@ Sistem ini memastikan pengumpulan data peserta, unggahan berkas administratif, h
     - Panel keputusan (Terima/Tolak) untuk tahap **Administrasi** dan **Screening**.
     - Manajemen pengaturan ketersediaan pendaftaran.
     - Fitur Hapus Data yang secara otomatis akan menghapus dan membersihkan _file_ fisik di _cloud storage_.
-    - Navigasi mobile bergaya aplikasi dengan tombol Absensi utama, profil berbentuk _bottom sheet_, dan daftar data yang dioptimalkan untuk layar kecil.
+    - Navigasi mobile bergaya aplikasi dengan tombol Absensi utama, halaman Profil khusus, dan daftar data yang dioptimalkan untuk layar kecil.
 - **Absensi QR Terintegrasi:**
     - QR unik dan aman dibuat otomatis untuk setiap peserta.
     - Hanya peserta yang lolos screening yang masuk ke daftar absensi.
@@ -56,7 +56,7 @@ Sistem ini memastikan pengumpulan data peserta, unggahan berkas administratif, h
 
 Versi stabil terbaru adalah **v1.4.0 — Pengalaman Admin Mobile**.
 
-Rilis ini menghadirkan layout admin khusus mobile dengan app bar ringkas dan lima navigasi utama: Dashboard, Seleksi, Absensi, Pengaturan, serta Profil. Tombol Absensi ditempatkan sebagai aksi utama di tengah, Profil menggunakan _bottom sheet_, dan seluruh dialog CRUD bergerak dari bawah pada perangkat mobile. Tabel Seleksi serta detail Absensi berubah menjadi kartu daftar pada layar kecil, sedangkan tampilan desktop dan seluruh URL tetap dipertahankan.
+Rilis ini menghadirkan layout admin khusus mobile dengan app bar ringkas dan lima navigasi utama: Dashboard, Seleksi, Absensi, Pengaturan, serta Profil. Tombol Absensi ditempatkan sebagai aksi utama di tengah, Profil membuka halaman pengaturan akun, dan seluruh dialog CRUD bergerak dari bawah pada perangkat mobile. Tabel Seleksi serta detail Absensi berubah menjadi kartu daftar pada layar kecil, sedangkan tampilan desktop dan seluruh URL tetap dipertahankan.
 
 ---
 

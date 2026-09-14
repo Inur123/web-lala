@@ -46,21 +46,40 @@ export default function AbsensiIndex({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (isSubmitting) {
+            return;
+        }
+
         setIsSubmitting(true);
-        router.post(
-            '/absensi',
-            { name, description },
-            {
-                onSuccess: () => {
-                    toast.success('Sesi absensi berhasil dibuat');
-                    setIsDialogOpen(false);
-                    setName('');
-                    setDescription('');
+        setIsDialogOpen(false);
+        const toastId = toast.loading('Menyimpan sesi absensi...');
+
+        // Defer request to allow the modal close animation to start
+        // and prevent Inertia from blocking the main thread immediately.
+        setTimeout(() => {
+            router.post(
+                '/absensi',
+                { name, description },
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        toast.success('Sesi absensi berhasil dibuat', {
+                            id: toastId,
+                        });
+                        setName('');
+                        setDescription('');
+                    },
+                    onError: () => {
+                        toast.error('Gagal membuat sesi absensi', {
+                            id: toastId,
+                        });
+                        setIsDialogOpen(true);
+                    },
+                    onFinish: () => setIsSubmitting(false),
                 },
-                onError: () => toast.error('Gagal membuat sesi absensi'),
-                onFinish: () => setIsSubmitting(false),
-            },
-        );
+            );
+        }, 150);
     };
 
     const handleDelete = (id: string) => {
@@ -92,12 +111,22 @@ export default function AbsensiIndex({
                             onOpenChange={setIsDialogOpen}
                         >
                             <DialogTrigger asChild>
-                                <Button className="h-10 w-full justify-center font-semibold shadow-sm sm:w-auto">
+                                <Button className="hidden h-10 justify-center font-semibold shadow-sm md:inline-flex">
                                     <Plus className="mr-2 h-4 w-4" />
                                     Buat Sesi Absensi
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent>
+                            <DialogTrigger asChild>
+                                <Button
+                                    size="icon"
+                                    className="fixed right-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 size-14 rounded-full bg-gradient-to-br from-[#28774c] to-[#12492b] text-white shadow-[0_10px_28px_rgba(22,92,54,0.3)] hover:from-[#236a43] hover:to-[#103f25] md:hidden"
+                                    aria-label="Buat sesi absensi"
+                                    title="Buat sesi absensi"
+                                >
+                                    <Plus className="size-6" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="md:duration-150">
                                 <form onSubmit={handleSubmit}>
                                     <DialogHeader>
                                         <DialogTitle>
@@ -188,8 +217,13 @@ export default function AbsensiIndex({
                         sessions.map((session) => (
                             <Card
                                 key={session.id}
-                                className="gap-0 overflow-hidden py-0 transition-shadow hover:shadow-md"
+                                className="group relative gap-0 overflow-hidden py-0 transition-all hover:border-slate-300 hover:shadow-md"
                             >
+                                <Link
+                                    href={`/absensi/${session.id}`}
+                                    className="absolute inset-0 z-10"
+                                    aria-label={`Buka sesi ${session.name}`}
+                                />
                                 <CardHeader className="p-5">
                                     <CardTitle
                                         className="line-clamp-1"
@@ -225,7 +259,7 @@ export default function AbsensiIndex({
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    className="h-8 w-8 text-gray-400 hover:bg-red-50 hover:text-red-600"
+                                                    className="relative z-20 h-8 w-8 text-gray-400 hover:bg-red-50 hover:text-red-600"
                                                     aria-label={`Hapus sesi ${session.name}`}
                                                 >
                                                     <Trash2 className="h-4 w-4" />
@@ -269,7 +303,7 @@ export default function AbsensiIndex({
                                         <Button
                                             size="sm"
                                             variant="secondary"
-                                            className="h-8 text-xs"
+                                            className="relative z-20 hidden h-8 text-xs md:inline-flex"
                                             asChild
                                         >
                                             <Link

@@ -492,7 +492,7 @@ export default function RegistrasiIndex({
                             LATIN & LATPEL 2026.
                         </p>
                     </div>
-                    <div className="flex w-full flex-col gap-2.5 sm:w-auto sm:flex-row sm:items-center">
+                    <div className="hidden items-center gap-2.5 md:flex">
                         <Button
                             onClick={handleExportExcel}
                             className="w-full justify-center sm:w-auto"
@@ -589,7 +589,103 @@ export default function RegistrasiIndex({
                         </Alert>
                     ) : null}
 
-                    <Card>
+                    <div className="space-y-4 md:hidden">
+                        <div className="space-y-1">
+                            <h2 className="text-lg font-semibold tracking-tight">
+                                {activeTab === 'administrasi'
+                                    ? 'Seleksi Administrasi'
+                                    : 'Seleksi Screening'}
+                            </h2>
+                            <p className="text-muted-foreground text-sm">
+                                Tinjau data peserta dan buka detail untuk
+                                memberikan hasil seleksi.
+                            </p>
+                        </div>
+
+                        {filteredData.length === 0 ? (
+                            <div className="flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border border-dashed p-6 text-center">
+                                <Users className="text-muted-foreground size-8" />
+                                <p className="text-sm font-medium">
+                                    Belum ada data peserta
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-3">
+                                {filteredData.map((registrant) => {
+                                    const currentStatus =
+                                        activeTab === 'administrasi'
+                                            ? registrant.admin_status
+                                            : registrant.screening_status;
+                                    const photoFile = registrant.files?.find(
+                                        (file) =>
+                                            file.field_key === 'fotoFormal',
+                                    );
+                                    const photoUrl = photoFile?.id
+                                        ? fileUrl(photoFile.id)
+                                        : null;
+
+                                    return (
+                                        <Link
+                                            key={registrant.id}
+                                            href={`/registrasi/${registrant.id}`}
+                                            className="bg-card text-card-foreground block rounded-xl border p-4 shadow-sm transition-all hover:border-emerald-200 hover:shadow-md active:scale-[0.98]"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <Avatar className="size-11 border">
+                                                    {photoUrl ? (
+                                                        <AvatarImage
+                                                            src={photoUrl}
+                                                            alt={`Foto ${registrant.name}`}
+                                                            className="object-cover"
+                                                        />
+                                                    ) : null}
+                                                    <AvatarFallback>
+                                                        {registrant.name
+                                                            .substring(0, 2)
+                                                            .toUpperCase()}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-start justify-between gap-3">
+                                                        <div className="min-w-0">
+                                                            <p className="truncate text-sm font-semibold">
+                                                                {
+                                                                    registrant.name
+                                                                }
+                                                            </p>
+                                                            <p className="text-muted-foreground mt-0.5 truncate text-xs">
+                                                                {
+                                                                    registrant.delegation
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                        <StatusBadge
+                                                            status={
+                                                                currentStatus
+                                                            }
+                                                        />
+                                                    </div>
+                                                    <div className="text-muted-foreground mt-3 flex items-center justify-between gap-3 text-[11px]">
+                                                        <span>
+                                                            {registrant.gender}
+                                                        </span>
+                                                        <span className="font-medium">
+                                                            {formatDate(
+                                                                registrant.created_at,
+                                                                'short',
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+
+                    <Card className="hidden md:block">
                         <CardHeader>
                             <CardTitle>
                                 {activeTab === 'administrasi'
@@ -614,224 +710,158 @@ export default function RegistrasiIndex({
                                     </p>
                                 </div>
                             ) : (
-                                <>
-                                    <div className="divide-y md:hidden">
-                                        {filteredData.map((registrant) => {
-                                            const currentStatus =
-                                                activeTab === 'administrasi'
-                                                    ? registrant.admin_status
-                                                    : registrant.screening_status;
-                                            const photoFile =
-                                                registrant.files?.find(
-                                                    (file) =>
-                                                        file.field_key ===
-                                                        'fotoFormal',
-                                                );
-                                            const photoUrl = photoFile?.id
-                                                ? fileUrl(photoFile.id)
-                                                : null;
+                                <div>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="pl-6">
+                                                    No.
+                                                </TableHead>
+                                                <TableHead>Peserta</TableHead>
+                                                <TableHead>
+                                                    Jenis Kelamin
+                                                </TableHead>
+                                                <TableHead>Delegasi</TableHead>
+                                                <TableHead>
+                                                    Tanggal Daftar
+                                                </TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead className="pr-6 text-right">
+                                                    Aksi
+                                                </TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredData.map(
+                                                (registrant, index) => {
+                                                    const currentStatus =
+                                                        activeTab ===
+                                                        'administrasi'
+                                                            ? registrant.admin_status
+                                                            : registrant.screening_status;
+                                                    const photoFile =
+                                                        registrant.files?.find(
+                                                            (file) =>
+                                                                file.field_key ===
+                                                                'fotoFormal',
+                                                        );
+                                                    const photoUrl =
+                                                        photoFile?.id
+                                                            ? fileUrl(
+                                                                  photoFile.id,
+                                                              )
+                                                            : null;
 
-                                            return (
-                                                <Link
-                                                    key={registrant.id}
-                                                    href={`/registrasi/${registrant.id}`}
-                                                    className="block p-4 transition-colors active:bg-slate-50"
-                                                >
-                                                    <div className="flex items-start gap-3">
-                                                        <Avatar className="size-11 border">
-                                                            {photoUrl ? (
-                                                                <AvatarImage
-                                                                    src={
-                                                                        photoUrl
-                                                                    }
-                                                                    alt={`Foto ${registrant.name}`}
-                                                                    className="object-cover"
-                                                                />
-                                                            ) : null}
-                                                            <AvatarFallback>
-                                                                {registrant.name
-                                                                    .substring(
-                                                                        0,
-                                                                        2,
-                                                                    )
-                                                                    .toUpperCase()}
-                                                            </AvatarFallback>
-                                                        </Avatar>
-                                                        <div className="min-w-0 flex-1">
-                                                            <div className="flex items-start justify-between gap-3">
-                                                                <div className="min-w-0">
-                                                                    <p className="truncate text-sm font-semibold">
+                                                    return (
+                                                        <TableRow
+                                                            key={registrant.id}
+                                                        >
+                                                            <TableCell className="text-muted-foreground pl-6">
+                                                                {index + 1}
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <div className="flex items-center gap-3">
+                                                                    <Avatar className="size-9 border">
+                                                                        {photoUrl ? (
+                                                                            <AvatarImage
+                                                                                src={
+                                                                                    photoUrl
+                                                                                }
+                                                                                alt={`Foto ${registrant.name}`}
+                                                                                className="object-cover"
+                                                                            />
+                                                                        ) : null}
+                                                                        <AvatarFallback>
+                                                                            {registrant.name
+                                                                                .substring(
+                                                                                    0,
+                                                                                    2,
+                                                                                )
+                                                                                .toUpperCase()}
+                                                                        </AvatarFallback>
+                                                                    </Avatar>
+                                                                    <span className="font-medium">
                                                                         {
                                                                             registrant.name
                                                                         }
-                                                                    </p>
-                                                                    <p className="text-muted-foreground mt-0.5 truncate text-xs">
-                                                                        {
-                                                                            registrant.delegation
-                                                                        }
-                                                                    </p>
+                                                                    </span>
                                                                 </div>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                {
+                                                                    registrant.gender
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell className="max-w-52 truncate">
+                                                                {
+                                                                    registrant.delegation
+                                                                }
+                                                            </TableCell>
+                                                            <TableCell className="text-muted-foreground">
+                                                                {formatDate(
+                                                                    registrant.created_at,
+                                                                    'short',
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell>
                                                                 <StatusBadge
                                                                     status={
                                                                         currentStatus
                                                                     }
                                                                 />
-                                                            </div>
-                                                            <div className="text-muted-foreground mt-3 flex items-center justify-between gap-3 text-[11px]">
-                                                                <span>
-                                                                    {
-                                                                        registrant.gender
-                                                                    }
-                                                                </span>
-                                                                <span className="flex items-center gap-1 font-medium text-[#1a4d2e]">
-                                                                    {formatDate(
-                                                                        registrant.created_at,
-                                                                        'short',
-                                                                    )}
-                                                                    <Eye className="size-3.5" />
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </Link>
-                                            );
-                                        })}
-                                    </div>
-
-                                    <div className="hidden md:block">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="pl-6">
-                                                        No.
-                                                    </TableHead>
-                                                    <TableHead>
-                                                        Peserta
-                                                    </TableHead>
-                                                    <TableHead>
-                                                        Jenis Kelamin
-                                                    </TableHead>
-                                                    <TableHead>
-                                                        Delegasi
-                                                    </TableHead>
-                                                    <TableHead>
-                                                        Tanggal Daftar
-                                                    </TableHead>
-                                                    <TableHead>
-                                                        Status
-                                                    </TableHead>
-                                                    <TableHead className="pr-6 text-right">
-                                                        Aksi
-                                                    </TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {filteredData.map(
-                                                    (registrant, index) => {
-                                                        const currentStatus =
-                                                            activeTab ===
-                                                            'administrasi'
-                                                                ? registrant.admin_status
-                                                                : registrant.screening_status;
-                                                        const photoFile =
-                                                            registrant.files?.find(
-                                                                (file) =>
-                                                                    file.field_key ===
-                                                                    'fotoFormal',
-                                                            );
-                                                        const photoUrl =
-                                                            photoFile?.id
-                                                                ? fileUrl(
-                                                                      photoFile.id,
-                                                                  )
-                                                                : null;
-
-                                                        return (
-                                                            <TableRow
-                                                                key={
-                                                                    registrant.id
-                                                                }
-                                                            >
-                                                                <TableCell className="text-muted-foreground pl-6">
-                                                                    {index + 1}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    <div className="flex items-center gap-3">
-                                                                        <Avatar className="size-9 border">
-                                                                            {photoUrl ? (
-                                                                                <AvatarImage
-                                                                                    src={
-                                                                                        photoUrl
-                                                                                    }
-                                                                                    alt={`Foto ${registrant.name}`}
-                                                                                    className="object-cover"
-                                                                                />
-                                                                            ) : null}
-                                                                            <AvatarFallback>
-                                                                                {registrant.name
-                                                                                    .substring(
-                                                                                        0,
-                                                                                        2,
-                                                                                    )
-                                                                                    .toUpperCase()}
-                                                                            </AvatarFallback>
-                                                                        </Avatar>
-                                                                        <span className="font-medium">
-                                                                            {
-                                                                                registrant.name
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {
-                                                                        registrant.gender
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="max-w-52 truncate">
-                                                                    {
-                                                                        registrant.delegation
-                                                                    }
-                                                                </TableCell>
-                                                                <TableCell className="text-muted-foreground">
-                                                                    {formatDate(
-                                                                        registrant.created_at,
-                                                                        'short',
-                                                                    )}
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    <StatusBadge
-                                                                        status={
-                                                                            currentStatus
-                                                                        }
-                                                                    />
-                                                                </TableCell>
-                                                                <TableCell className="pr-6 text-right">
-                                                                    <Button
-                                                                        variant="outline"
-                                                                        size="sm"
-                                                                        asChild
+                                                            </TableCell>
+                                                            <TableCell className="pr-6 text-right">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    asChild
+                                                                >
+                                                                    <Link
+                                                                        href={`/registrasi/${registrant.id}`}
                                                                     >
-                                                                        <Link
-                                                                            href={`/registrasi/${registrant.id}`}
-                                                                        >
-                                                                            <Eye />{' '}
-                                                                            Detail
-                                                                        </Link>
-                                                                    </Button>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        );
-                                                    },
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                </>
+                                                                        <Eye />{' '}
+                                                                        Detail
+                                                                    </Link>
+                                                                </Button>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    );
+                                                },
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </div>
                             )}
                         </CardContent>
                     </Card>
                 </Tabs>
+
+                <div className="fixed right-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-30 flex flex-col gap-3 md:hidden">
+                    <Button
+                        size="icon"
+                        variant="outline"
+                        onClick={handleExportExcel}
+                        className="size-12 rounded-full border-0 bg-white text-[#315a85] shadow-[0_8px_24px_rgba(49,90,133,0.2)]"
+                        aria-label="Ekspor data peserta ke Excel"
+                        title="Ekspor Excel"
+                    >
+                        <FileDown className="size-5" />
+                    </Button>
+                    <Button
+                        size="icon"
+                        onClick={handleDownloadAllQr}
+                        disabled={isDownloadingAllQr}
+                        className="size-12 rounded-full bg-gradient-to-br from-[#28774c] to-[#12492b] text-white shadow-[0_8px_24px_rgba(22,92,54,0.28)]"
+                        aria-label="Unduh semua QR peserta lolos"
+                        title="Unduh semua QR"
+                    >
+                        {isDownloadingAllQr ? (
+                            <Loader2 className="size-5 animate-spin" />
+                        ) : (
+                            <QrCode className="size-5" />
+                        )}
+                    </Button>
+                </div>
             </div>
         </>
     );

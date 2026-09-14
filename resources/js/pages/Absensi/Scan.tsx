@@ -90,7 +90,7 @@ export default function AbsensiScan({
         <>
             <Head title={`Pindai QR - ${session.name}`} />
 
-            <div className="mx-auto flex w-full max-w-7xl flex-col gap-5 p-4 md:p-6">
+            <div className="flex w-full flex-col gap-6 p-4 md:p-6">
                 {/* Header dengan navigasi dan informasi sesi */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-4">

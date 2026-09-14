@@ -44,10 +44,10 @@ class AttendanceSessionController extends Controller
     ): RedirectResponse {
         /** @var array{name: string, description: string|null} $validated */
         $validated = $request->validated();
-        $session = $roster->createSession($validated);
+        $roster->createSession($validated);
 
         return redirect()
-            ->route('admin.absensi.show', $session)
+            ->route('admin.absensi.index')
             ->with('success', 'Sesi absensi berhasil dibuat.');
     }
 

@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             ['value' => 'true']
         );
 
+        $this->call(RegistrationDemoSeeder::class);
+
         $this->command->info('✅ Admin user: superadmin@pelajarnumagetan.or.id / password123');
         $this->command->info('✅ Registration status: OPEN');
     }
