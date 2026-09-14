@@ -16,7 +16,7 @@ export function AppSidebarHeader({
             </div>
 
             <div className="flex min-w-0 items-center gap-3 md:hidden">
-                <AppLogoIcon className="size-9 shrink-0 rounded-lg bg-white object-contain" />
+                <AppLogoIcon className="size-9 shrink-0 object-contain" />
                 <div className="min-w-0 leading-tight">
                     <p className="text-[10px] font-semibold tracking-[0.12em] text-[#1a4d2e] uppercase">
                         Admin LATIN LATPEL
