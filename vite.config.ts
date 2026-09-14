@@ -45,18 +45,18 @@ export default defineConfig({
                     {
                         src: "/images/pwa-192x192.webp",
                         sizes: "192x192",
-                        type: "image/png",
+                        type: "image/webp",
                     },
                     {
                         src: "/images/pwa-512x512.webp",
                         sizes: "512x512",
-                        type: "image/png",
+                        type: "image/webp",
                     },
                 ],
             },
             workbox: {
                 navigateFallback: null,
-                globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+                globPatterns: ["**/*.{js,css,html,ico,png,webp,svg,woff2}"],
             },
             devOptions: {
                 enabled: true,
