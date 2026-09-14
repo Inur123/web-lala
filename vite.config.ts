@@ -39,6 +39,8 @@ export default defineConfig({
                 theme_color: '#ffffff',
                 background_color: '#ffffff',
                 display: 'standalone',
+                start_url: '/',
+                scope: '/',
                 icons: [
                     {
                         src: '/images/pwa-192x192.png',
@@ -55,6 +57,11 @@ export default defineConfig({
             workbox: {
                 navigateFallback: null,
                 globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+            },
+            devOptions: {
+                enabled: true,
+                type: 'module',
+                navigateFallback: 'index.html',
             },
         }),
     ]),

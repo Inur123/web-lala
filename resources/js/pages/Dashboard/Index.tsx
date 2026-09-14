@@ -96,84 +96,83 @@ export default function Dashboard({
 
                 {/* Grid Stats */}
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">
-                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground text-sm font-medium">
+                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                 Total Pendaftar
                             </CardTitle>
-                            <Users className="text-muted-foreground size-4" />
+                            <Users className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6">
-                            <div className="text-2xl font-semibold tabular-nums">
+                        <CardContent className="mt-auto px-3 sm:px-6">
+                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
                                 {totalPendaftar}
                             </div>
-                            <p className="text-muted-foreground mt-1 flex items-center gap-1 text-xs">
-                                <TrendingUp className="h-3 w-3" />
-                                <span>Semua berkas masuk</span>
+                            <p className="text-muted-foreground mt-1 flex items-center gap-1 text-[10px] sm:text-xs">
+                                <TrendingUp className="h-3 w-3 shrink-0" />
+                                <span className="truncate">Semua berkas masuk</span>
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground text-sm font-medium">
-                                Administrasi Lolos
+                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
+                                Admin Lolos
                             </CardTitle>
-                            <UserCheck className="text-muted-foreground size-4" />
+                            <UserCheck className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6">
-                            <div className="text-2xl font-semibold tabular-nums">
+                        <CardContent className="mt-auto px-3 sm:px-6">
+                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
                                 {adminLolos}
                             </div>
-                            <p className="text-muted-foreground mt-1 text-xs">
+                            <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
                                 {adminPending} menunggu, {adminDitolak} ditolak
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground text-sm font-medium">
+                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                 Screening Lolos
                             </CardTitle>
-                            <CheckCircle2 className="text-muted-foreground size-4" />
+                            <CheckCircle2 className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6">
-                            <div className="text-2xl font-semibold tabular-nums">
+                        <CardContent className="mt-auto px-3 sm:px-6">
+                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
                                 {screeningLolos}
                             </div>
-                            <p className="text-muted-foreground mt-1 text-xs">
-                                {screeningPending} menunggu, {screeningDitolak}{' '}
-                                ditolak
+                            <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
+                                {screeningPending} menunggu, {screeningDitolak} ditolak
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground text-sm font-medium">
+                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                 Belum Direview
                             </CardTitle>
-                            <ClipboardList className="text-muted-foreground size-4" />
+                            <ClipboardList className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6">
-                            <div className="text-2xl font-semibold tabular-nums">
+                        <CardContent className="mt-auto px-3 sm:px-6">
+                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
                                 {adminPending + screeningPending}
                             </div>
-                            <p className="text-muted-foreground mt-1 text-xs">
-                                Memerlukan review segera
+                            <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
+                                Review segera
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="col-span-2 gap-3 py-4 sm:col-span-1 sm:gap-6 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
+                    <Card className="col-span-2 flex flex-col justify-between gap-2 py-4 sm:col-span-1 sm:gap-3 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Total Sesi Absensi
                             </CardTitle>
-                            <CalendarClock className="text-muted-foreground size-4" />
+                            <CalendarClock className="text-muted-foreground shrink-0 size-4" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6">
+                        <CardContent className="px-4 sm:px-6 mt-auto">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {totalSessions}
                             </div>

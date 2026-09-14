@@ -446,19 +446,19 @@ export default function RegistrasiIndex({
             icon: Users,
         },
         {
-            label: 'Administrasi Menunggu',
+            label: 'Admin Menunggu',
             value: adminPending,
             description: 'Perlu ditinjau admin',
             icon: Clock3,
         },
         {
-            label: 'Administrasi Lolos',
+            label: 'Admin Lolos',
             value: adminLolos,
             description: 'Berkas telah diterima',
             icon: UserCheck,
         },
         {
-            label: 'Administrasi Ditolak',
+            label: 'Admin Ditolak',
             value: adminDitolak,
             description: 'Berkas tidak memenuhi syarat',
             icon: UserX,
@@ -519,19 +519,19 @@ export default function RegistrasiIndex({
                     {statistics.map((statistic) => (
                         <Card
                             key={statistic.label}
-                            className="h-full gap-3 py-4"
+                            className="flex h-full flex-col justify-between gap-2 py-4 sm:gap-3"
                         >
-                            <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0">
-                                <CardTitle className="text-muted-foreground pr-2 text-xs leading-4 font-medium">
+                            <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-4">
+                                <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                     {statistic.label}
                                 </CardTitle>
-                                <statistic.icon className="text-muted-foreground size-4 shrink-0" />
+                                <statistic.icon className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
                             </CardHeader>
-                            <CardContent className="px-4">
-                                <p className="text-xl font-semibold tabular-nums">
+                            <CardContent className="mt-auto px-3 sm:px-4">
+                                <p className="text-xl font-semibold tabular-nums sm:text-2xl">
                                     {statistic.value}
                                 </p>
-                                <p className="text-muted-foreground mt-0.5 text-[11px] leading-4">
+                                <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
                                     {statistic.description}
                                 </p>
                             </CardContent>

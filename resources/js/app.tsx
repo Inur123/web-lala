@@ -15,12 +15,6 @@ declare global {
     }
 }
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    window.deferredPrompt = e;
-    window.dispatchEvent(new Event('pwa-installable'));
-});
-
 void createInertiaApp({
     title: (title) => (title ? `${title} - ${appName}` : appName),
     layout: (name) => {
