@@ -175,33 +175,35 @@ export default function PortalSettings({
 
                 {/* Aplikasi Mobile (PWA) Settings Card */}
                 {!isStandalone && (isInstallable || isIos) && (
-                    <Card className="gap-4 py-5">
-                        <CardHeader className="px-5 pb-0">
-                            <CardTitle className="flex items-center gap-2 text-base">
-                                <Smartphone className="size-4" />
-                                Aplikasi Mobile (PWA)
-                            </CardTitle>
-                            <CardDescription>
-                                Instal website ini sebagai aplikasi di perangkat Anda untuk akses yang lebih cepat.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="px-5 pt-4">
-                            {isIos ? (
-                                <Alert className="border-blue-200 bg-blue-50 text-blue-800">
-                                    <Info className="size-4" />
-                                    <AlertTitle>Panduan Pengguna iOS</AlertTitle>
-                                    <AlertDescription>
-                                        Untuk menginstal di iPhone/iPad, tekan ikon <strong>Share</strong> di bagian bawah Safari, lalu pilih <strong>Add to Home Screen</strong>.
-                                    </AlertDescription>
-                                </Alert>
-                            ) : isInstallable ? (
-                                <Button 
-                                    onClick={promptInstall}
-                                    className="h-11 w-full rounded-xl sm:w-auto"
-                                >
-                                    Instal Aplikasi
-                                </Button>
-                            ) : null}
+                    <Card>
+                        <CardContent className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="space-y-1.5">
+                                <div className="flex items-center gap-2 font-semibold leading-none tracking-tight">
+                                    <Smartphone className="size-4" />
+                                    Aplikasi Mobile (PWA)
+                                </div>
+                                <div className="text-muted-foreground text-sm">
+                                    Instal website ini sebagai aplikasi di perangkat Anda untuk akses yang lebih cepat.
+                                </div>
+                            </div>
+                            <div className="shrink-0">
+                                {isIos ? (
+                                    <Alert className="border-blue-200 bg-blue-50 py-3 text-blue-800 sm:w-80">
+                                        <Info className="size-4" />
+                                        <AlertTitle className="text-xs">Panduan Pengguna iOS</AlertTitle>
+                                        <AlertDescription className="text-xs">
+                                            Tekan ikon <strong>Share</strong> di Safari, lalu pilih <strong>Add to Home Screen</strong>.
+                                        </AlertDescription>
+                                    </Alert>
+                                ) : isInstallable ? (
+                                    <Button 
+                                        onClick={promptInstall}
+                                        className="h-11 w-full rounded-xl sm:w-auto"
+                                    >
+                                        Instal Aplikasi
+                                    </Button>
+                                ) : null}
+                            </div>
                         </CardContent>
                     </Card>
                 )}
