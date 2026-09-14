@@ -32,7 +32,8 @@ export default function PortalSettings({
 }) {
     const [isOpen, setIsOpen] = useState(initialIsOpen);
     const [saving, setSaving] = useState(false);
-    const { isInstallable, isIos, isStandalone, promptInstall } = usePwaInstall();
+    const { isInstallable, isIos, isStandalone, promptInstall } =
+        usePwaInstall();
 
     const handleToggle = async (nextState: boolean) => {
         setSaving(true);
@@ -148,65 +149,72 @@ export default function PortalSettings({
                     </CardContent>
                 </Card>
 
-                <Card className="gap-4 py-5">
-                    <CardHeader className="px-5 pb-0">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                            <Users className="size-4" />
-                            Daftar pendaftar publik
-                        </CardTitle>
-                        <CardDescription>
-                            Lihat daftar peserta yang ditampilkan pada portal
-                            publik.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="px-5">
-                        <Button
-                            variant="outline"
-                            className="h-11 w-full justify-between rounded-xl sm:w-auto"
-                            asChild
-                        >
-                            <Link href="/pendaftar">
-                                Buka daftar pendaftar
-                                <ArrowUpRight className="ml-3 size-4" />
-                            </Link>
-                        </Button>
-                    </CardContent>
-                </Card>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+                    <Card className="flex flex-col justify-between gap-4 py-5">
+                        <CardHeader className="px-5 pb-0">
+                            <CardTitle className="flex items-center gap-2 text-base">
+                                <Users className="size-4" />
+                                Daftar pendaftar publik
+                            </CardTitle>
+                            <CardDescription>
+                                Lihat daftar peserta yang ditampilkan pada
+                                portal publik.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="mt-auto px-5 pt-4">
+                            <Button
+                                variant="outline"
+                                className="h-11 w-full justify-between rounded-xl"
+                                asChild
+                            >
+                                <Link href="/pendaftar">
+                                    Buka daftar pendaftar
+                                    <ArrowUpRight className="ml-3 size-4" />
+                                </Link>
+                            </Button>
+                        </CardContent>
+                    </Card>
 
-                {/* Aplikasi Mobile (PWA) Settings Card */}
-                {!isStandalone && (isInstallable || isIos) && (
-                    <Card>
-                        <CardContent className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="space-y-1.5">
-                                <div className="flex items-center gap-2 font-semibold leading-none tracking-tight">
+                    {/* Aplikasi Mobile (PWA) Settings Card */}
+                    {!isStandalone && (isInstallable || isIos) ? (
+                        <Card className="flex flex-col justify-between gap-4 py-5">
+                            <CardHeader className="px-5 pb-0">
+                                <CardTitle className="flex items-center gap-2 text-base">
                                     <Smartphone className="size-4" />
                                     Aplikasi Mobile (PWA)
-                                </div>
-                                <div className="text-muted-foreground text-sm">
-                                    Instal website ini sebagai aplikasi di perangkat Anda untuk akses yang lebih cepat.
-                                </div>
-                            </div>
-                            <div className="shrink-0">
+                                </CardTitle>
+                                <CardDescription>
+                                    Instal website ini sebagai aplikasi di
+                                    perangkat Anda untuk akses yang lebih cepat.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="mt-auto px-5 pt-4">
                                 {isIos ? (
-                                    <Alert className="border-blue-200 bg-blue-50 py-3 text-blue-800 sm:w-80">
+                                    <Alert className="border-blue-200 bg-blue-50 py-3 text-blue-800">
                                         <Info className="size-4" />
-                                        <AlertTitle className="text-xs">Panduan Pengguna iOS</AlertTitle>
+                                        <AlertTitle className="text-xs">
+                                            Panduan Pengguna iOS
+                                        </AlertTitle>
                                         <AlertDescription className="text-xs">
-                                            Tekan ikon <strong>Share</strong> di Safari, lalu pilih <strong>Add to Home Screen</strong>.
+                                            Tekan ikon <strong>Share</strong> di
+                                            Safari, lalu pilih{' '}
+                                            <strong>Add to Home Screen</strong>.
                                         </AlertDescription>
                                     </Alert>
                                 ) : isInstallable ? (
-                                    <Button 
+                                    <Button
                                         onClick={promptInstall}
-                                        className="h-11 w-full rounded-xl sm:w-auto"
+                                        className="h-11 w-full rounded-xl"
                                     >
                                         Instal Aplikasi
                                     </Button>
                                 ) : null}
-                            </div>
-                        </CardContent>
-                    </Card>
-                )}
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <div className="hidden md:block"></div>
+                    )}
+                </div>
             </div>
         </>
     );

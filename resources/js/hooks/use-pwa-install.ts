@@ -7,8 +7,9 @@ export function usePwaInstall() {
 
     useEffect(() => {
         // Check if already in standalone mode (PWA installed)
-        const isAppStandalone = window.matchMedia('(display-mode: standalone)').matches || 
-                                (window.navigator as any).standalone === true;
+        const isAppStandalone =
+            window.matchMedia('(display-mode: standalone)').matches ||
+            (window.navigator as any).standalone === true;
         setIsStandalone(isAppStandalone);
 
         // Detect iOS
@@ -35,10 +36,10 @@ export function usePwaInstall() {
 
     const promptInstall = async () => {
         if (!window.deferredPrompt) return;
-        
+
         window.deferredPrompt.prompt();
         const { outcome } = await window.deferredPrompt.userChoice;
-        
+
         if (outcome === 'accepted') {
             setIsInstallable(false);
             window.deferredPrompt = null;
