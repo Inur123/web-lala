@@ -851,7 +851,7 @@ export default function RegistrasiIndex({
                         size="icon"
                         onClick={handleDownloadAllQr}
                         disabled={isDownloadingAllQr}
-                        className="size-12 rounded-full bg-gradient-to-br from-[#28774c] to-[#12492b] text-white shadow-[0_8px_24px_rgba(22,92,54,0.28)]"
+                        className="size-12 rounded-full bg-[#1a4d2e] text-white shadow-[0_8px_24px_rgba(22,92,54,0.28)] hover:bg-[#123620]"
                         aria-label="Unduh semua QR peserta lolos"
                         title="Unduh semua QR"
                     >
