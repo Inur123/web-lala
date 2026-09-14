@@ -76,6 +76,9 @@ export default defineConfig({
             ],
         },
     },
+    build: {
+        target: ['es2015', 'safari14'],
+    },
     lint: {
         ignorePatterns: [
             "vendor/**",
