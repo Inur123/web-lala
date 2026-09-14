@@ -35,7 +35,7 @@ export default function Landing() {
             <header className="bg-background/95 border-b backdrop-blur-xl">
                 <div className="mx-auto flex h-18 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
                     <AppLogoIcon
-                        src="/images/logo-lala-2.png"
+                        src="/images/logo-lala-2.webp"
                         alt="LATIN LATPEL PC IPNU IPPNU Magetan"
                         className="h-auto w-24 sm:w-44"
                     />
@@ -135,7 +135,7 @@ export default function Landing() {
                     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                         <div className="flex max-w-xl items-center gap-4">
                             <AppLogoIcon
-                                src="/images/logo-putih.png"
+                                src="/images/logo-putih.webp"
                                 alt="Logo LATIN LATPEL"
                                 className="h-auto w-28 shrink-0 sm:w-32"
                             />

@@ -35,7 +35,7 @@ export default function ErrorPage({ status }: ErrorProps) {
             <Head title={`${status} - ${title}`} />
 
             <img
-                src="/images/logo-lala.png"
+                src="/images/logo-lala.webp"
                 alt="Logo"
                 className="mb-6 h-auto w-24 object-contain"
             />

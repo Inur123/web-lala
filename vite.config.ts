@@ -43,12 +43,12 @@ export default defineConfig({
                 scope: "/",
                 icons: [
                     {
-                        src: "/images/pwa-192x192.png",
+                        src: "/images/pwa-192x192.webp",
                         sizes: "192x192",
                         type: "image/png",
                     },
                     {
-                        src: "/images/pwa-512x512.png",
+                        src: "/images/pwa-512x512.webp",
                         sizes: "512x512",
                         type: "image/png",
                     },

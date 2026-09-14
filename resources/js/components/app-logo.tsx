@@ -17,7 +17,7 @@ export default function AppLogo() {
     return (
         <div className="flex w-full items-center">
             <img
-                src="/images/logo-lala-2.png"
+                src="/images/logo-lala-2.webp"
                 alt={name as string}
                 className="h-10 w-auto object-contain"
             />

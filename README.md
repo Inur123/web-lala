@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="public/images/logo-lala.png" alt="Logo LATIN LATPEL 2026" width="150" />
+  <img src="public/images/logo-lala.webp" alt="Logo LATIN LATPEL 2026" width="150" />
 </div>
 
 <h1 align="center">Portal Pendaftaran LATIN & LATPEL 2026</h1>

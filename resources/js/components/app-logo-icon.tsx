@@ -8,7 +8,7 @@ export default function AppLogoIcon({
 }: ImgHTMLAttributes<HTMLImageElement>) {
     return (
         <img
-            src="/images/logo-lala.png"
+            src="/images/logo-lala.webp"
             alt={alt}
             className={cn('object-contain', className)}
             {...props}

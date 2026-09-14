@@ -43,9 +43,9 @@ class RegistrationConfirmation extends Mailable implements ShouldQueue
     public function build(): self
     {
         return $this->withSymfonyMessage(function (Email $message) {
-            $logoPath = public_path('images/logo-putih-2.png');
+            $logoPath = public_path('images/logo-putih-2.webp');
             if (file_exists($logoPath)) {
-                $message->embedFromPath($logoPath, 'logo-putih-2.png');
+                $message->embedFromPath($logoPath, 'logo-putih-2.webp');
             }
         });
     }
