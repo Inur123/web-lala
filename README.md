@@ -11,7 +11,7 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.3.2"><img src="https://img.shields.io/badge/Rilis-v1.3.2-166534.svg?style=flat" alt="Rilis v1.3.2" /></a>
+  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/Rilis-v1.4.0-166534.svg?style=flat" alt="Rilis v1.4.0" /></a>
   <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-13-FF2D20.svg?style=flat&logo=laravel&logoColor=white" alt="Laravel" /></a>
   <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61DAFB.svg?style=flat&logo=react&logoColor=black" alt="React" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6.svg?style=flat&logo=typescript&logoColor=white" alt="TypeScript" /></a>
@@ -42,6 +42,7 @@ Sistem ini memastikan pengumpulan data peserta, unggahan berkas administratif, h
     - Panel keputusan (Terima/Tolak) untuk tahap **Administrasi** dan **Screening**.
     - Manajemen pengaturan ketersediaan pendaftaran.
     - Fitur Hapus Data yang secara otomatis akan menghapus dan membersihkan _file_ fisik di _cloud storage_.
+    - Navigasi mobile bergaya aplikasi dengan tombol Absensi utama, profil berbentuk _bottom sheet_, dan daftar data yang dioptimalkan untuk layar kecil.
 - **Absensi QR Terintegrasi:**
     - QR unik dan aman dibuat otomatis untuk setiap peserta.
     - Hanya peserta yang lolos screening yang masuk ke daftar absensi.
@@ -53,9 +54,9 @@ Sistem ini memastikan pengumpulan data peserta, unggahan berkas administratif, h
 
 ## 🚀 Rilis Saat Ini
 
-Versi stabil terbaru adalah **v1.3.2 — Pembersihan Struktur Proyek**.
+Versi stabil terbaru adalah **v1.4.0 — Pengalaman Admin Mobile**.
 
-Rilis ini mempertahankan seluruh fitur pendaftaran, seleksi, dan absensi QR dari v1.3.1 sambil membersihkan halaman contoh, layout alternatif, komponen UI, aset, serta dependensi yang tidak lagi digunakan. Sisa struktur two-factor dari starter kit juga dihapus karena autentikasi admin menggunakan alur login Laravel yang ringkas dengan Turnstile dan rate limiter. Struktur database tetap dapat dibangun ulang menggunakan `migrate:fresh`.
+Rilis ini menghadirkan layout admin khusus mobile dengan app bar ringkas dan lima navigasi utama: Dashboard, Seleksi, Absensi, Pengaturan, serta Profil. Tombol Absensi ditempatkan sebagai aksi utama di tengah, Profil menggunakan _bottom sheet_, dan seluruh dialog CRUD bergerak dari bawah pada perangkat mobile. Tabel Seleksi serta detail Absensi berubah menjadi kartu daftar pada layar kecil, sedangkan tampilan desktop dan seluruh URL tetap dipertahankan.
 
 ---
 

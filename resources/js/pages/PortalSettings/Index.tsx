@@ -1,7 +1,13 @@
 import { useState } from 'react';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import axios from 'axios';
-import { CalendarDays, Loader2, ShieldCheck } from 'lucide-react';
+import {
+    ArrowUpRight,
+    CalendarDays,
+    Loader2,
+    ShieldCheck,
+    Users,
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -14,6 +20,7 @@ import {
 } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 
 export default function PortalSettings({
     isOpen: initialIsOpen,
@@ -134,6 +141,31 @@ export default function PortalSettings({
                                     : 'Formulir tidak dapat diakses hingga pendaftaran dibuka kembali.'}
                             </AlertDescription>
                         </Alert>
+                    </CardContent>
+                </Card>
+
+                <Card className="gap-4 py-5">
+                    <CardHeader className="px-5 pb-0">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                            <Users className="size-4" />
+                            Daftar pendaftar publik
+                        </CardTitle>
+                        <CardDescription>
+                            Lihat daftar peserta yang ditampilkan pada portal
+                            publik.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="px-5">
+                        <Button
+                            variant="outline"
+                            className="h-11 w-full justify-between rounded-xl sm:w-auto"
+                            asChild
+                        >
+                            <Link href="/pendaftar">
+                                Buka daftar pendaftar
+                                <ArrowUpRight className="ml-3 size-4" />
+                            </Link>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>

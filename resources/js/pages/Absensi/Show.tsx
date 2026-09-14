@@ -242,132 +242,228 @@ export default function AbsensiShow({ session }: { session: Session }) {
 
                     {/* Table */}
                     <CardContent className="p-0">
-                        <Table className="text-gray-600">
-                            <TableHeader className="bg-muted/30 text-muted-foreground text-xs uppercase">
-                                <TableRow>
-                                    <TableHead className="w-14 px-4 text-center">
-                                        No
-                                    </TableHead>
-                                    <TableHead className="px-6">
-                                        Nama Peserta
-                                    </TableHead>
-                                    <TableHead className="px-6">
-                                        Delegasi
-                                    </TableHead>
-                                    <TableHead className="w-32 px-6 text-center">
-                                        Status
-                                    </TableHead>
-                                    <TableHead className="px-6 text-right">
-                                        Waktu Absen
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody className="divide-y divide-gray-50">
-                                {filteredAttendances.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell
-                                            colSpan={5}
-                                            className="px-6 py-12 text-center text-gray-500"
+                        <div className="divide-y md:hidden">
+                            {filteredAttendances.length === 0 ? (
+                                <div className="flex min-h-56 flex-col items-center justify-center gap-2 px-6 py-10 text-center">
+                                    <Users className="size-9 text-gray-300" />
+                                    <p className="text-sm font-medium text-gray-700">
+                                        Tidak ada peserta yang ditemukan
+                                    </p>
+                                    <p className="text-xs text-gray-400">
+                                        {search
+                                            ? `Tidak ada data yang cocok dengan kata kunci "${search}"`
+                                            : 'Belum ada data peserta pada sesi ini.'}
+                                    </p>
+                                    {search && (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => setSearch('')}
+                                            className="mt-1 text-xs"
                                         >
-                                            <div className="flex flex-col items-center justify-center gap-2">
-                                                <Users className="h-8 w-8 text-gray-300" />
-                                                <p className="font-medium text-gray-700">
-                                                    Tidak ada peserta yang
-                                                    ditemukan
-                                                </p>
-                                                <p className="text-xs text-gray-400">
-                                                    {search
-                                                        ? `Tidak ada data yang cocok dengan kata kunci "${search}"`
-                                                        : 'Belum ada data peserta pada sesi ini.'}
-                                                </p>
-                                                {search && (
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            setSearch('')
-                                                        }
-                                                        className="mt-2 text-xs"
-                                                    >
-                                                        Reset Pencarian
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    filteredAttendances.map((att, index) => {
-                                        const initial = (
-                                            att.registration?.name || '?'
-                                        )
-                                            .charAt(0)
-                                            .toUpperCase();
-                                        return (
-                                            <TableRow
-                                                key={att.id}
-                                                className="group transition-colors hover:bg-gray-50/60"
-                                            >
-                                                {/* No Column */}
-                                                <TableCell className="px-4 py-4 text-center text-xs font-semibold text-gray-400 tabular-nums sm:text-sm">
-                                                    {index + 1}
-                                                </TableCell>
+                                            Reset Pencarian
+                                        </Button>
+                                    )}
+                                </div>
+                            ) : (
+                                filteredAttendances.map((att, index) => {
+                                    const initial = (
+                                        att.registration?.name || '?'
+                                    )
+                                        .charAt(0)
+                                        .toUpperCase();
+                                    const isPresent =
+                                        att.status === 'sudah absen';
 
-                                                {/* Nama Peserta */}
-                                                <TableCell className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
-                                                            {initial}
-                                                        </div>
-                                                        <span className="font-medium text-gray-900 transition-colors group-hover:text-emerald-700">
+                                    return (
+                                        <div
+                                            key={att.id}
+                                            className="flex items-start gap-3 p-4"
+                                        >
+                                            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-800">
+                                                {initial}
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="flex items-start justify-between gap-2">
+                                                    <div className="min-w-0">
+                                                        <p className="truncate text-sm font-semibold text-gray-900">
                                                             {att.registration
                                                                 ?.name || '-'}
-                                                        </span>
+                                                        </p>
+                                                        <p className="mt-0.5 truncate text-xs text-gray-500">
+                                                            {index + 1}.{' '}
+                                                            {att.registration
+                                                                ?.delegation ||
+                                                                '-'}
+                                                        </p>
                                                     </div>
-                                                </TableCell>
-
-                                                {/* Delegasi */}
-                                                <TableCell className="px-6 py-4">
-                                                    <span className="inline-flex items-center rounded-md bg-gray-100/80 px-2 py-1 text-xs font-medium text-gray-700">
-                                                        {att.registration
-                                                            ?.delegation || '-'}
+                                                    <span
+                                                        className={
+                                                            isPresent
+                                                                ? 'inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-1 text-[11px] font-semibold text-emerald-700'
+                                                                : 'inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-1 text-[11px] font-semibold text-amber-700'
+                                                        }
+                                                    >
+                                                        {isPresent ? (
+                                                            <CheckCircle2 className="size-3" />
+                                                        ) : (
+                                                            <Clock className="size-3" />
+                                                        )}
+                                                        {isPresent
+                                                            ? 'Hadir'
+                                                            : 'Belum'}
                                                     </span>
-                                                </TableCell>
+                                                </div>
+                                                <p className="mt-2 text-[11px] font-medium text-gray-500 tabular-nums">
+                                                    {att.scanned_at
+                                                        ? (att.scanned_at_formatted ??
+                                                          formatDateTime(
+                                                              att.scanned_at,
+                                                          ))
+                                                        : 'Belum melakukan absensi'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
 
-                                                {/* Status */}
-                                                <TableCell className="px-6 py-4 text-center">
-                                                    {att.status ===
-                                                    'sudah absen' ? (
-                                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
-                                                            <CheckCircle2 className="h-3.5 w-3.5" />
-                                                            Hadir
-                                                        </span>
-                                                    ) : (
-                                                        <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
-                                                            <Clock className="h-3.5 w-3.5" />
-                                                            Belum
-                                                        </span>
+                        <div className="hidden md:block">
+                            <Table className="text-gray-600">
+                                <TableHeader className="bg-muted/30 text-muted-foreground text-xs uppercase">
+                                    <TableRow>
+                                        <TableHead className="w-14 px-4 text-center">
+                                            No
+                                        </TableHead>
+                                        <TableHead className="px-6">
+                                            Nama Peserta
+                                        </TableHead>
+                                        <TableHead className="px-6">
+                                            Delegasi
+                                        </TableHead>
+                                        <TableHead className="w-32 px-6 text-center">
+                                            Status
+                                        </TableHead>
+                                        <TableHead className="px-6 text-right">
+                                            Waktu Absen
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody className="divide-y divide-gray-50">
+                                    {filteredAttendances.length === 0 ? (
+                                        <TableRow>
+                                            <TableCell
+                                                colSpan={5}
+                                                className="px-6 py-12 text-center text-gray-500"
+                                            >
+                                                <div className="flex flex-col items-center justify-center gap-2">
+                                                    <Users className="h-8 w-8 text-gray-300" />
+                                                    <p className="font-medium text-gray-700">
+                                                        Tidak ada peserta yang
+                                                        ditemukan
+                                                    </p>
+                                                    <p className="text-xs text-gray-400">
+                                                        {search
+                                                            ? `Tidak ada data yang cocok dengan kata kunci "${search}"`
+                                                            : 'Belum ada data peserta pada sesi ini.'}
+                                                    </p>
+                                                    {search && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                setSearch('')
+                                                            }
+                                                            className="mt-2 text-xs"
+                                                        >
+                                                            Reset Pencarian
+                                                        </Button>
                                                     )}
-                                                </TableCell>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ) : (
+                                        filteredAttendances.map(
+                                            (att, index) => {
+                                                const initial = (
+                                                    att.registration?.name ||
+                                                    '?'
+                                                )
+                                                    .charAt(0)
+                                                    .toUpperCase();
+                                                return (
+                                                    <TableRow
+                                                        key={att.id}
+                                                        className="group transition-colors hover:bg-gray-50/60"
+                                                    >
+                                                        {/* No Column */}
+                                                        <TableCell className="px-4 py-4 text-center text-xs font-semibold text-gray-400 tabular-nums sm:text-sm">
+                                                            {index + 1}
+                                                        </TableCell>
 
-                                                {/* Waktu Absen */}
-                                                <TableCell className="px-6 py-4 text-right text-xs font-medium whitespace-nowrap text-gray-700 tabular-nums sm:text-sm">
-                                                    {att.scanned_at ? (
-                                                        att.scanned_at_formatted ||
-                                                        formatDateTime(
-                                                            att.scanned_at,
-                                                        )
-                                                    ) : (
-                                                        <span className="font-normal text-gray-300">
-                                                            -
-                                                        </span>
-                                                    )}
-                                                </TableCell>
-                                            </TableRow>
-                                        );
-                                    })
-                                )}
-                            </TableBody>
-                        </Table>
+                                                        {/* Nama Peserta */}
+                                                        <TableCell className="px-6 py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-800">
+                                                                    {initial}
+                                                                </div>
+                                                                <span className="font-medium text-gray-900 transition-colors group-hover:text-emerald-700">
+                                                                    {att
+                                                                        .registration
+                                                                        ?.name ||
+                                                                        '-'}
+                                                                </span>
+                                                            </div>
+                                                        </TableCell>
+
+                                                        {/* Delegasi */}
+                                                        <TableCell className="px-6 py-4">
+                                                            <span className="inline-flex items-center rounded-md bg-gray-100/80 px-2 py-1 text-xs font-medium text-gray-700">
+                                                                {att
+                                                                    .registration
+                                                                    ?.delegation ||
+                                                                    '-'}
+                                                            </span>
+                                                        </TableCell>
+
+                                                        {/* Status */}
+                                                        <TableCell className="px-6 py-4 text-center">
+                                                            {att.status ===
+                                                            'sudah absen' ? (
+                                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+                                                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                                                    Hadir
+                                                                </span>
+                                                            ) : (
+                                                                <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700">
+                                                                    <Clock className="h-3.5 w-3.5" />
+                                                                    Belum
+                                                                </span>
+                                                            )}
+                                                        </TableCell>
+
+                                                        {/* Waktu Absen */}
+                                                        <TableCell className="px-6 py-4 text-right text-xs font-medium whitespace-nowrap text-gray-700 tabular-nums sm:text-sm">
+                                                            {att.scanned_at ? (
+                                                                att.scanned_at_formatted ||
+                                                                formatDateTime(
+                                                                    att.scanned_at,
+                                                                )
+                                                            ) : (
+                                                                <span className="font-normal text-gray-300">
+                                                                    -
+                                                                </span>
+                                                            )}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            },
+                                        )
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </div>
                     </CardContent>
 
                     {/* Footer Info */}

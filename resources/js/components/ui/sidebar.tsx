@@ -180,8 +180,8 @@ function Sidebar({
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetHeader className="sr-only">
-          <SheetTitle>Sidebar</SheetTitle>
-          <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+          <SheetTitle>Navigasi</SheetTitle>
+          <SheetDescription>Menampilkan navigasi utama.</SheetDescription>
         </SheetHeader>
         <SheetContent
           data-sidebar="sidebar"

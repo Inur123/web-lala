@@ -3,14 +3,11 @@ import {
     LayoutGrid,
     ClipboardList,
     Settings,
-    Users,
     CalendarClock,
-    X,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Button } from '@/components/ui/button';
 import {
     Sidebar,
     SidebarContent,
@@ -44,15 +41,14 @@ const mainNavItems: NavItem[] = [
         href: '/portal-settings',
         icon: Settings,
     },
-    {
-        title: 'Lihat Pendaftar (Publik)',
-        href: '/pendaftar',
-        icon: Users,
-    },
 ];
 
 export function AppSidebar() {
-    const { isMobile, setOpenMobile } = useSidebar();
+    const { isMobile } = useSidebar();
+
+    if (isMobile) {
+        return null;
+    }
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -61,33 +57,12 @@ export function AppSidebar() {
                     <SidebarMenu className="flex-1">
                         <SidebarMenuItem>
                             <SidebarMenuButton size="lg" asChild>
-                                <Link
-                                    href="/dashboard"
-                                    prefetch
-                                    onClick={() => {
-                                        if (isMobile) {
-                                            setOpenMobile(false);
-                                        }
-                                    }}
-                                >
+                                <Link href="/dashboard" prefetch>
                                     <AppLogo />
                                 </Link>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     </SidebarMenu>
-
-                    {isMobile && (
-                        <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => setOpenMobile(false)}
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-gray-100 hover:text-gray-900 active:scale-95"
-                            aria-label="Tutup menu sidebar"
-                        >
-                            <X className="h-5 w-5" />
-                        </Button>
-                    )}
                 </div>
             </SidebarHeader>
 

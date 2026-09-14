@@ -95,15 +95,15 @@ export default function Dashboard({
                 </div>
 
                 {/* Grid Stats */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-5">
+                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Total Pendaftar
                             </CardTitle>
                             <Users className="text-muted-foreground size-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {totalPendaftar}
                             </div>
@@ -114,14 +114,14 @@ export default function Dashboard({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Administrasi Lolos
                             </CardTitle>
                             <UserCheck className="text-muted-foreground size-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {adminLolos}
                             </div>
@@ -131,14 +131,14 @@ export default function Dashboard({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Screening Lolos
                             </CardTitle>
                             <CheckCircle2 className="text-muted-foreground size-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {screeningLolos}
                             </div>
@@ -149,14 +149,14 @@ export default function Dashboard({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card className="gap-3 py-4 sm:gap-6 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Belum Direview
                             </CardTitle>
                             <ClipboardList className="text-muted-foreground size-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {adminPending + screeningPending}
                             </div>
@@ -166,14 +166,14 @@ export default function Dashboard({
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <Card className="col-span-2 gap-3 py-4 sm:col-span-1 sm:gap-6 sm:py-6">
+                        <CardHeader className="flex flex-row items-start justify-between space-y-0 px-4 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Total Sesi Absensi
                             </CardTitle>
                             <CalendarClock className="text-muted-foreground size-4" />
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {totalSessions}
                             </div>
