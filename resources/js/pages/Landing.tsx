@@ -77,7 +77,7 @@ export default function Landing() {
 
                         <h1 className="mx-auto mt-8 max-w-6xl text-5xl leading-[1.05] font-semibold tracking-[-0.045em] sm:text-6xl lg:text-7xl xl:text-8xl">
                             Latihan Instruktur &amp;
-                            <span className="mt-2 block bg-gradient-to-r from-[#174d2d] to-[#10b981] bg-clip-text text-transparent">
+                            <span className="mt-2 block text-[#10b981]">
                                 Latihan Pelatih 2026
                             </span>
                         </h1>

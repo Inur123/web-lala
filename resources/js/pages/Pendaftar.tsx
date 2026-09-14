@@ -225,31 +225,22 @@ export default function Pendaftar() {
                                                         registrant={registrant}
                                                     />
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="flex items-start justify-between gap-3">
+                                                        <div className="flex flex-col gap-1.5">
                                                             <div className="min-w-0">
                                                                 <p className="truncate text-sm font-semibold">
-                                                                    {
-                                                                        registrant.name
-                                                                    }
+                                                                    {registrant.name}
                                                                 </p>
-                                                                <p className="text-muted-foreground mt-0.5 text-xs">
-                                                                    {index + 1}.{' '}
-                                                                    {registrant.gender ===
-                                                                        'Laki-laki' ||
-                                                                    registrant.gender ===
-                                                                        'l'
-                                                                        ? 'Laki-laki (IPNU)'
-                                                                        : 'Perempuan (IPPNU)'}
-                                                                </p>
+                                                                <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                                                                    <p className="text-muted-foreground text-xs">
+                                                                        {index + 1}.{' '}
+                                                                        {registrant.gender === 'Laki-laki' || registrant.gender === 'l' ? 'Laki-laki (IPNU)' : 'Perempuan (IPPNU)'}
+                                                                    </p>
+                                                                    <span className="text-muted-foreground text-[10px]">•</span>
+                                                                    <span className="text-muted-foreground truncate text-xs">
+                                                                        {registrant.delegation}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <Badge
-                                                                variant="secondary"
-                                                                className="max-w-32 shrink-0 truncate"
-                                                            >
-                                                                {
-                                                                    registrant.delegation
-                                                                }
-                                                            </Badge>
                                                         </div>
                                                         <div className="mt-3 grid grid-cols-2 gap-2">
                                                             <div className="rounded-xl bg-slate-50 p-2.5">

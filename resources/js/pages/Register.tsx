@@ -614,7 +614,7 @@ export default function Register({
                                         return (
                                             <div
                                                 key={field.key}
-                                                className="space-y-2"
+                                                className="space-y-2 min-w-0"
                                             >
                                                 <Label htmlFor={inputId}>
                                                     {field.label}
