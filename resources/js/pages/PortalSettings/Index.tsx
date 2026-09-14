@@ -167,10 +167,14 @@ export default function PortalSettings({
                                 className="h-11 w-full justify-between rounded-xl"
                                 asChild
                             >
-                                <Link href="/pendaftar">
+                                <a
+                                    href="/pendaftar"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     Buka daftar pendaftar
                                     <ArrowUpRight className="ml-3 size-4" />
-                                </Link>
+                                </a>
                             </Button>
                         </CardContent>
                     </Card>
