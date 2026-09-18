@@ -37,7 +37,7 @@ export default function Landing() {
                     <AppLogoIcon
                         src="/images/logo-lala-2.webp"
                         alt="LATIN LATPEL PC IPNU IPPNU Magetan"
-                        className="h-auto w-24 sm:w-44"
+                        className="h-auto w-36 sm:w-44"
                     />
                     <div className="flex items-center gap-1 sm:gap-2">
                         <Button
@@ -133,11 +133,11 @@ export default function Landing() {
             <footer className="bg-[#0d3522] py-7 text-green-50">
                 <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-6 lg:px-8">
                     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-                        <div className="flex max-w-xl items-center gap-4">
+                        <div className="flex max-w-xl flex-col items-start gap-4 sm:flex-row sm:items-center">
                             <AppLogoIcon
                                 src="/images/logo-putih.webp"
                                 alt="Logo LATIN LATPEL"
-                                className="h-auto w-28 shrink-0 sm:w-32"
+                                className="h-auto w-48 shrink-0 sm:w-56"
                             />
                             <p className="max-w-sm text-xs leading-5 text-green-100/70">
                                 Latihan Instruktur dan Latihan Pelatih PC IPNU
@@ -149,25 +149,46 @@ export default function Landing() {
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="justify-start text-green-100/70 hover:bg-white/10 hover:text-white"
+                                className="justify-start text-xs text-green-100/70 hover:bg-white/10 hover:text-white"
                                 asChild
                             >
                                 <a href="mailto:pelajarnumagetan@gmail.com">
-                                    <Mail className="size-4 text-[#34d399]" />
+                                    <Mail className="size-[18px] text-[#34d399]" />
                                     pelajarnumagetan@gmail.com
                                 </a>
                             </Button>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                className="justify-start text-green-100/70 hover:bg-white/10 hover:text-white"
-                                asChild
-                            >
-                                <a href="tel:+6285708837146">
-                                    <Phone className="size-4 text-[#34d399]" />
-                                    belum diseting
-                                </a>
-                            </Button>
+                            <div className="flex flex-col gap-2">
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="justify-start text-xs text-green-100/70 hover:bg-white/10 hover:text-white"
+                                    asChild
+                                >
+                                    <a
+                                        href="https://wa.me/6285546068951"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <Phone className="size-[18px] text-[#34d399]" />
+                                        Rekan Rifqi (+62 855-4606-8951)
+                                    </a>
+                                </Button>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="justify-start text-xs text-green-100/70 hover:bg-white/10 hover:text-white"
+                                    asChild
+                                >
+                                    <a
+                                        href="https://wa.me/6281459034635"
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        <Phone className="size-[18px] text-[#34d399]" />
+                                        Rekanita Alda (+62 814-5903-4635)
+                                    </a>
+                                </Button>
+                            </div>
                         </div>
                     </div>
 
