@@ -2,11 +2,33 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $gender
+ * @property string|null $shirt_size
+ * @property string $delegation
+ * @property string $reason
+ * @property string $whatsapp
+ * @property Carbon|string $birth_date
+ * @property string $email
+ * @property string $qr_token
+ * @property string $admin_status
+ * @property Carbon|CarbonImmutable|null $admin_reviewed_at
+ * @property string $screening_status
+ * @property Carbon|CarbonImmutable|null $screening_reviewed_at
+ * @property-read Collection<int, RegistrationFile> $files
+ * @property Carbon|CarbonImmutable|null $created_at
+ * @property Carbon|CarbonImmutable|null $updated_at
+ */
 class Registration extends Model
 {
     use HasUuids;
@@ -40,6 +62,7 @@ class Registration extends Model
     protected $fillable = [
         'name',
         'gender',
+        'shirt_size',
         'delegation',
         'reason',
         'whatsapp',

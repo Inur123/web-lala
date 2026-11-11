@@ -32,6 +32,7 @@ class RegisterController extends Controller
         'formulir',
         'paktaIntegritas',
         'fotoFormal',
+        'buktiPembayaran',
     ];
 
     private const FILE_NAMES = [
@@ -43,6 +44,7 @@ class RegisterController extends Controller
         'formulir' => 'formulir-pendaftaran',
         'paktaIntegritas' => 'pakta-integritas',
         'fotoFormal' => 'foto-formal-3x4',
+        'buktiPembayaran' => 'bukti-pembayaran',
     ];
 
     public function create(): Response
@@ -72,6 +74,7 @@ class RegisterController extends Controller
             $registration = Registration::create([
                 'name' => $validated['name'],
                 'gender' => $validated['gender'],
+                'shirt_size' => $validated['shirtSize'],
                 'delegation' => $validated['delegation'],
                 'reason' => $validated['reason'],
                 'whatsapp' => $validated['whatsapp'],

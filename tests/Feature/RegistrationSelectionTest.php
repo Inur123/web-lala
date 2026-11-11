@@ -20,7 +20,7 @@ class RegistrationSelectionTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'admin',
                 'status' => 'ditolak',
             ])
@@ -50,7 +50,7 @@ class RegistrationSelectionTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'admin',
                 'status' => 'lolos',
             ])
@@ -73,7 +73,7 @@ class RegistrationSelectionTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'screening',
                 'status' => 'lolos',
             ])
@@ -99,7 +99,7 @@ class RegistrationSelectionTest extends TestCase
             ->assertJsonPath('registrants.0.adminStatus', 'pending');
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'admin',
                 'status' => 'lolos',
             ])

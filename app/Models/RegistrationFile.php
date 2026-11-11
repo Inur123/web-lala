@@ -2,10 +2,29 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property string $id
+ * @property string $registration_id
+ * @property string $field_key
+ * @property string $file_name
+ * @property string $r2_key
+ * @property int|null $file_size
+ * @property string|null $mime_type
+ * @property string $upload_status
+ * @property int $upload_attempts
+ * @property string|null $upload_error
+ * @property Carbon|CarbonImmutable|null $upload_attempted_at
+ * @property Carbon|CarbonImmutable|null $uploaded_at
+ * @property-read Registration $registration
+ * @property Carbon|CarbonImmutable|null $created_at
+ * @property Carbon|CarbonImmutable|null $updated_at
+ */
 class RegistrationFile extends Model
 {
     use HasUuids;

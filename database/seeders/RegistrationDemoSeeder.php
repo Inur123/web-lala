@@ -59,6 +59,7 @@ class RegistrationDemoSeeder extends Seeder
                 [
                     'name' => $name,
                     'gender' => $gender,
+                    'shirt_size' => ['S', 'M', 'L', 'XL', 'XXL', '3XL'][$index % 6],
                     'delegation' => $delegation,
                     'reason' => 'Ingin meningkatkan kemampuan kaderisasi, kepemimpinan, dan kontribusi di organisasi.',
                     'whatsapp' => sprintf('08120000%04d', $index + 1),

@@ -1,19 +1,23 @@
 import { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import {
+    AlertTriangle,
     ArrowUpRight,
     CalendarDays,
-    Smartphone,
     Info,
     Loader2,
     ShieldCheck,
+    Smartphone,
+    Trash2,
     Users,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import PasswordInput from '@/components/password-input';
 import { usePwaInstall } from '@/hooks/use-pwa-install';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -21,17 +25,34 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
 
 export default function PortalSettings({
     isOpen: initialIsOpen,
+    totalRegistrants: initialTotalRegistrants = 0,
 }: {
     isOpen: boolean;
+    totalRegistrants?: number;
 }) {
     const [isOpen, setIsOpen] = useState(initialIsOpen);
     const [saving, setSaving] = useState(false);
+    const [totalRegistrants, setTotalRegistrants] = useState(
+        initialTotalRegistrants,
+    );
+    const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [isResetting, setIsResetting] = useState(false);
+
     const { isInstallable, isIos, isStandalone, promptInstall } =
         usePwaInstall();
 
@@ -54,6 +75,41 @@ export default function PortalSettings({
             );
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleResetRegistrations = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!password) {
+            setPasswordError('Kata sandi wajib diisi.');
+            return;
+        }
+
+        setPasswordError('');
+        setIsResetting(true);
+
+        try {
+            const response = await axios.post(
+                '/portal-settings/reset-registrations',
+                { password },
+            );
+
+            if (response.data.success) {
+                toast.success(response.data.message);
+                setTotalRegistrants(0);
+                setIsResetDialogOpen(false);
+                setPassword('');
+            }
+        } catch (error: any) {
+            const message =
+                error.response?.data?.errors?.password?.[0] ||
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                'Gagal menghapus data. Periksa kembali kata sandi Anda.';
+            setPasswordError(message);
+            toast.error(message);
+        } finally {
+            setIsResetting(false);
         }
     };
 
@@ -97,7 +153,7 @@ export default function PortalSettings({
                         </div>
                     </CardHeader>
 
-                    <CardContent className="space-y-5">
+                    <CardContent>
                         <Card className="py-0 shadow-none">
                             <CardContent className="flex items-center justify-between gap-4 p-4">
                                 <Label
@@ -126,26 +182,6 @@ export default function PortalSettings({
                                 </div>
                             </CardContent>
                         </Card>
-
-                        <Alert
-                            variant={isOpen ? 'default' : 'destructive'}
-                            className={
-                                isOpen
-                                    ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
-                                    : undefined
-                            }
-                        >
-                            <ShieldCheck className="size-4" />
-                            <AlertTitle>
-                                Pendaftaran sedang{' '}
-                                {isOpen ? 'dibuka' : 'ditutup'}
-                            </AlertTitle>
-                            <AlertDescription>
-                                {isOpen
-                                    ? 'Calon peserta dapat mengirimkan formulir dan berkas pendaftaran.'
-                                    : 'Formulir tidak dapat diakses hingga pendaftaran dibuka kembali.'}
-                            </AlertDescription>
-                        </Alert>
                     </CardContent>
                 </Card>
 
@@ -187,8 +223,8 @@ export default function PortalSettings({
                                 Aplikasi Mobile (PWA)
                             </CardTitle>
                             <CardDescription>
-                                Instal website ini sebagai aplikasi di
-                                perangkat Anda untuk akses yang lebih cepat.
+                                Instal website ini sebagai aplikasi di perangkat
+                                Anda untuk akses yang lebih cepat.
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="mt-auto px-5 pt-4">
@@ -219,10 +255,10 @@ export default function PortalSettings({
                                 <Button
                                     onClick={() => {
                                         if (isInstallable) {
-                                            promptInstall();
+                                            void promptInstall();
                                         } else {
                                             toast.info(
-                                                "Sistem menolak instalasi otomatis. Pastikan aplikasi belum terinstal, atau gunakan menu browser 'Add to Home Screen' (Tambahkan ke Layar Utama) secara manual."
+                                                "Sistem menolak instalasi otomatis. Pastikan aplikasi belum terinstal, atau gunakan menu browser 'Add to Home Screen' (Tambahkan ke Layar Utama) secara manual.",
                                             );
                                         }
                                     }}
@@ -234,6 +270,161 @@ export default function PortalSettings({
                         </CardContent>
                     </Card>
                 </div>
+
+                {/* Zona Bahaya: Hapus Semua Peserta */}
+                <Card className="border-red-200/80 bg-red-50/20 shadow-none">
+                    <CardHeader className="space-y-1">
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                            <div className="space-y-1">
+                                <CardTitle className="flex items-center gap-2 text-base font-semibold text-red-600">
+                                    <AlertTriangle className="size-4" />
+                                    Zona Bahaya: Reset Data Pendaftar
+                                </CardTitle>
+                                <CardDescription className="text-xs leading-relaxed">
+                                    Hapus seluruh data calon peserta yang telah
+                                    mendaftar beserta seluruh berkas fisik (PDF
+                                    dan foto) penyimpanan.
+                                </CardDescription>
+                            </div>
+                            <Badge
+                                variant="outline"
+                                className="w-fit border-red-200 bg-red-50 text-xs font-medium text-red-700"
+                            >
+                                {totalRegistrants} Peserta Terdaftar
+                            </Badge>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <Alert
+                            variant="destructive"
+                            className="border-red-200 bg-red-100/60 text-red-800"
+                        >
+                            <AlertTriangle className="size-4 text-red-600" />
+                            <AlertTitle className="text-xs font-semibold">
+                                Perhatian: Tindakan ini permanen!
+                            </AlertTitle>
+                            <AlertDescription className="text-xs text-red-700">
+                                Seluruh data pendaftar, hasil seleksi
+                                administrasi & screening, serta riwayat presensi
+                                terkait akan dihapus bersih tanpa bisa
+                                dikembalikan.
+                            </AlertDescription>
+                        </Alert>
+
+                        <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                            <Button
+                                type="button"
+                                variant="destructive"
+                                onClick={() => {
+                                    setPassword('');
+                                    setPasswordError('');
+                                    setIsResetDialogOpen(true);
+                                }}
+                                disabled={totalRegistrants === 0 || isResetting}
+                                className="h-10 rounded-xl px-4 text-xs font-medium sm:text-sm"
+                            >
+                                <Trash2 className="mr-2 size-4" />
+                                Hapus Semua Data Peserta
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Dialog Konfirmasi Password */}
+                <Dialog
+                    open={isResetDialogOpen}
+                    onOpenChange={(open) => {
+                        if (!isResetting) {
+                            setIsResetDialogOpen(open);
+                            if (!open) {
+                                setPassword('');
+                                setPasswordError('');
+                            }
+                        }
+                    }}
+                >
+                    <DialogContent className="sm:max-w-md">
+                        <form
+                            onSubmit={handleResetRegistrations}
+                            className="space-y-4"
+                        >
+                            <DialogHeader>
+                                <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-red-100 text-red-600 sm:mx-0">
+                                    <AlertTriangle className="size-6" />
+                                </div>
+                                <DialogTitle className="text-left text-lg font-semibold">
+                                    Konfirmasi Hapus Semua Data Peserta
+                                </DialogTitle>
+                                <DialogDescription className="text-muted-foreground text-left text-xs leading-relaxed sm:text-sm">
+                                    Tindakan ini akan menghapus permanen{' '}
+                                    <strong className="text-foreground">
+                                        {totalRegistrants} peserta
+                                    </strong>{' '}
+                                    beserta seluruh berkas unggahan di server.
+                                    <br />
+                                    <br />
+                                    Untuk melanjutkan, masukkan kata sandi akun
+                                    admin Anda:
+                                </DialogDescription>
+                            </DialogHeader>
+
+                            <div className="space-y-2 py-1">
+                                <Label
+                                    htmlFor="admin-password"
+                                    className="text-xs font-medium sm:text-sm"
+                                >
+                                    Kata Sandi Akun
+                                </Label>
+                                <PasswordInput
+                                    id="admin-password"
+                                    value={password}
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        if (passwordError) setPasswordError('');
+                                    }}
+                                    placeholder="Masukkan kata sandi login Anda"
+                                    disabled={isResetting}
+                                    autoFocus
+                                />
+                                {passwordError && (
+                                    <p className="text-xs font-medium text-red-600">
+                                        {passwordError}
+                                    </p>
+                                )}
+                            </div>
+
+                            <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => setIsResetDialogOpen(false)}
+                                    disabled={isResetting}
+                                    className="rounded-xl"
+                                >
+                                    Batal
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="destructive"
+                                    disabled={isResetting || !password}
+                                    className="rounded-xl"
+                                >
+                                    {isResetting ? (
+                                        <>
+                                            <Loader2 className="mr-2 size-4 animate-spin" />
+                                            Menghapus...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Trash2 className="mr-2 size-4" />
+                                            Ya, Hapus Semua Data
+                                        </>
+                                    )}
+                                </Button>
+                            </DialogFooter>
+                        </form>
+                    </DialogContent>
+                </Dialog>
             </div>
         </>
     );

@@ -8,8 +8,6 @@ import {
     Clock3,
     Eye,
     FileDown,
-    QrCode,
-    Loader2,
     UserCheck,
     Users,
     UserX,
@@ -46,6 +44,7 @@ type Registrant = {
     id: string;
     name: string;
     gender: string;
+    shirt_size?: string | null;
     delegation: string;
     admin_status: 'pending' | 'lolos' | 'ditolak';
     admin_reviewed_at: string | null;
@@ -88,29 +87,7 @@ export default function RegistrasiIndex({
     registrants: Registrant[];
 }) {
     const [activeTab, setActiveTab] = useState<Stage>('administrasi');
-    const [isDownloadingAllQr, setIsDownloadingAllQr] = useState(false);
     const data = registrants;
-
-    const handleDownloadAllQr = () => {
-        const lolosCount = registrants.filter(
-            (r) => r.screening_status === 'lolos',
-        ).length;
-        if (lolosCount === 0) {
-            toast.error('Belum ada peserta dengan status lolos screening.');
-            return;
-        }
-
-        setIsDownloadingAllQr(true);
-        toast.info(
-            `Menyiapkan ${lolosCount} QR Code peserta lolos screening...`,
-        );
-
-        window.location.href = '/seleksi/download-qr-all';
-
-        setTimeout(() => {
-            setIsDownloadingAllQr(false);
-        }, 2500);
-    };
 
     const filteredData =
         activeTab === 'administrasi'
@@ -148,6 +125,7 @@ export default function RegistrasiIndex({
                     item.gender === 'l' || item.gender === 'Laki-laki'
                         ? 'Laki-laki'
                         : 'Perempuan',
+                'Ukuran Baju': item.shirt_size || '-',
                 'Delegation/Utusan': safeSpreadsheetValue(item.delegation),
                 'Status Administrasi':
                     STATUS_LABEL[item.admin_status] || item.admin_status,
@@ -499,19 +477,6 @@ export default function RegistrasiIndex({
                         >
                             <FileDown className="mr-2 h-4 w-4" /> Ekspor Excel
                         </Button>
-                        <Button
-                            variant="outline"
-                            onClick={handleDownloadAllQr}
-                            disabled={isDownloadingAllQr}
-                            className="w-full justify-center border-emerald-200 bg-emerald-50/80 font-medium text-emerald-700 hover:bg-emerald-100 hover:text-emerald-800 sm:w-auto"
-                        >
-                            {isDownloadingAllQr ? (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            ) : (
-                                <QrCode className="mr-2 h-4 w-4 text-emerald-600" />
-                            )}
-                            Unduh Semua QR (Lolos)
-                        </Button>
                     </div>
                 </div>
 
@@ -525,7 +490,7 @@ export default function RegistrasiIndex({
                                 <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                     {statistic.label}
                                 </CardTitle>
-                                <statistic.icon className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
+                                <statistic.icon className="text-muted-foreground size-3.5 shrink-0 sm:size-4" />
                             </CardHeader>
                             <CardContent className="mt-auto px-3 sm:px-4">
                                 <p className="text-xl font-semibold tabular-nums sm:text-2xl">
@@ -846,20 +811,6 @@ export default function RegistrasiIndex({
                         title="Ekspor Excel"
                     >
                         <FileDown className="size-5" />
-                    </Button>
-                    <Button
-                        size="icon"
-                        onClick={handleDownloadAllQr}
-                        disabled={isDownloadingAllQr}
-                        className="size-12 rounded-full bg-[#1a4d2e] text-white shadow-[0_8px_24px_rgba(22,92,54,0.28)] hover:bg-[#123620]"
-                        aria-label="Unduh semua QR peserta lolos"
-                        title="Unduh semua QR"
-                    >
-                        {isDownloadingAllQr ? (
-                            <Loader2 className="size-5 animate-spin" />
-                        ) : (
-                            <QrCode className="size-5" />
-                        )}
                     </Button>
                 </div>
             </div>

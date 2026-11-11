@@ -40,6 +40,7 @@ type Registrant = {
     id: string;
     name: string;
     gender: string;
+    shirt_size?: string | null;
     delegation: string;
     reason: string;
     whatsapp?: string;
@@ -75,6 +76,7 @@ const FILE_FIELD_LABELS: Record<string, string> = {
     formulir: 'Scan Formulir Pendaftaran',
     paktaIntegritas: 'Pakta Integritas Bermaterai',
     fotoFormal: 'Foto Formal 3×4 Background Merah',
+    buktiPembayaran: 'Bukti Pembayaran / Transfer',
 };
 
 const UPLOAD_STATUS_LABEL = {
@@ -250,8 +252,8 @@ export default function RegistrasiShow({
                                         Apakah Anda yakin ingin menghapus
                                         pendaftar ini? Tindakan ini tidak dapat
                                         dibatalkan dan semua berkas yang
-                                        terunggah di penyimpanan (Cloudflare R2)
-                                        akan dihapus permanen.
+                                        terunggah di penyimpanan akan dihapus
+                                        permanen.
                                     </DialogDescription>
                                 </DialogHeader>
                                 <DialogFooter>
@@ -327,6 +329,22 @@ export default function RegistrasiShow({
                                             </span>
                                             <span className="font-semibold text-gray-800">
                                                 {registrant.gender}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <span className="mb-0.5 block font-medium text-gray-400">
+                                                Ukuran Baju
+                                            </span>
+                                            <span className="font-semibold text-gray-800">
+                                                {registrant.shirt_size ? (
+                                                    <span className="inline-flex items-center rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700 ring-1 ring-emerald-600/20 ring-inset">
+                                                        {registrant.shirt_size}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-300">
+                                                        -
+                                                    </span>
+                                                )}
                                             </span>
                                         </div>
                                         <div>

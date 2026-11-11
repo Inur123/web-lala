@@ -4,6 +4,9 @@ import {
     ClipboardList,
     Settings,
     CalendarClock,
+    Users,
+    UserCheck,
+    BadgeCheck,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -25,6 +28,22 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: 'Peserta',
+        icon: Users,
+        items: [
+            {
+                title: 'Administrasi',
+                href: '/peserta/administrasi',
+                icon: UserCheck,
+            },
+            {
+                title: 'Screening',
+                href: '/peserta/screening',
+                icon: BadgeCheck,
+            },
+        ],
     },
     {
         title: 'Seleksi Peserta',

@@ -214,60 +214,69 @@ export default function Pendaftar() {
                         ) : (
                             <>
                                 <div className="divide-y md:hidden">
-                                    {filteredRegistrants.map(
-                                        (registrant, index) => (
-                                            <article
-                                                key={registrant.id}
-                                                className="p-4"
-                                            >
-                                                <div className="flex items-start gap-3">
-                                                    <RegistrantAvatar
-                                                        registrant={registrant}
-                                                    />
-                                                    <div className="min-w-0 flex-1">
-                                                        <div className="flex flex-col gap-1.5">
-                                                            <div className="min-w-0">
-                                                                <p className="truncate text-sm font-semibold">
-                                                                    {registrant.name}
+                                    {filteredRegistrants.map((registrant) => (
+                                        <article
+                                            key={registrant.id}
+                                            className="p-4"
+                                        >
+                                            <div className="flex items-start gap-3">
+                                                <RegistrantAvatar
+                                                    registrant={registrant}
+                                                />
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex flex-col gap-1.5">
+                                                        <div className="min-w-0">
+                                                            <p className="truncate text-sm font-semibold">
+                                                                {
+                                                                    registrant.name
+                                                                }
+                                                            </p>
+                                                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                                                                <p className="text-muted-foreground text-xs">
+                                                                    {registrant.gender ===
+                                                                        'Laki-laki' ||
+                                                                    registrant.gender ===
+                                                                        'l'
+                                                                        ? 'Laki-laki (IPNU)'
+                                                                        : 'Perempuan (IPPNU)'}
                                                                 </p>
-                                                                <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                                                                    <p className="text-muted-foreground text-xs">
-                                                                        {registrant.gender === 'Laki-laki' || registrant.gender === 'l' ? 'Laki-laki (IPNU)' : 'Perempuan (IPPNU)'}
-                                                                    </p>
-                                                                    <span className="text-muted-foreground text-[10px]">•</span>
-                                                                    <span className="text-muted-foreground truncate text-xs">
-                                                                        {registrant.delegation}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="mt-3 grid grid-cols-2 gap-2">
-                                                            <div className="rounded-xl bg-slate-50 p-2.5">
-                                                                <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
-                                                                    Administrasi
-                                                                </p>
-                                                                <StatusBadge
-                                                                    status={
-                                                                        registrant.adminStatus
+                                                                <span className="text-muted-foreground text-[10px]">
+                                                                    •
+                                                                </span>
+                                                                <span className="text-muted-foreground truncate text-xs">
+                                                                    {
+                                                                        registrant.delegation
                                                                     }
-                                                                />
-                                                            </div>
-                                                            <div className="rounded-xl bg-slate-50 p-2.5">
-                                                                <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
-                                                                    Screening
-                                                                </p>
-                                                                <StatusBadge
-                                                                    status={
-                                                                        registrant.screeningStatus
-                                                                    }
-                                                                />
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>
+                                                    <div className="mt-3 grid grid-cols-2 gap-2">
+                                                        <div className="rounded-xl bg-slate-50 p-2.5">
+                                                            <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
+                                                                Administrasi
+                                                            </p>
+                                                            <StatusBadge
+                                                                status={
+                                                                    registrant.adminStatus
+                                                                }
+                                                            />
+                                                        </div>
+                                                        <div className="rounded-xl bg-slate-50 p-2.5">
+                                                            <p className="text-muted-foreground mb-1.5 text-[10px] font-medium uppercase">
+                                                                Screening
+                                                            </p>
+                                                            <StatusBadge
+                                                                status={
+                                                                    registrant.screeningStatus
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </article>
-                                        ),
-                                    )}
+                                            </div>
+                                        </article>
+                                    ))}
                                 </div>
 
                                 <div className="hidden md:block">

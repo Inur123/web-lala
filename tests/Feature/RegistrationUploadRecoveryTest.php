@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Jobs\UploadRegistrationFilesToR2;
 use App\Models\Registration;
 use App\Models\RegistrationFile;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -112,8 +113,10 @@ class RegistrationUploadRecoveryTest extends TestCase
             ->expectsOutput('1 berkas lokal kedaluwarsa telah dibersihkan.')
             ->assertSuccessful();
 
-        Storage::disk('local')->assertMissing($expired->r2_key);
-        Storage::disk('local')->assertExists($recent->r2_key);
+        /** @var FilesystemAdapter $local */
+        $local = Storage::disk('local');
+        $local->assertMissing($expired->r2_key);
+        $local->assertExists($recent->r2_key);
     }
 
     /**

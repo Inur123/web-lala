@@ -32,7 +32,7 @@ class SeleksiController extends Controller
     {
         $data = Registration::query()
             ->select([
-                'id', 'name', 'gender', 'delegation',
+                'id', 'name', 'gender', 'shirt_size', 'delegation',
                 'admin_status', 'admin_reviewed_at',
                 'screening_status', 'screening_reviewed_at', 'created_at',
             ])
@@ -177,6 +177,7 @@ class SeleksiController extends Controller
     {
         $participants = Registration::query()
             ->select(['name', 'delegation', 'qr_token'])
+            ->where('admin_status', 'lolos')
             ->where('screening_status', 'lolos')
             ->orderBy('name')
             ->get();

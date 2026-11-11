@@ -16,7 +16,7 @@ class AccountSettingsTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('<meta name="color-scheme" content="light">', false)
+            ->assertSee('<meta name="color-scheme" content="light only">', false)
             ->assertDontSee('prefers-color-scheme', false)
             ->assertDontSee('class="dark"', false);
     }

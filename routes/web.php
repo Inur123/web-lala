@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AttendanceScanController;
 use App\Http\Controllers\Admin\AttendanceSessionController;
+use App\Http\Controllers\Admin\PesertaController;
 use App\Http\Controllers\Admin\SeleksiController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -45,6 +46,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Peserta (Lolos Administrasi & Lolos Screening)
+    Route::redirect('/peserta', '/peserta/administrasi');
+    Route::get('/peserta/administrasi', [PesertaController::class, 'administrasi'])->name('admin.peserta.administrasi');
+    Route::get('/peserta/screening', [PesertaController::class, 'screening'])->name('admin.peserta.screening');
+
     // Seleksi (dulunya Registrasi)
     Route::get('/seleksi', [SeleksiController::class, 'index'])->name('seleksi.index');
     Route::get('/seleksi/download-qr-all', [SeleksiController::class, 'downloadAllQr'])->name('seleksi.download-qr-all');
@@ -55,6 +61,9 @@ Route::middleware('auth')->group(function () {
     // Settings (Admin Custom)
     Route::get('/portal-settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::post('/portal-settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/portal-settings/reset-registrations', [SettingsController::class, 'resetRegistrations'])
+        ->middleware('throttle:6,1')
+        ->name('settings.reset-registrations');
 
     // Absensi
     Route::get('/absensi', [AttendanceSessionController::class, 'index'])->name('admin.absensi.index');

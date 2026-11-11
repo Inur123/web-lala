@@ -21,6 +21,7 @@ class StoreRegistrationRequest extends FormRequest
         $this->merge([
             'name' => $this->normalizeSingleLine($this->input('name')),
             'gender' => $this->normalizeSingleLine($this->input('gender')),
+            'shirtSize' => $this->normalizeSingleLine($this->input('shirtSize')),
             'delegation' => $this->normalizeSingleLine($this->input('delegation')),
             'reason' => $this->normalizeMultiline($this->input('reason')),
             'whatsapp' => $this->normalizeSingleLine($this->input('whatsapp')),
@@ -38,6 +39,7 @@ class StoreRegistrationRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100', $plainText, 'regex:/^[\pL\pM\s.\',\-]+$/u'],
             'gender' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
+            'shirtSize' => ['required', Rule::in(['S', 'M', 'L', 'XL', 'XXL', '3XL'])],
             'delegation' => ['required', 'string', 'max:100', $plainText, 'regex:/^[\pL\pM\s.\',\/\-\d]+$/u'],
             'reason' => ['required', 'string', 'max:1000', $plainText, 'regex:/^[\pL\pM\s\d.,;:!?\'\"\/\-\(\)\n]+$/u'],
             'whatsapp' => ['required', 'string', 'max:30', 'regex:/^\+?[0-9]{8,15}$/'],
@@ -59,6 +61,7 @@ class StoreRegistrationRequest extends FormRequest
                 'max:10240',
                 new SafeUploadedFile(['image/jpeg', 'image/png']),
             ],
+            'buktiPembayaran' => $this->documentOrImageRules(),
         ];
     }
 
@@ -72,6 +75,8 @@ class StoreRegistrationRequest extends FormRequest
             'email.email' => 'Format email tidak valid. Pastikan menggunakan format yang benar (contoh: nama@email.com).',
             'email.regex' => 'Format email tidak valid. Pastikan menggunakan format yang benar (contoh: nama@email.com).',
             'name.required' => 'Nama Lengkap wajib diisi.',
+            'shirtSize.required' => 'Pilihan ukuran baju wajib dipilih.',
+            'shirtSize.in' => 'Ukuran baju yang dipilih tidak valid.',
             'name.max' => 'Nama Lengkap terlalu panjang (maksimal 100 karakter).',
             'name.regex' => 'Nama Lengkap hanya boleh berisi huruf, spasi, titik, koma, tanda hubung, dan apostrof.',
             'delegation.regex' => 'Delegasi hanya boleh berisi huruf, angka, spasi, titik, koma, tanda hubung, dan garis miring.',

@@ -80,6 +80,10 @@
                                     <td class="data-value" style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; color: #1a1a1a; font-size: 14px;">{{ $registration->gender }}</td>
                                 </tr>
                                 <tr>
+                                    <td class="data-label" width="160" style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; color: #6b7280; font-size: 13px; vertical-align: top;">Ukuran Baju</td>
+                                    <td class="data-value" style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; color: #1a1a1a; font-size: 14px; font-weight: 600;">{{ $registration->shirt_size ?? '-' }}</td>
+                                </tr>
+                                <tr>
                                     <td class="data-label" width="160" style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; color: #6b7280; font-size: 13px; vertical-align: top;">Tanggal Lahir</td>
                                     <td class="data-value" style="padding: 10px 16px; border-bottom: 1px solid #f3f4f6; color: #1a1a1a; font-size: 14px;">{{ \Carbon\Carbon::parse($registration->birth_date)->translatedFormat('d F Y') }}</td>
                                 </tr>

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Jobs\UploadRegistrationFilesToR2;
 use App\Models\Registration;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -14,7 +15,7 @@ class PublicRegistrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_participant_can_register_without_shirt_size_sleeve_type_and_payment_proof(): void
+    public function test_participant_can_register_successfully(): void
     {
         Storage::fake('local');
         Storage::fake('r2');
@@ -27,8 +28,9 @@ class PublicRegistrationTest extends TestCase
 
         $registration = Registration::query()->firstOrFail();
 
-        $this->assertCount(8, $registration->files);
-        $this->assertFalse($registration->files->contains('field_key', 'buktiBayar'));
+        $this->assertCount(9, $registration->files);
+        $this->assertTrue($registration->files->contains('field_key', 'buktiPembayaran'));
+        $this->assertSame('L', $registration->shirt_size);
 
         // Jalankan job upload R2 secara sinkron agar status menjadi 'uploaded'
         (new UploadRegistrationFilesToR2($registration->id))->handle();
@@ -40,10 +42,23 @@ class PublicRegistrationTest extends TestCase
             ),
         );
 
-        $folder = 'registrations/peserta-uji--'.strtolower(substr(str_replace('-', '', $registration->id), -12));
-        Storage::disk('r2')->assertExists($folder.'/sertifikat-makesta.pdf');
-        Storage::disk('r2')->assertExists($folder.'/ktp.jpg');
-        Storage::disk('r2')->assertExists($folder.'/foto-formal-3x4.jpg');
+        $folder = 'registrations/peserta-uji--'.strtolower(substr(str_replace('-', '', (string) $registration->id), -12));
+        /** @var FilesystemAdapter $r2 */
+        $r2 = Storage::disk('r2');
+        $r2->assertExists($folder.'/sertifikat-makesta.pdf');
+        $r2->assertExists($folder.'/ktp.jpg');
+        $r2->assertExists($folder.'/foto-formal-3x4.jpg');
+        $r2->assertExists($folder.'/bukti-pembayaran.jpg');
+    }
+
+    public function test_registration_requires_valid_shirt_size(): void
+    {
+        $payload = $this->registrationPayload('invalid-size@example.com');
+        $payload['shirtSize'] = 'INVALID';
+
+        $this->postJson(route('register.store'), $payload)
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('shirtSize');
     }
 
     public function test_duplicate_names_receive_distinct_r2_folders(): void
@@ -63,8 +78,10 @@ class PublicRegistrationTest extends TestCase
         );
 
         $this->assertCount(2, $folders->unique());
-        Storage::disk('r2')->assertExists($folders[0].'/formulir-pendaftaran.pdf');
-        Storage::disk('r2')->assertExists($folders[1].'/formulir-pendaftaran.pdf');
+        /** @var FilesystemAdapter $r2 */
+        $r2 = Storage::disk('r2');
+        $r2->assertExists($folders[0].'/formulir-pendaftaran.pdf');
+        $r2->assertExists($folders[1].'/formulir-pendaftaran.pdf');
     }
 
     public function test_html_and_script_payloads_are_rejected(): void
@@ -236,6 +253,7 @@ class PublicRegistrationTest extends TestCase
         return [
             'name' => 'Peserta Uji',
             'gender' => 'Laki-laki',
+            'shirtSize' => 'L',
             'delegation' => 'PAC IPNU Magetan',
             'reason' => 'Ingin mengembangkan kapasitas kaderisasi organisasi.',
             'whatsapp' => '081234567890',
@@ -249,6 +267,7 @@ class PublicRegistrationTest extends TestCase
             'formulir' => $this->fakePdf('formulir.pdf'),
             'paktaIntegritas' => $this->fakePdf('pakta.pdf'),
             'fotoFormal' => UploadedFile::fake()->image('foto-3x4-merah.jpg', 300, 400),
+            'buktiPembayaran' => UploadedFile::fake()->image('bukti-bayar.jpg'),
         ];
     }
 

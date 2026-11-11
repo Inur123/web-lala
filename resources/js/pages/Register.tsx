@@ -11,6 +11,7 @@ import {
     FileText,
     ImageIcon,
     Loader2,
+    Ruler,
     Upload,
     X,
 } from 'lucide-react';
@@ -30,6 +31,14 @@ import {
 } from '@/components/ui/attachment';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import {
     Card,
     CardContent,
@@ -112,6 +121,22 @@ const FILE_FIELDS = [
         accept: 'image/jpeg,image/png,.jpg,.jpeg,.png',
         kind: 'image',
     },
+    {
+        key: 'buktiPembayaran',
+        label: 'Bukti Pembayaran',
+        description: 'PDF atau gambar, maksimal 10 MB',
+        accept: 'application/pdf,.pdf,image/jpeg,image/png,.jpg,.jpeg,.png',
+        kind: 'mixed',
+    },
+] as const;
+
+const SHIRT_SIZES = [
+    { size: 'S', length: 66, width: 45 },
+    { size: 'M', length: 69, width: 48 },
+    { size: 'L', length: 71, width: 51 },
+    { size: 'XL', length: 73, width: 54 },
+    { size: 'XXL', length: 75, width: 57 },
+    { size: '3XL', length: 77, width: 60 },
 ] as const;
 
 type FileKey = (typeof FILE_FIELDS)[number]['key'];
@@ -120,6 +145,7 @@ type FileField = (typeof FILE_FIELDS)[number];
 const REQUIRED_TEXT_FIELDS = [
     'name',
     'gender',
+    'shirtSize',
     'delegation',
     'reason',
     'whatsapp',
@@ -130,6 +156,7 @@ const REQUIRED_TEXT_FIELDS = [
 const FIELD_LABELS: Record<(typeof REQUIRED_TEXT_FIELDS)[number], string> = {
     name: 'Nama Lengkap',
     gender: 'Jenis Kelamin',
+    shirtSize: 'Ukuran Baju',
     delegation: 'Delegasi / Utusan',
     reason: 'Alasan Mengikuti Pelatihan',
     whatsapp: 'Nomor WhatsApp',
@@ -140,6 +167,7 @@ const FIELD_LABELS: Record<(typeof REQUIRED_TEXT_FIELDS)[number], string> = {
 const initialData = {
     name: '',
     gender: '',
+    shirtSize: '',
     delegation: '',
     reason: '',
     whatsapp: '',
@@ -414,8 +442,8 @@ export default function Register({
                                 </div>
                                 <Separator />
 
-                                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-                                    <div className="space-y-2">
+                                <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+                                    <div className="space-y-2 md:col-span-2 xl:col-span-2">
                                         <Label htmlFor="name">
                                             Nama Lengkap (Sesuai KTP)
                                         </Label>
@@ -451,6 +479,125 @@ export default function Register({
                                                 <SelectItem value="Perempuan">
                                                     Perempuan (IPPNU)
                                                 </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex items-center justify-between">
+                                            <Label>Ukuran Baju</Label>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <button
+                                                        type="button"
+                                                        className="inline-flex cursor-pointer items-center gap-1 text-xs font-medium text-[#1a4d2e] hover:underline"
+                                                    >
+                                                        <Ruler className="size-3" />
+                                                        Size Chart
+                                                    </button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-md">
+                                                    <DialogHeader>
+                                                        <DialogTitle className="flex items-center gap-2 text-base font-semibold">
+                                                            <Ruler className="size-5 text-[#1a4d2e]" />
+                                                            Panduan Ukuran Baju
+                                                            (Size Chart)
+                                                        </DialogTitle>
+                                                        <DialogDescription className="text-muted-foreground text-xs">
+                                                            Standar ukuran
+                                                            seragam kegiatan
+                                                            LATIN &amp; LATPEL
+                                                            2026.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="mt-2 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+                                                        <table className="w-full text-center text-xs sm:text-sm">
+                                                            <thead className="bg-muted/60 text-muted-foreground border-b font-semibold">
+                                                                <tr>
+                                                                    <th className="px-3 py-2.5">
+                                                                        Size
+                                                                    </th>
+                                                                    <th className="px-3 py-2.5">
+                                                                        Panjang
+                                                                        (cm)
+                                                                    </th>
+                                                                    <th className="px-3 py-2.5">
+                                                                        Lebar
+                                                                        (cm)
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-gray-100">
+                                                                {SHIRT_SIZES.map(
+                                                                    (item) => (
+                                                                        <tr
+                                                                            key={
+                                                                                item.size
+                                                                            }
+                                                                            className="hover:bg-muted/30 transition-colors"
+                                                                        >
+                                                                            <td className="text-foreground px-3 py-2 font-bold">
+                                                                                {
+                                                                                    item.size
+                                                                                }
+                                                                            </td>
+                                                                            <td className="text-muted-foreground px-3 py-2">
+                                                                                {
+                                                                                    item.length
+                                                                                }
+                                                                            </td>
+                                                                            <td className="text-muted-foreground px-3 py-2">
+                                                                                {
+                                                                                    item.width
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    ),
+                                                                )}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div className="space-y-0.5 rounded-lg border border-amber-200 bg-amber-50/80 p-3 text-xs text-amber-800">
+                                                        <p className="font-semibold">
+                                                            *Toleransi kurang
+                                                            dan lebihnya 2 cm
+                                                        </p>
+                                                        <p className="text-[11px] leading-relaxed text-amber-700">
+                                                            Ukuran bisa lebih
+                                                            kecil 2 cm atau
+                                                            lebih besar 2 cm
+                                                            dari size chart di
+                                                            atas.
+                                                        </p>
+                                                    </div>
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
+                                        <Select
+                                            value={data.shirtSize}
+                                            onValueChange={(value) =>
+                                                handleChange('shirtSize', value)
+                                            }
+                                            required
+                                        >
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Pilih ukuran baju" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {SHIRT_SIZES.map((item) => (
+                                                    <SelectItem
+                                                        key={item.size}
+                                                        value={item.size}
+                                                    >
+                                                        <span className="font-semibold">
+                                                            {item.size}
+                                                        </span>
+                                                        <span className="text-muted-foreground ml-2 text-xs">
+                                                            (P: {item.length}{' '}
+                                                            cm, L: {item.width}{' '}
+                                                            cm)
+                                                        </span>
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -570,7 +717,7 @@ export default function Register({
                                             required
                                         />
                                     </div>
-                                    <div className="space-y-2 md:col-span-2 xl:col-span-3">
+                                    <div className="space-y-2 md:col-span-2 xl:col-span-4">
                                         <Label htmlFor="reason">
                                             Alasan Mengikuti Pelatihan
                                         </Label>
@@ -603,7 +750,7 @@ export default function Register({
                                 </div>
                                 <Separator />
 
-                                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                                     {FILE_FIELDS.map((field) => {
                                         const file = files[field.key];
                                         const preview = previews[field.key];
@@ -614,7 +761,7 @@ export default function Register({
                                         return (
                                             <div
                                                 key={field.key}
-                                                className="space-y-2 min-w-0"
+                                                className="min-w-0 space-y-2"
                                             >
                                                 <Label htmlFor={inputId}>
                                                     {field.label}

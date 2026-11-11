@@ -101,7 +101,7 @@ export default function Dashboard({
                             <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                 Total Pendaftar
                             </CardTitle>
-                            <Users className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
+                            <Users className="text-muted-foreground size-3.5 shrink-0 sm:size-4" />
                         </CardHeader>
                         <CardContent className="mt-auto px-3 sm:px-6">
                             <div className="text-xl font-semibold tabular-nums sm:text-2xl">
@@ -109,51 +109,65 @@ export default function Dashboard({
                             </div>
                             <p className="text-muted-foreground mt-1 flex items-center gap-1 text-[10px] sm:text-xs">
                                 <TrendingUp className="h-3 w-3 shrink-0" />
-                                <span className="truncate">Semua berkas masuk</span>
+                                <span className="truncate">
+                                    Semua berkas masuk
+                                </span>
                             </p>
                         </CardContent>
                     </Card>
 
-                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
-                                Admin Lolos
-                            </CardTitle>
-                            <UserCheck className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
-                        </CardHeader>
-                        <CardContent className="mt-auto px-3 sm:px-6">
-                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
-                                {adminLolos}
-                            </div>
-                            <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
-                                {adminPending} menunggu, {adminDitolak} ditolak
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <Link
+                        href="/peserta/administrasi"
+                        className="block transition-transform hover:scale-[1.02]"
+                    >
+                        <Card className="flex h-full flex-col justify-between gap-2 py-4 hover:border-emerald-300 sm:gap-3 sm:py-6">
+                            <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                                <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
+                                    Admin Lolos
+                                </CardTitle>
+                                <UserCheck className="text-muted-foreground size-3.5 shrink-0 sm:size-4" />
+                            </CardHeader>
+                            <CardContent className="mt-auto px-3 sm:px-6">
+                                <div className="text-xl font-semibold text-emerald-700 tabular-nums sm:text-2xl dark:text-emerald-400">
+                                    {adminLolos}
+                                </div>
+                                <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
+                                    {adminPending} menunggu, {adminDitolak}{' '}
+                                    ditolak
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
 
-                    <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
-                        <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
-                            <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
-                                Screening Lolos
-                            </CardTitle>
-                            <CheckCircle2 className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
-                        </CardHeader>
-                        <CardContent className="mt-auto px-3 sm:px-6">
-                            <div className="text-xl font-semibold tabular-nums sm:text-2xl">
-                                {screeningLolos}
-                            </div>
-                            <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
-                                {screeningPending} menunggu, {screeningDitolak} ditolak
-                            </p>
-                        </CardContent>
-                    </Card>
+                    <Link
+                        href="/peserta/screening"
+                        className="block transition-transform hover:scale-[1.02]"
+                    >
+                        <Card className="flex h-full flex-col justify-between gap-2 py-4 hover:border-emerald-300 sm:gap-3 sm:py-6">
+                            <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
+                                <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
+                                    Screening Lolos
+                                </CardTitle>
+                                <CheckCircle2 className="text-muted-foreground size-3.5 shrink-0 sm:size-4" />
+                            </CardHeader>
+                            <CardContent className="mt-auto px-3 sm:px-6">
+                                <div className="text-xl font-semibold text-emerald-700 tabular-nums sm:text-2xl dark:text-emerald-400">
+                                    {screeningLolos}
+                                </div>
+                                <p className="text-muted-foreground mt-1 truncate text-[10px] sm:text-xs">
+                                    {screeningPending} menunggu,{' '}
+                                    {screeningDitolak} ditolak
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
 
                     <Card className="flex flex-col justify-between gap-2 py-4 sm:gap-3 sm:py-6">
                         <CardHeader className="flex flex-row items-start justify-between gap-1 space-y-0 px-3 pb-0 sm:px-6 sm:pb-2">
                             <CardTitle className="text-muted-foreground truncate text-xs font-medium sm:text-sm">
                                 Belum Direview
                             </CardTitle>
-                            <ClipboardList className="text-muted-foreground shrink-0 size-3.5 sm:size-4" />
+                            <ClipboardList className="text-muted-foreground size-3.5 shrink-0 sm:size-4" />
                         </CardHeader>
                         <CardContent className="mt-auto px-3 sm:px-6">
                             <div className="text-xl font-semibold tabular-nums sm:text-2xl">
@@ -170,9 +184,9 @@ export default function Dashboard({
                             <CardTitle className="text-muted-foreground text-sm font-medium">
                                 Total Sesi Absensi
                             </CardTitle>
-                            <CalendarClock className="text-muted-foreground shrink-0 size-4" />
+                            <CalendarClock className="text-muted-foreground size-4 shrink-0" />
                         </CardHeader>
-                        <CardContent className="px-4 sm:px-6 mt-auto">
+                        <CardContent className="mt-auto px-4 sm:px-6">
                             <div className="text-2xl font-semibold tabular-nums">
                                 {totalSessions}
                             </div>
@@ -252,6 +266,17 @@ export default function Dashboard({
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-2">
+                                <Button
+                                    variant="outline"
+                                    className="w-full justify-start text-emerald-800 hover:bg-emerald-50 hover:text-emerald-900 dark:text-emerald-300"
+                                    asChild
+                                >
+                                    <Link href="/peserta/screening">
+                                        <Users className="mr-2 size-4 text-emerald-700" />
+                                        Data Peserta Resmi (Lolos Screening)
+                                        <ArrowRight className="ml-auto size-4" />
+                                    </Link>
+                                </Button>
                                 <Button
                                     variant="outline"
                                     className="w-full justify-start"
