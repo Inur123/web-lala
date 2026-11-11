@@ -47,22 +47,35 @@ class AttendanceScanController extends Controller
                     'scanned_at' => $scannedAt,
                 ]);
 
+            $timezone = (string) config('app.timezone', 'Asia/Jakarta');
+            $photoFile = $registration->files()
+                ->select(['id', 'registration_id', 'field_key'])
+                ->where('field_key', 'fotoFormal')
+                ->first();
+            $participantPayload = [
+                'participant' => $registration->name,
+                'delegation' => $registration->delegation,
+                'gender' => $registration->gender,
+                'photo_url' => $photoFile !== null
+                    ? route('files.photo', ['file' => $photoFile->id], absolute: false)
+                    : null,
+            ];
+
             if ($updated === 0) {
                 return [
                     'status' => 409,
                     'message' => 'Peserta ini sudah melakukan absensi sebelumnya.',
-                    'participant' => $registration->name,
+                    ...$participantPayload,
+                    'scanned_at' => $attendance->scanned_at !== null
+                        ? $attendance->scanned_at->timezone($timezone)->format('H.i').' WIB'
+                        : null,
                 ];
             }
-
-            $timezone = (string) config('app.timezone', 'Asia/Jakarta');
 
             return [
                 'status' => 200,
                 'message' => 'Absensi berhasil dicatat.',
-                'participant' => $registration->name,
-                'delegation' => $registration->delegation,
-                'gender' => $registration->gender,
+                ...$participantPayload,
                 'scanned_at' => $scannedAt->timezone($timezone)->format('H.i').' WIB',
             ];
         }, 3);

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 interface QrScannerProps {
     onScan: (decodedText: string) => Promise<void> | void;
     isProcessing?: boolean;
+    paused?: boolean;
 }
 
 type FacingMode = 'environment' | 'user';
@@ -32,7 +33,11 @@ function cameraError(error: unknown): { message: string; name: string } {
     return { message: 'Terjadi kesalahan', name: '' };
 }
 
-export function QrScanner({ onScan, isProcessing = false }: QrScannerProps) {
+export function QrScanner({
+    onScan,
+    isProcessing = false,
+    paused = false,
+}: QrScannerProps) {
     const [error, setError] = useState<string | null>(null);
     const [cameras, setCameras] = useState<
         Array<{ id: string; label: string }>
@@ -53,14 +58,16 @@ export function QrScanner({ onScan, isProcessing = false }: QrScannerProps) {
     const lastScanTimestampRef = useRef<number>(0);
     const isComponentMountedRef = useRef(true);
     const isProcessingRef = useRef(isProcessing);
+    const isPausedRef = useRef(paused);
     const onScanRef = useRef(onScan);
     const soundEnabledRef = useRef(soundEnabled);
 
     useEffect(() => {
         isProcessingRef.current = isProcessing;
+        isPausedRef.current = paused;
         onScanRef.current = onScan;
         soundEnabledRef.current = soundEnabled;
-    }, [isProcessing, onScan, soundEnabled]);
+    }, [isProcessing, paused, onScan, soundEnabled]);
 
     // Audio chime synthesized using Web Audio API
     const playScanSound = useCallback(() => {
@@ -103,8 +110,12 @@ export function QrScanner({ onScan, isProcessing = false }: QrScannerProps) {
         (decodedText: string) => {
             const now = Date.now();
 
-            // Prevent firing while lock is active or parent is processing
-            if (isLockedRef.current || isProcessingRef.current) {
+            // Prevent firing while lock is active, paused, or parent is processing
+            if (
+                isLockedRef.current ||
+                isProcessingRef.current ||
+                isPausedRef.current
+            ) {
                 return;
             }
 

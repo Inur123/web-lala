@@ -107,7 +107,11 @@ class AttendanceSessionController extends Controller
 
         $timezone = (string) config('app.timezone', 'Asia/Jakarta');
         $recentAttendances = Attendance::query()
-            ->with('registration')
+            ->with([
+                'registration.files' => fn ($query) => $query
+                    ->select(['id', 'registration_id', 'field_key'])
+                    ->where('field_key', 'fotoFormal'),
+            ])
             ->where('attendance_session_id', $absensi->id)
             ->where('status', Attendance::STATUS_PRESENT)
             ->whereHas('registration', function (Builder $query): void {
@@ -116,13 +120,20 @@ class AttendanceSessionController extends Controller
             ->orderByDesc('scanned_at')
             ->limit(10)
             ->get()
-            ->map(fn (Attendance $attendance): array => [
-                'id' => $attendance->id,
-                'name' => $attendance->registration->name,
-                'delegation' => $attendance->registration->delegation,
-                'gender' => $attendance->registration->gender,
-                'scanned_at' => $attendance->scanned_at?->timezone($timezone)->format('H.i').' WIB',
-            ]);
+            ->map(function (Attendance $attendance) use ($timezone): array {
+                $photoFile = $attendance->registration->files->first();
+
+                return [
+                    'id' => $attendance->id,
+                    'name' => $attendance->registration->name,
+                    'delegation' => $attendance->registration->delegation,
+                    'gender' => $attendance->registration->gender,
+                    'photo_url' => $photoFile !== null
+                        ? route('files.photo', ['file' => $photoFile->id], absolute: false)
+                        : null,
+                    'scanned_at' => $attendance->scanned_at?->timezone($timezone)->format('H.i').' WIB',
+                ];
+            });
 
         return Inertia::render('Absensi/Scan', [
             'session' => $absensi,

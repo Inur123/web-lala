@@ -5,9 +5,11 @@ namespace Tests\Feature;
 use App\Models\Attendance;
 use App\Models\AttendanceSession;
 use App\Models\Registration;
+use App\Models\RegistrationFile;
 use App\Models\User;
 use App\Services\AttendanceRoster;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AttendanceManagementTest extends TestCase
@@ -79,7 +81,7 @@ class AttendanceManagementTest extends TestCase
         $session = AttendanceSession::create(['name' => 'Sesi Pagi']);
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'screening',
                 'status' => 'lolos',
             ])
@@ -109,7 +111,7 @@ class AttendanceManagementTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->patchJson(route('registrasi.update', $registration), [
+            ->patchJson(route('seleksi.update', $registration), [
                 'stage' => 'screening',
                 'status' => 'ditolak',
             ])
@@ -145,7 +147,10 @@ class AttendanceManagementTest extends TestCase
             'qr_token' => $registration->qr_token,
         ])
             ->assertConflict()
-            ->assertJsonPath('success', false);
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('participant', $registration->name)
+            ->assertJsonPath('delegation', $registration->delegation)
+            ->assertJsonPath('photo_url', null);
 
         $this->assertDatabaseCount('attendances', 1);
         $this->assertDatabaseHas('attendances', [
@@ -153,6 +158,61 @@ class AttendanceManagementTest extends TestCase
             'registration_id' => $registration->id,
             'status' => Attendance::STATUS_PRESENT,
         ]);
+    }
+
+    public function test_scan_returns_participant_photo_url_and_scanner_history(): void
+    {
+        $user = User::factory()->create();
+        $registration = $this->createRegistration([
+            'name' => 'Ahmad Fauzi',
+            'gender' => 'Laki-laki',
+            'delegation' => 'PAC IPNU Magetan',
+            'admin_status' => 'lolos',
+            'screening_status' => 'lolos',
+        ]);
+        $photoFile = RegistrationFile::create([
+            'registration_id' => $registration->id,
+            'field_key' => 'fotoFormal',
+            'file_name' => 'foto-formal.jpg',
+            'r2_key' => 'registrations/ahmad-fauzi/foto-formal.jpg',
+        ]);
+        $expectedPhotoUrl = route('files.photo', ['file' => $photoFile->id], absolute: false);
+
+        $session = app(AttendanceRoster::class)->createSession([
+            'name' => 'Sesi Pembukaan',
+            'description' => null,
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('admin.absensi.scan', $session), [
+                'qr_token' => $registration->qr_token,
+            ])
+            ->assertOk()
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('participant', 'Ahmad Fauzi')
+            ->assertJsonPath('delegation', 'PAC IPNU Magetan')
+            ->assertJsonPath('gender', 'Laki-laki')
+            ->assertJsonPath('photo_url', $expectedPhotoUrl);
+
+        $this->actingAs($user)
+            ->postJson(route('admin.absensi.scan', $session), [
+                'qr_token' => $registration->qr_token,
+            ])
+            ->assertConflict()
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('participant', 'Ahmad Fauzi')
+            ->assertJsonPath('delegation', 'PAC IPNU Magetan')
+            ->assertJsonPath('photo_url', $expectedPhotoUrl);
+
+        $this->actingAs($user)
+            ->get(route('admin.absensi.scanner', $session))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Absensi/Scan')
+                ->where('initialRecentAttendances.0.name', 'Ahmad Fauzi')
+                ->where('initialRecentAttendances.0.delegation', 'PAC IPNU Magetan')
+                ->where('initialRecentAttendances.0.photo_url', $expectedPhotoUrl),
+            );
     }
 
     public function test_scan_rejects_participant_who_has_not_passed_screening(): void
@@ -210,7 +270,7 @@ class AttendanceManagementTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->get(route('registrasi.download-qr-all'))
+            ->get(route('seleksi.download-qr-all'))
             ->assertOk()
             ->assertDownload('QR_Peserta_Lolos_LATIN_LATPEL_2026.zip');
     }
