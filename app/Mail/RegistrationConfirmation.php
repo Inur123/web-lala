@@ -9,7 +9,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Symfony\Component\Mime\Email;
 
 class RegistrationConfirmation extends Mailable implements ShouldQueue
 {
@@ -28,25 +27,15 @@ class RegistrationConfirmation extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
+        $appUrl = rtrim((string) config('app.url', 'http://localhost:8000'), '/');
+
         return new Content(
             view: 'emails.registration-confirmation',
             with: [
                 'registration' => $this->registration,
                 'whatsappGroupLink' => 'https://chat.whatsapp.com/IMTjiBcdKkRH3NiFVSADBj?s=cl&p=i&iam=2',
+                'logoUrl' => $appUrl.'/images/logo-putih.png',
             ],
         );
-    }
-
-    /**
-     * Embed logo sebagai inline attachment agar tampil di semua email client.
-     */
-    public function build(): self
-    {
-        return $this->withSymfonyMessage(function (Email $message) {
-            $logoPath = public_path('images/logo-putih.png');
-            if (file_exists($logoPath)) {
-                $message->embedFromPath($logoPath, 'logo-putih.png');
-            }
-        });
     }
 }
