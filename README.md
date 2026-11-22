@@ -1,5 +1,9 @@
 <div align="center">
-  <img src="public/images/logo-lala.webp" alt="Logo LATIN LATPEL 2026" width="150" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/images/logo-putih-2.png">
+    <source media="(prefers-color-scheme: light)" srcset="public/images/logo-lala.webp">
+    <img src="public/images/logo-putih-2.png" alt="Logo LATIN LATPEL 2026" width="150" />
+  </picture>
 </div>
 
 <h1 align="center">Portal Pendaftaran LATIN & LATPEL 2026</h1>
@@ -11,7 +15,7 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.4.0"><img src="https://img.shields.io/badge/Rilis-v1.4.0-166534.svg?style=flat" alt="Rilis v1.4.0" /></a>
+  <a href="https://github.com/Inur123/web-lala/releases/tag/v1.6.3"><img src="https://img.shields.io/badge/Rilis-v1.6.3-166534.svg?style=flat" alt="Rilis v1.6.3" /></a>
   <a href="https://laravel.com"><img src="https://img.shields.io/badge/Laravel-13-FF2D20.svg?style=flat&logo=laravel&logoColor=white" alt="Laravel" /></a>
   <a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61DAFB.svg?style=flat&logo=react&logoColor=black" alt="React" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5-3178C6.svg?style=flat&logo=typescript&logoColor=white" alt="TypeScript" /></a>
