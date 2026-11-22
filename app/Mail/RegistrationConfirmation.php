@@ -32,7 +32,7 @@ class RegistrationConfirmation extends Mailable implements ShouldQueue
             view: 'emails.registration-confirmation',
             with: [
                 'registration' => $this->registration,
-                'whatsappGroupLink' => 'https://chat.whatsapp.com/GGZzpmmhzpRIAqBx0l4qES?mode=gi_t',
+                'whatsappGroupLink' => 'https://chat.whatsapp.com/IMTjiBcdKkRH3NiFVSADBj?s=cl&p=i&iam=2',
             ],
         );
     }
@@ -43,9 +43,9 @@ class RegistrationConfirmation extends Mailable implements ShouldQueue
     public function build(): self
     {
         return $this->withSymfonyMessage(function (Email $message) {
-            $logoPath = public_path('images/logo-putih-2.webp');
+            $logoPath = public_path('images/logo-putih.webp');
             if (file_exists($logoPath)) {
-                $message->embedFromPath($logoPath, 'logo-putih-2.webp');
+                $message->embedFromPath($logoPath, 'logo-putih.webp');
             }
         });
     }
